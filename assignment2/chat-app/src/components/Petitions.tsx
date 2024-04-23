@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React from "react";
-import {Link, useNavigate} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import CSS from 'csstype';
 import {
     Alert, AlertTitle,
@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import {useAuthenticate} from "../store/authentication";
 
 
 const card: CSS.Properties = {
@@ -36,13 +37,29 @@ const headCells: readonly HeadCell[] = [
 ];
 
 const Petitions = ()=> {
+    const {id} = useParams();
     const [petitions, setPetitions] = React.useState<Array<Petition>>([])
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
+    const authentication = useAuthenticate((state) => state.authentication);
+    const userId = useAuthenticate((state) => state.userId);
 
-    // React.useEffect(() => {
-    //     getPetitions()
-    // }, [])
+    React.useEffect(() => {
+        const getPetitions = () => {
+            axios.get("http://localhost:4941/api/v1/petitions/" + id).then(
+                (response) => {
+                    setErrorFlag(false);
+                    setErrorMessage("");
+                    setPetitions(response.data);
+                },
+                (error) => {
+                    setErrorFlag(true);
+                    setErrorMessage(error.toString());
+                }
+            );
+        };
+        getPetitions();
+    }, [id]);
     //
     // const getPetitions = () => {
     //     axios.get('http://localhost:3000/api/petitions')
@@ -99,31 +116,31 @@ const Petitions = ()=> {
     } else {
         return (
             <h1>Petitions</h1>
-            // <div>
-            //     <Paper elevation={3} style={card}>
-            //         <h1>Petitions</h1>
-            //         <TableContainer component={Paper}>
-            //             <Table>
-            //                 <TableHead>
-            //                     <TableRow>
-            //                         {headCells.map((headCell) => (
-            //                             <TableCell
-            //                                 key={headCell.id}
-            //                                 align={headCell.numeric ? 'right' :
-            //                                     'left'}
-            //                                 padding={'normal'}>
-            //                                 {headCell.label}
-            //                             </TableCell>
-            //                         ))}
-            //                     </TableRow>
-            //                 </TableHead>
-            //                 <TableBody>
-            //                     {petition_rows()}
-            //                 </TableBody>
-            //             </Table>
-            //         </TableContainer>
-            //     </Paper>
-            // </div>
+            <div>
+                <Paper elevation={3} style={card}>
+                    <h1>Petitions</h1>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    {headCells.map((headCell) => (
+                                        <TableCell
+                                            key={headCell.id}
+                                            align={headCell.numeric ? 'right' :
+                                                'left'}
+                                            padding={'normal'}>
+                                            {headCell.label}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {petition_rows()}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
+            </div>
         )
     }
 
