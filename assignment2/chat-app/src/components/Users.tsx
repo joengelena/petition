@@ -16,8 +16,8 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-const baseUrl = "http://localhost:4941/api/v1";
 
+const baseUrl = "http://localhost:4941/api/v1";
 
 const card: CSS.Properties = {
     padding: "10px",
