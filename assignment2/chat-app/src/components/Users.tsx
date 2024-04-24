@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+const baseUrl = "http://localhost:4941/api/v1";
 
 
 const card: CSS.Properties = {
@@ -62,11 +63,11 @@ const Users = ()=> {
         getUsers()
     }, [])
     const getUsers = () => {
-        axios.get('http://localhost:3000/api/users')
+        axios.get(baseUrl + '/users')
             .then((response) => {
                 setErrorFlag(false)
                 setErrorMessage("")
-                setUsers(response.data)
+                setUsers(response.data.users)
                 setEditedUser(prevEditedUser => ({
                     ...prevEditedUser,
                     user_id: response.data.user_id
@@ -79,7 +80,7 @@ const Users = ()=> {
 
     const deleteUser = (user: User) => {
         axios
-            .delete('http://localhost:3000/api/users/' + user.user_id)
+            .delete(baseUrl + '/users/' + user.user_id)
             .then((response) => {
                 // Filter out the deleted user from the state
                 setUsers(users.filter(u => u.user_id !== user.user_id));
@@ -95,7 +96,7 @@ const Users = ()=> {
 
 
     const addUser = () => {
-        axios.post('http://localhost:3000/api/users', { username: addUserUsername })
+        axios.post(baseUrl + '/users', { username: addUserUsername })
             .then((response) => {
                 setUsers([...users, response.data]);
                 setAddUserUsername(""); // Reset the input field
@@ -111,7 +112,7 @@ const Users = ()=> {
 
     const editUser = (id: number, username: string) => {
         axios
-            .put("http://localhost:3000/api/users/" + id, { username: username })
+            .put(baseUrl + "/users/" + id, { username: username })
             .then((response) => {
                 setUsers(users.map(user => user.user_id === id ? { ...user, username: username } : user));
                 setOpenEditDialog(false);
