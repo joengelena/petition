@@ -2,19 +2,20 @@ import {useNavigate} from "react-router-dom";
 import {useUserInfoStorage} from "../store";
 import React from "react";
 import axios from 'axios';
-
+import { Container, Button, TextField, Typography, Alert } from '@mui/material';
 const baseUrl = "http://localhost:4941/api/v1";
 
 const Register = () => {
     const navigate = useNavigate();
     const setTokenInStorage = useUserInfoStorage(state => state.setToken);
     const setUserIdInStorage = useUserInfoStorage(state => state.setUserId);
-    const [firstName, setFirsName] = React.useState("");
+    const [firstName, setFirstName] = React.useState("");
     const [lastName, setLastName] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [image, setImage] = React.useState<File | null>(null);
     const allowedImageTypes = ["image/jpeg", "image/jpg", "image/gif", "image/png"];
+
     const removeTokenFromLocal = useUserInfoStorage(state => state.removeToken);
     const removeUserIdFromLocal = useUserInfoStorage(state => state.removeUserId);
     const [errorFlag, setErrorFlag] = React.useState(false)
@@ -40,6 +41,7 @@ const Register = () => {
             .then((response) => {
                 userId = response.data.userId;
                 console.log("user is successfully registered");
+                setErrorFlag(false)
                 setErrorMessage("");
                 login();
             },
@@ -77,7 +79,54 @@ const Register = () => {
                 }
             );
     }
-    return (<h1>Register</h1>)
+    return (
+        <Container maxWidth="sm">
+            <Typography variant="h4" component="h1">Register</Typography>
+            {errorFlag && <Alert severity="error">{errorMessage}</Alert>}
+            <TextField
+                label="First Name"
+                variant="outlined"
+                value={firstName}
+                onChange={e => setFirstName(e.target.value)}
+                fullWidth
+                margin="normal"
+            />
+            <TextField
+                label="Last Name"
+                variant="outlined"
+                value={lastName}
+                onChange={e => setLastName(e.target.value)}
+                fullWidth
+                margin="normal"
+            />
+            <TextField
+                label="Email"
+                variant="outlined"
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                fullWidth
+                margin="normal"
+            />
+            <TextField
+                label="Password"
+                variant="outlined"
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                fullWidth
+                margin="normal"
+            />
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={register}
+                fullWidth
+            >
+                Register
+            </Button>
+        </Container>
+    );
 }
 
 export default Register;
