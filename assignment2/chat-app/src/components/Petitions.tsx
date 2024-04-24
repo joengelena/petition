@@ -16,7 +16,9 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {useAuthenticate} from "../store/authentication";
+import {useUserInfoStorage} from "../store";
+const baseUrl = "http://localhost:4941/api/v1";
+
 
 
 const card: CSS.Properties = {
@@ -38,45 +40,31 @@ const headCells: readonly HeadCell[] = [
 
 const Petitions = ()=> {
     const {id} = useParams();
-    const [petitions, setPetitions] = React.useState<Array<Petition>>([])
+    const [petitions, setPetitions] = React.useState<Array<Petition>>([]);
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
-    const authentication = useAuthenticate((state) => state.authentication);
-    const userId = useAuthenticate((state) => state.userId);
+    // const setTokenToStorage = useUserInfoStorage(state => state.setToken);
+    // const setUserIdToStorage = useUserInfoStorage(state => state.setUserId);
+    // const token = useUserInfoStorage(state => state.token);
+    // const userId = useUserInfoStorage(state => state.userId);
 
     React.useEffect(() => {
-        const getPetitions = () => {
-            axios.get("http://localhost:4941/api/v1/petitions/" + id).then(
-                (response) => {
-                    setErrorFlag(false);
-                    setErrorMessage("");
-                    setPetitions(response.data);
-                },
-                (error) => {
-                    setErrorFlag(true);
-                    setErrorMessage(error.toString());
-                }
-            );
-        };
         getPetitions();
-    }, [id]);
-    //
-    // const getPetitions = () => {
-    //     axios.get('http://localhost:3000/api/petitions')
-    //         .then((response) => {
-    //             setErrorFlag(false)
-    //             setErrorMessage("")
-    //             setPetitions(response.data)
-    //             // setEditedUser(prevEditedUser => ({
-    //             //     ...prevEditedUser,
-    //             //     user_id: response.data.user_id
-    //             // }));
-    //         }, (error) => {
-    //             setErrorFlag(true)
-    //             setErrorMessage(error.toString())
-    //         })
-    // }
+    });
 
+    const getPetitions = () => {
+        axios.get(baseUrl + "/petitions").then(
+            (response) => {
+                setErrorFlag(false);
+                setErrorMessage("");
+                setPetitions(response.data.petitions);
+            },
+            (error) => {
+                setErrorFlag(true);
+                setErrorMessage(error.toString());
+            }
+        );
+    };
     const petition_rows = () => {
         return petitions.map((row: Petition) =>
             <TableRow hover
@@ -115,36 +103,35 @@ const Petitions = ()=> {
         )
     } else {
         return (
-            <h1>Petitions</h1>
-            <div>
-                <Paper elevation={3} style={card}>
-                    <h1>Petitions</h1>
-                    <TableContainer component={Paper}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    {headCells.map((headCell) => (
-                                        <TableCell
-                                            key={headCell.id}
-                                            align={headCell.numeric ? 'right' :
-                                                'left'}
-                                            padding={'normal'}>
-                                            {headCell.label}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {petition_rows()}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Paper>
-            </div>
+            <><h1>Petitions</h1>
+                <div>
+                    <Paper elevation={3} style={card}>
+                        <h1>Petitions</h1>
+                        <TableContainer component={Paper}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        {headCells.map((headCell) => (
+                                            <TableCell
+                                                key={headCell.id}
+                                                align={headCell.numeric ? 'right' :
+                                                    'left'}
+                                                padding={'normal'}>
+                                                {headCell.label}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {petition_rows()}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Paper>
+                </div>
+            </>
         )
     }
 
 }
-
-
 export default Petitions;
