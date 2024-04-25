@@ -71,7 +71,7 @@ const NavBar = () => {
         if (token !== "" && userId !== "") { // when the user is logged in
             setSettings([]);
         } else { // when the user is NOT logged in
-            setSettings([]);
+            setSettings(["Login", "Register", "Petitions"]);
         }
     }, [token, userId])
 

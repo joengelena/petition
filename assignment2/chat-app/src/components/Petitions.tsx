@@ -3,16 +3,9 @@ import React from "react";
 import {Link, useParams} from 'react-router-dom';
 import CSS from 'csstype';
 import {
-    Alert, AlertTitle,
-    Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
-    Paper, Snackbar, Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TextField
+    Alert, AlertTitle, Button, Dialog, DialogActions, DialogContent, DialogContentText,
+    Paper, Snackbar, Stack, Table, TableBody, TableCell, TableContainer,
+    TableHead, TableRow, TextField, DialogTitle
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -46,6 +39,14 @@ const Petitions = ()=> {
     // const setUserIdToStorage = useUserInfoStorage(state => state.setUserId);
     // const token = useUserInfoStorage(state => state.token);
     // const userId = useUserInfoStorage(state => state.userId);
+    const sortingPetitions = [
+        {value: "ALPHABETICAL_ASC", label: "Ascending Alphabetically"},
+        {value: "ALPHABETICAL_DSC", label: "Descending alphabetically"},
+        {value: "COST_ASC", label: "Ascending by supporting cost"},
+        {value: "COST_DESC", label: "Descending by supporting cost"},
+        {value: "CREATED_ASC", label: "Chronologically by creation date (from the first to be created to the last)"},
+        {value: "CREATED_DESC", label: "Reverse Chronologically by creation date (from the last to be created to the first)"}
+    ]
 
     React.useEffect(() => {
         getPetitions();
@@ -129,6 +130,7 @@ const Petitions = ()=> {
             </div>
 
         )
+
     }
 
 }
