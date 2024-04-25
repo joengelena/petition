@@ -20,7 +20,6 @@ import {useUserInfoStorage} from "../store";
 const baseUrl = "http://localhost:4941/api/v1";
 
 
-
 const card: CSS.Properties = {
     padding: "10px",
     margin: "20px",
@@ -103,33 +102,32 @@ const Petitions = ()=> {
         )
     } else {
         return (
-            <><h1>Petitions</h1>
-                <div>
-                    <Paper elevation={3} style={card}>
-                        <h1>Petitions</h1>
-                        <TableContainer component={Paper}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        {headCells.map((headCell) => (
-                                            <TableCell
-                                                key={headCell.id}
-                                                align={headCell.numeric ? 'right' :
-                                                    'left'}
-                                                padding={'normal'}>
-                                                {headCell.label}
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {petition_rows()}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Paper>
-                </div>
-            </>
+            <div>
+                <Paper elevation={3} style={card}>
+                    <h1>Petitions</h1>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    {headCells.map((headCell) => (
+                                        <TableCell
+                                            key={headCell.id}
+                                            align={headCell.numeric ? 'right' :
+                                                'left'}
+                                            padding={'normal'}>
+                                            {headCell.label}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {petition_rows()}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
+            </div>
+
         )
     }
 

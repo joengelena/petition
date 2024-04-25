@@ -3,6 +3,7 @@ import {useUserInfoStorage} from "../store";
 import React from "react";
 import axios from 'axios';
 import { Container, Button, TextField, Typography, Alert } from '@mui/material';
+import {Visibility, VisibilityOff} from "@mui/icons-material";
 const baseUrl = "http://localhost:4941/api/v1";
 
 const Register = () => {
@@ -13,6 +14,7 @@ const Register = () => {
     const [lastName, setLastName] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const [passwordVisible, setPasswordVisible] = React.useState(false);
     const [image, setImage] = React.useState<File | null>(null);
     const allowedImageTypes = ["image/jpeg", "image/jpg", "image/gif", "image/png"];
 
@@ -84,6 +86,7 @@ const Register = () => {
             <Typography variant="h4" component="h1">Register</Typography>
             {errorFlag && <Alert severity="error">{errorMessage}</Alert>}
             <TextField
+                required
                 label="First Name"
                 variant="outlined"
                 value={firstName}
@@ -92,6 +95,7 @@ const Register = () => {
                 margin="normal"
             />
             <TextField
+                required
                 label="Last Name"
                 variant="outlined"
                 value={lastName}
@@ -100,22 +104,33 @@ const Register = () => {
                 margin="normal"
             />
             <TextField
+                required
                 label="Email"
                 variant="outlined"
                 type="email"
                 value={email}
+                placeholder="abc@email.com"
                 onChange={e => setEmail(e.target.value)}
                 fullWidth
                 margin="normal"
             />
             <TextField
+                required
                 label="Password"
                 variant="outlined"
-                type="password"
+                type={passwordVisible ? "text" : "password"}
                 value={password}
+                placeholder="******"
                 onChange={e => setPassword(e.target.value)}
                 fullWidth
                 margin="normal"
+                InputProps={{
+                    endAdornment: (
+                        <Button onClick={() => setPasswordVisible(!passwordVisible)}>
+                            {passwordVisible ? <VisibilityOff /> : <Visibility />}
+                        </Button>
+                    )
+                }}
             />
             <Button
                 variant="contained"
