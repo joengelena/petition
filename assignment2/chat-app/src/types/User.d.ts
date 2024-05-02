@@ -1,4 +1,7 @@
 type User = {
-    user_id: number,
-    username: string
+    userId: number,
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
 }
