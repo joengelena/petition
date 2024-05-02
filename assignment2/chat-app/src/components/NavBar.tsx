@@ -128,6 +128,7 @@ const NavBar = () => {
                 <Button color="inherit" component={RouterLink} to="/users">Users</Button>
                 <Button color="inherit" component={RouterLink} to="/register">Register</Button>
                 <Button color="inherit" component={RouterLink} to="/login">LogIn</Button>
+                <Button color="inherit" component={RouterLink} to="/petitions">Petitions</Button>
             </Toolbar>
         </AppBar>
     );
