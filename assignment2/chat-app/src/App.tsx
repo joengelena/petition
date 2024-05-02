@@ -4,8 +4,9 @@ import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Petitions from "./components/Petitions";
 import NotFound from "./components/NotFound";
 import Register from "./components/Register";
+import Users from "./components/Users";
+import User from "./components/User";
 import Login from "./components/Login";
-
 import NavBar from "./components/NavBar";
 
 function App() {
@@ -19,6 +20,8 @@ function App() {
                 <Route path="/petitions" element={<Petitions/>}/>
                 <Route path="/petitions/:id" element={<Petitions/>}/>
                 <Route path="/register" element={<Register/>}/>
+                <Route path="/users" element={<Users/>}/>
+                <Route path="/user" element={<User/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="*" element={<NotFound/>}/>
             </Routes>

@@ -13,21 +13,26 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import {useUserInfoStorage} from "../store";
+const baseUrl = "http://localhost:4941/api/v1";
+
 
 const User = () => {
     const {id} = useParams();
     const navigate = useNavigate();
-    const [user, setUser] = React.useState<User>({user_id:0, username:""})
-    const [editedUser, setEditedUser] = React.useState<User>({ user_id: 0, username: "" })
+    const [user, setUser] = React.useState<User>({ firstName: "", lastName: "", email: "", password: "", userId: 0 })
+    const [editedUser, setEditedUser] = React.useState<User>({ firstName: "", lastName: "", email: "", password: "", userId: 0 })
+    const [dialogUser, setDialogUser] = React.useState<User>({ firstName: "", lastName: "", email: "", password: "", userId: -1 })
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
 
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false)
     const [openEditDialog, setOpenEditDialog] = React.useState(false)
-    const [dialogUser, setDialogUser] = React.useState<User>({ username: "", user_id: -1 })
 
     const [snackOpen, setSnackOpen] = React.useState(false)
     const [snackMessage, setSnackMessage] = React.useState("")
+    const userId = useUserInfoStorage(state => state.userId);
+    const token = useUserInfoStorage(state => state.token);
     const handleSnackClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
             return;
@@ -40,7 +45,7 @@ const User = () => {
         setOpenDeleteDialog(true);
     };
     const handleDeleteDialogClose = () => {
-        setDialogUser({ username: "", user_id: -1 })
+        setDialogUser({ firstName: "", lastName: "", email: "", password: "", userId: -1 })
         setOpenDeleteDialog(false);
     };
 
@@ -49,13 +54,13 @@ const User = () => {
         setOpenEditDialog(true);
     };
     const handleEditDialogClose = () => {
-        setDialogUser({ username: "", user_id: -1 })
+        setDialogUser({ firstName: "", lastName: "", email: "", password: "", userId: -1 })
         setOpenEditDialog(false);
 
     };
 
     const deleteUser = () => {
-        axios.delete('http://localhost:3000/api/users/' + user.user_id)
+        axios.delete(baseUrl + '/users/' + userId)
             .then((response) => {
                 navigate('/users')
                 setSnackMessage("User is deleted successfully")
@@ -68,7 +73,7 @@ const User = () => {
 
     const editUser = (id: number, username: string) => {
         axios
-            .put("http://localhost:3000/api/users/" + id, { username: username })
+            .put(baseUrl + "/users/" + id, { username: username })
             .then(
                 (response) => {
                     navigate(`/users`);
@@ -93,8 +98,18 @@ const User = () => {
 
     React.useEffect(() => {
         const getUser = () => {
-            axios.get('http://localhost:3000/api/users/'+id)
+            const config = {
+                method: "get",
+                url: baseUrl + '/users/' + userId,
+                headers: {
+                    "X-Authorization": token,
+                },
+            };
+            axios(config)
                 .then((response) => {
+                    if (response.data.email === undefined) {
+                        navigate('/users');
+                    }
                     setErrorFlag(false)
                     setErrorMessage("")
                     setUser(response.data)
@@ -105,10 +120,12 @@ const User = () => {
                 }, (error) => {
                     setErrorFlag(true)
                     setErrorMessage(error.toString())
+                    navigate('/users');
                 })
+            getUser()
         }
-        getUser()
-    }, [id])
+    }, [token])
+
 
     if (errorFlag) {
         return (
@@ -126,17 +143,19 @@ const User = () => {
         return (
             <div>
                 <h1>User</h1>
-                {user.user_id}: {user.username}
-                {editedUser.user_id}: {editedUser.username}
+                {user.userId}: {user.firstName}
+                {editedUser.userId}: {editedUser.firstName}
+                {user.userId}: {user.lastName}
+                {editedUser.userId}: {editedUser.lastName}
+                {user.userId}: {user.email}
+                {editedUser.userId}: {editedUser.email}
+                {user.userId}: {user.password}
+                {editedUser.userId}: {editedUser.password}
                 <Link to={"/users"}>Back to users</Link>
-                <Button variant="outlined" endIcon={<EditIcon />} onClick={() => { handleEditDialogOpen(user)
-                }}>
-                    Edit
-                </Button>
-                <Button variant="outlined" endIcon={<DeleteIcon />} onClick={() => { handleDeleteDialogOpen(user)
-                }}>
-                    Delete
-                </Button>
+                <Button variant="outlined" endIcon={<EditIcon />} onClick={() => { handleEditDialogOpen(user)}}>
+                    Edit</Button>
+                <Button variant="outlined" endIcon={<DeleteIcon />} onClick={() => { handleDeleteDialogOpen(user)}}>
+                    Delete</Button>
 
                 <Dialog
                     open={openEditDialog}
@@ -148,7 +167,7 @@ const User = () => {
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                            How would you like to change the user's name?
+                            Change the user's details that you want to update.
                         </DialogContentText>
                     </DialogContent>
 
@@ -156,12 +175,48 @@ const User = () => {
                         <form>
                             <div>
                                 <TextField
-                                    id="username"
-                                    name="username"
-                                    label="Username"
+                                    id="firstName"
+                                    name="firstName"
+                                    label="First Name"
                                     variant="outlined"
                                     fullWidth
-                                    value={editedUser.username}
+                                    value={editedUser.firstName}
+                                    onChange={handleInputChange}/>
+                            </div>
+                        </form>
+                        <form>
+                            <div>
+                                <TextField
+                                    id="lastName"
+                                    name="lastName"
+                                    label="Last Name"
+                                    variant="outlined"
+                                    fullWidth
+                                    value={editedUser.lastName}
+                                    onChange={handleInputChange}/>
+                            </div>
+                        </form>
+                        <form>
+                            <div>
+                                <TextField
+                                    id="email"
+                                    name="email"
+                                    label="Email"
+                                    variant="outlined"
+                                    fullWidth
+                                    value={editedUser.email}
+                                    onChange={handleInputChange}/>
+                            </div>
+                        </form>
+                        <form>
+                            <div>
+                                <TextField
+                                    id="password"
+                                    name="password"
+                                    label="New Password"
+                                    variant="outlined"
+                                    fullWidth
+                                    value={editedUser.password}
                                     onChange={handleInputChange}/>
                             </div>
                         </form>
@@ -169,7 +224,10 @@ const User = () => {
                     <DialogActions>
                         <Button onClick={handleEditDialogClose}>Cancel</Button>
                         <Button variant="outlined" color="error" onClick={() => {
-                            editUser(editedUser.user_id, editedUser.username)
+                            editUser(user.userId, editedUser.firstName)
+                            editUser(user.userId, editedUser.lastName)
+                            editUser(user.userId, editedUser.email)
+                            editUser(user.userId, editedUser.password)
                         }} autoFocus>
                             Save Change
                         </Button>

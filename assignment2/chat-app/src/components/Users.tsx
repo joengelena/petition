@@ -40,15 +40,15 @@ const Users = ()=> {
 
     const navigate = useNavigate();
     const [users, setUsers] = React.useState < Array < User >> ([])
-    const [user, setUser] = React.useState<User>({user_id:0, username:""})
+    const [user, setUser] = React.useState<User>({ firstName: "", lastName: "", email: "", password: "", userId: 0 })
     const [addUserUsername, setAddUserUsername] = React.useState("")
-    const [editedUser, setEditedUser] = React.useState<User>({ user_id: 0, username: "" })
+    const [editedUser, setEditedUser] = React.useState<User>({ firstName: "", lastName: "", email: "", password: "", userId: 0 })
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false)
     const [openEditDialog, setOpenEditDialog] = React.useState(false)
     const [openAddUserDialog, setOpenAddUserModal] = React.useState(false)
-    const [dialogUser, setDialogUser] = React.useState<User>({ username: "", user_id: -1 })
+    const [dialogUser, setDialogUser] = React.useState<User>({ firstName: "", lastName: "", email: "", password: "", userId: -1 })
 
     const [snackOpen, setSnackOpen] = React.useState(false)
     const [snackMessage, setSnackMessage] = React.useState("")
@@ -80,10 +80,10 @@ const Users = ()=> {
 
     const deleteUser = (user: User) => {
         axios
-            .delete(baseUrl + '/users/' + user.user_id)
+            .delete(baseUrl + '/users/' + user.userId)
             .then((response) => {
                 // Filter out the deleted user from the state
-                setUsers(users.filter(u => u.user_id !== user.user_id));
+                setUsers(users.filter(u => u.userId!== user.userId));
                 setOpenDeleteDialog(false);
                 setSnackMessage("User is deleted successfully")
                 setSnackOpen(true)
@@ -114,7 +114,7 @@ const Users = ()=> {
         axios
             .put(baseUrl + "/users/" + id, { username: username })
             .then((response) => {
-                setUsers(users.map(user => user.user_id === id ? { ...user, username: username } : user));
+                setUsers(users.map(user => user.userId === id ? { ...user, username: username } : user));
                 setOpenEditDialog(false);
                 setSnackMessage("Username changed successfully")
                 setSnackOpen(true)
@@ -138,7 +138,7 @@ const Users = ()=> {
         setOpenDeleteDialog(true);
     };
     const handleDeleteDialogClose = () => {
-        setDialogUser({ username: "", user_id: -1 })
+        setDialogUser({ firstName: "", lastName: "", email: "", password: "", userId: -1 })
         setOpenDeleteDialog(false);
     };
 
@@ -147,7 +147,7 @@ const Users = ()=> {
         setOpenEditDialog(true);
     };
     const handleEditDialogClose = () => {
-        // setEditedUser({ username: "", user_id: -1 })
+        // setEditedUser({ firstName: "", lastName: "", email: "", password: "", userId: -1 })
         setOpenEditDialog(false);
 
     };
@@ -157,13 +157,16 @@ const Users = ()=> {
         return users.map((row: User) =>
             <TableRow hover
                       tabIndex={-1}
-                      key={row.user_id}>
+                      key={row.userId}>
                 <TableCell>
-                    {row.user_id}
+                    {row.userId}
                 </TableCell>
-                <TableCell align="right">{row.username}</TableCell>
+                <TableCell align="right">{row.firstName}</TableCell>
+                <TableCell align="right">{row.lastName}</TableCell>
+                <TableCell align="right">{row.email}</TableCell>
+
                 <TableCell align="right"><Link
-                    to={"/users/" + row.user_id}>Go to user</Link></TableCell>
+                    to={"/users/" + row.userId}>Go to user</Link></TableCell>
                 <TableCell align="right">
                     <Button variant="outlined" endIcon={<EditIcon />} onClick={() => { handleEditDialogOpen(row)
                     }}>
@@ -245,12 +248,48 @@ const Users = ()=> {
                         <form>
                             <div>
                                 <TextField
-                                    id="username"
-                                    name="username"
-                                    label="Username"
+                                    id="firstName"
+                                    name="firstName"
+                                    label="First Name"
                                     variant="outlined"
                                     fullWidth
-                                    value={editedUser.username}
+                                    value={editedUser.firstName}
+                                    onChange={handleInputChange}/>
+                            </div>
+                        </form>
+                        <form>
+                            <div>
+                                <TextField
+                                    id="lastName"
+                                    name="lastName"
+                                    label="Last Name"
+                                    variant="outlined"
+                                    fullWidth
+                                    value={editedUser.lastName}
+                                    onChange={handleInputChange}/>
+                            </div>
+                        </form>
+                        <form>
+                            <div>
+                                <TextField
+                                    id="email"
+                                    name="email"
+                                    label="Email"
+                                    variant="outlined"
+                                    fullWidth
+                                    value={editedUser.email}
+                                    onChange={handleInputChange}/>
+                            </div>
+                        </form>
+                        <form>
+                            <div>
+                                <TextField
+                                    id="password"
+                                    name="password"
+                                    label="New Password"
+                                    variant="outlined"
+                                    fullWidth
+                                    value={editedUser.password}
                                     onChange={handleInputChange}/>
                             </div>
                         </form>
@@ -258,7 +297,10 @@ const Users = ()=> {
                     <DialogActions>
                         <Button onClick={handleEditDialogClose}>Cancel</Button>
                         <Button variant="outlined" color="error" onClick={() => {
-                            editUser(editedUser.user_id, editedUser.username)
+                            editUser(user.userId, editedUser.firstName)
+                            editUser(user.userId, editedUser.lastName)
+                            editUser(user.userId, editedUser.email)
+                            editUser(user.userId, editedUser.password)
                         }} autoFocus>
                             Save Change
                         </Button>
