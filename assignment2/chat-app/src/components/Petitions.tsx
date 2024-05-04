@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React from "react";
+import React, {ChangeEvent} from "react";
 import {Link as RouterLink, Link, useParams, useSearchParams} from 'react-router-dom';
 import CSS from 'csstype';
 import {
@@ -8,7 +8,7 @@ import {
     TableCell, TableContainer, TableHead, TableRow, TextField, DialogTitle,
     Box, FormControl, InputLabel, Select, SelectChangeEvent, MenuItem,
     Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider,
-    useTheme, IconButton, ToggleButton,
+    useTheme, IconButton, ToggleButton, Pagination,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -41,30 +41,35 @@ const Petitions = ()=> {
     // const setUserIdToStorage = useUserInfoStorage(state => state.setUserId);
     // const token = useUserInfoStorage(state => state.token);
     // const userId = useUserInfoStorage(state => state.userId);
+    const [maxPage, setMaxPage] = React.useState(1)
+    const [currentPage, setCurrentPage] = React.useState(1)
 
-    const [sortingBy, setSortingBy] = React.useState("CREATED_ASC");
+    const [searchQuery, setSearchQuery] = React.useState("")
+    const [sortByQuery, setSortByQuery] = React.useState("CREATED_ASC");
+
     const [query, setQuery] = React.useState("")
+
     const [supportingCost, setSupportingCost] = React.useState("")
     const [categoryIds, setCategoryIds] = React.useState<Array<Number>>([])
+
     const [sortByOpen, setSortByOpen] = React.useState(false);
     const [categoriesOpen, setCategoriesOpen] = React.useState(false);
 
     React.useEffect(() => {
-
-        const getPetitions = () => {
-            axios.get(baseUrl + `/petitions`).then(
-                (response) => {
-                    setErrorFlag(false);
-                    setErrorMessage("");
-                    setPetitions(response.data.petitions);
-                },
-                (error) => {
-                    setErrorFlag(true);
-                    setErrorMessage(error.toString());
-                }
-            );
-        };
-
+        getPetitions(1)
+        // const getPetitions = () => {
+        //     // axios.get(baseUrl + `/petitions`).then(
+        //     //     (response) => {
+        //     //         setErrorFlag(false);
+        //     //         setErrorMessage("");
+        //     //         setPetitions(response.data.petitions);
+        //     //     },
+        //     //     (error) => {
+        //     //         setErrorFlag(true);
+        //     //         setErrorMessage(error.toString());
+        //     //     }
+        //     // );
+        // };
         const getCategories = () => {
             axios.get(baseUrl + `/petitions/categories`).then(
                 (response) => {
@@ -78,55 +83,77 @@ const Petitions = ()=> {
                 }
             );
         };
-        getPetitions()
         getCategories()
-    }, []);
+    }, [currentPage, maxPage]);
 
-    const handleChangeSortBy = (event: SelectChangeEvent) => {
-        setSortingBy(event.target.value);
-        // query.set("sortBy", event.target.value);
-        setQuery(query);
+    // const handleChangeSortBy = (event: SelectChangeEvent) => {
+    //     setSortByQuery(event.target.value);
+    //     getPetitions(1)
+    // };
+
+    const handlePageUpdate = (event: ChangeEvent<unknown>, page: number) => {
+        setCurrentPage(page);
     };
 
     const toggleDrawer = (newOpen: boolean, setFunction: React.Dispatch<React.SetStateAction<boolean>>) => () => {
-        // setSortByOpen(newOpen);
-        // setCategoriesOpen(newOpen);
         setFunction(newOpen);
     };
 
-    const getPetitions = () => {
+    const getPetitions = (pageNum: number) => {
+        let allQuery = []
+        const startIndex = (currentPage - 1) * 10
 
-        axios.get(`${baseUrl}/petitions?q=${query}&categoryIds=${categoryIds}`)
+        if (searchQuery.length !== 0) {
+            allQuery.push("q=" + searchQuery)
+        }
+
+        if (sortByQuery.length !== 0) {
+            allQuery.push("sortBy=" + sortByQuery)
+        }
+
+        if (categoryIds.length !== 0) {
+            for (let i = 0; i < categoryIds.length; i++) {
+                allQuery.push("categoryIds=" + categoryIds[i])
+            }
+        }
+
+        const endQuery = allQuery.join("&")
+        console.log(endQuery)
+
+        axios.get(`${baseUrl}/petitions?count=10&startIndex=${startIndex}&${endQuery}`)
             .then((response) => {
                 setPetitions(response.data.petitions)
+                setErrorFlag(false)
+            },
+            (error) => {
+                setErrorFlag(true)
+                setErrorMessage('Error fetching petitions: ' + error)
             })
-
     }
 
-    const handleSearchEnterKey = (event: any) => {
-        if (event.key === "Enter") {
-            getPetitions()
-        }
-    }
+    // const handleSearchEnterKey = (event: any) => {
+    //     if (event.key === "Enter") {
+    //         getPetitions(1)
+    //     }
+    // }
 
     const sortingOptions = [
         {value: "ALPHABETICAL_ASC", label: "Ascending Alphabetically"},
-        {value: "ALPHABETICAL_DSC", label: "Descending alphabetically"},
+        {value: "ALPHABETICAL_DESC", label: "Descending alphabetically"},
         {value: "COST_ASC", label: "Ascending by supporting cost"},
         {value: "COST_DESC", label: "Descending by supporting cost"},
         {value: "CREATED_ASC", label: "Chronologically by creation date"}, //  (from the first to be created to the last)
         {value: "CREATED_DESC", label: "Reverse Chronologically by creation date"} // (from the last to be created to the first)
     ]
 
-    const DrawerList = (
+    const SortByDrawer = (
         <Box sx={{ width: 350 }} role="presentation" onClick={toggleDrawer(false, setSortByOpen)}>
             <List>
                 {sortingOptions.map((option) => (
                     <ListItem key={option.value} disablePadding>
-                        <ListItemButton onClick={() => {
-                            toggleDrawer(false, setSortByOpen)(); // Close the drawer
-                            // handleChangeSortBy(option.value); // Directly pass the sorting value
-                        }}>
+                        <ListItemButton
+                            onClick={() => { setSortByQuery(option.value); toggleDrawer(false, setSortByOpen)();}}  // Close the drawer
+                            selected={sortByQuery.includes(option.value)}>
                             <ListItemText primary={option.label} />
                         </ListItemButton>
                     </ListItem>
@@ -134,6 +161,22 @@ const Petitions = ()=> {
             </List>
         </Box>
     );
+
+    const CategoryDrawer = (
+        <Box sx={{ width: 350 }} role="presentation">
+            <List>
+                {categories.map((category) => (
+                    <ListItem key={category.name} disablePadding>
+                        <ListItemButton
+                            onClick={() => handleCategoryClick(category.categoryId)}
+                            selected={categoryIds.includes(category.categoryId)}>
+                            <ListItemText primary={category.name} />
+                        </ListItemButton>
+                    </ListItem>
+                ))}
+            </List>
+        </Box>
+    )
 
     const handleCategoryClick = (categoryId: number) => {
         setCategoryIds(prevIds => {
@@ -146,20 +189,6 @@ const Petitions = ()=> {
             }
         });
     }
-
-    const CategoryDrawer = (
-        <Box sx={{ width: 350 }} role="presentation">
-            <List>
-                {categories.map((category) => (
-                    <ListItem key={category.name} disablePadding>
-                        <ListItemButton onClick={() => handleCategoryClick(category.categoryId)} selected={categoryIds.includes(category.categoryId)}>
-                            <ListItemText primary={category.name} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-        </Box>
-    )
 
     const petition_rows = () => {
         return petitions.map((petition: Petition) =>
@@ -192,28 +221,6 @@ const Petitions = ()=> {
         )
     }
 
-    // const petition_rows = () => {
-    //     return petitions.map((row: Petition) =>
-    //         <TableRow hover tabIndex={-1} key={row.petitionId}>
-    //             <TableCell>
-    //                 {row.petitionId}
-    //             </TableCell>
-    //             <TableCell align="right">{row.title}</TableCell>
-    //             <TableCell align="right"><Link
-    //                 to={"/petitions/" + row.petitionId}>Go to petitions</Link>
-    //             </TableCell>
-    //             <TableCell align="right">
-    //                 <Button variant="outlined" endIcon={<EditIcon />} onClick={() => {}}>
-    //                     Edit
-    //                 </Button>
-    //                 <Button variant="outlined" endIcon={<DeleteIcon />} onClick={() => deletePetition(row)}>
-    //                     Delete
-    //                 </Button>
-    //             </TableCell>
-    //         </TableRow>
-    //     )
-    // }
-
     if (errorFlag) {
         return (
             <div>
@@ -230,22 +237,13 @@ const Petitions = ()=> {
             <div>
                 <Paper elevation={3} style={card}>
                     <h1>Petitions</h1>
-                    {/*<Search>*/}
-                    {/*    <SearchIconWrapper>*/}
-                    {/*        <SearchIcon />*/}
-                    {/*    </SearchIconWrapper>*/}
-                    {/*    <StyledInputBase*/}
-                    {/*        placeholder="Search…"*/}
-                    {/*        inputProps={{ 'aria-label': 'search' }}*/}
-                    {/*    />*/}
-                    {/*</Search>*/}
                     <TextField
                         label="Search"
                         type="search"
                         variant="outlined"
-                        value={query}
-                        onChange={(event) => setQuery(event.target.value)}
-                        onKeyPress={handleSearchEnterKey}>
+                        value={searchQuery}
+                        onChange={(event) => setSearchQuery(event.target.value)}
+                        >
                     </TextField>
                     <React.Fragment>
                         <Button onClick={toggleDrawer( true, setSortByOpen)}>Sort By</Button>
@@ -254,7 +252,7 @@ const Petitions = ()=> {
                             open={sortByOpen}
                             onClose={toggleDrawer(false, setSortByOpen)}
                         >
-                            {DrawerList}
+                            {SortByDrawer}
                         </Drawer>
                     </React.Fragment>
                     <React.Fragment>
@@ -267,6 +265,7 @@ const Petitions = ()=> {
                             {CategoryDrawer}
                         </Drawer>
                     </React.Fragment>
+                    <Button onClick={() => getPetitions(1)}>Search</Button>
                     <TableContainer component={Paper}>
                         <Table>
                             <TableHead>
@@ -285,6 +284,7 @@ const Petitions = ()=> {
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <Pagination count={maxPage} page={currentPage} onChange={handlePageUpdate} showFirstButton showLastButton />
                 </Paper>
             </div>
 
