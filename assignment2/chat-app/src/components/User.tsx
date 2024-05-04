@@ -20,9 +20,9 @@ const baseUrl = "http://localhost:4941/api/v1";
 const User = () => {
     const {id} = useParams();
     const navigate = useNavigate();
-    const [user, setUser] = React.useState<User>({ firstName: "", lastName: "", email: "", password: "", userId: 0 })
-    const [editedUser, setEditedUser] = React.useState<User>({ firstName: "", lastName: "", email: "", password: "", userId: 0 })
-    const [dialogUser, setDialogUser] = React.useState<User>({ firstName: "", lastName: "", email: "", password: "", userId: -1 })
+    const [user, setUser] = React.useState<User>({ firstName: "", lastName: "", email: "", password: "", imageFilename: "", authToken:"", userId: -1 })
+    const [editedUser, setEditedUser] = React.useState<User>({ firstName: "", lastName: "", email: "", password: "", imageFilename: "", authToken:"", userId: 0 })
+    const [dialogUser, setDialogUser] = React.useState<User>({ firstName: "", lastName: "", email: "", password: "", imageFilename: "", authToken:"", userId: -1 })
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
 
@@ -45,7 +45,7 @@ const User = () => {
         setOpenDeleteDialog(true);
     };
     const handleDeleteDialogClose = () => {
-        setDialogUser({ firstName: "", lastName: "", email: "", password: "", userId: -1 })
+        setDialogUser({ firstName: "", lastName: "", email: "", password: "", imageFilename: "", authToken:"", userId: -1 })
         setOpenDeleteDialog(false);
     };
 
@@ -54,7 +54,7 @@ const User = () => {
         setOpenEditDialog(true);
     };
     const handleEditDialogClose = () => {
-        setDialogUser({ firstName: "", lastName: "", email: "", password: "", userId: -1 })
+        setDialogUser({ firstName: "", lastName: "", email: "", password: "", imageFilename: "", authToken:"", userId: -1 })
         setOpenEditDialog(false);
 
     };
