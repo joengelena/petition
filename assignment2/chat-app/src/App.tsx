@@ -16,7 +16,7 @@ function App() {
           <div>
               <NavBar />
             <Routes>
-                <Route path="" element={<Petitions/>}/>
+                <Route path="/petitions" element={<Petitions/>}/>
                 <Route path="/register" element={<Register/>}/>
                 {/*<Route path="/users" element={<Users/>}/>*/}
                 <Route path="/user" element={<User/>}/>

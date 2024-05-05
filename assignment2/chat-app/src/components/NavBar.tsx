@@ -37,7 +37,7 @@ const NavBar = () => {
         <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
             <List>
                 <ListItem disablePadding>
-                    <ListItemButton component={RouterLink} to="/">
+                    <ListItemButton component={RouterLink} to="/petitions">
                         <ListItemIcon><SubjectIcon /></ListItemIcon>
                         <ListItemText primary="Petitions" />
                     </ListItemButton>
@@ -124,11 +124,10 @@ const NavBar = () => {
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                     My Petition Website
                 </Typography>
-                <Button color="inherit" component={RouterLink} to="/">Petitions</Button>
+                <Button color="inherit" component={RouterLink} to="/petitions">Petitions</Button>
                 <Button color="inherit" component={RouterLink} to="/users">Users</Button>
                 <Button color="inherit" component={RouterLink} to="/register">Register</Button>
                 <Button color="inherit" component={RouterLink} to="/login">LogIn</Button>
-                <Button color="inherit" component={RouterLink} to="/petitions">Petitions</Button>
             </Toolbar>
         </AppBar>
     );
