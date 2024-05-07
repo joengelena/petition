@@ -8,7 +8,7 @@ import {
     TableCell, TableContainer, TableHead, TableRow, TextField, DialogTitle,
     Box, FormControl, InputLabel, Select, SelectChangeEvent, MenuItem,
     Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider,
-    useTheme, IconButton, ToggleButton, Pagination,
+    useTheme, IconButton, ToggleButton, Pagination, Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -56,7 +56,12 @@ const Petitions = ()=> {
 
 
     React.useEffect(() => {
-        getPetitions(1)
+        if (currentPage > maxPage) {
+            setCurrentPage(maxPage)
+        } else{
+            getPetitions(currentPage)
+        }
+
         // const getPetitions = () => {
         //     // axios.get(baseUrl + `/petitions`).then(
         //     //     (response) => {
@@ -116,13 +121,11 @@ const Petitions = ()=> {
                 allQuery.push("categoryIds=" + categoryIds[i])
             }
         }
-
         const endQuery = allQuery.join("&")
-        console.log(endQuery)
-
         axios.get(`${baseUrl}/petitions?count=10&startIndex=${startIndex}&${endQuery}`)
             .then((response) => {
                     setPetitions(response.data.petitions)
+                    setMaxPage(Math.ceil(response.data.count / 10))
                     setErrorFlag(false)
                 },
                 (error) => {
@@ -179,7 +182,13 @@ const Petitions = ()=> {
 
     const petition_rows = () => {
         return petitions.map((petition: Petition) =>
-            <TableRow hover tabIndex={-1} key={petition.title}>
+            <TableRow
+                hover tabIndex={-1}
+                key={petition.title}
+                component={Link}
+                to={`/petitions/${petition.petitionId}`}
+                style={{ textDecoration: 'none' }}
+            >
                 <TableCell>
                     <img src={`${baseUrl}/petitions/${petition.petitionId}/image`} width="100" height="100"/>
                 </TableCell>
@@ -280,14 +289,25 @@ const Petitions = ()=> {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <Pagination count={maxPage} page={currentPage} onChange={handlePageUpdate} showFirstButton
-                                showLastButton/>
+
+                    <Stack spacing={2} alignItems="center">
+                        <Typography>
+                            Page {currentPage} of {maxPage}
+                        </Typography>
+                        <Pagination
+                            count={maxPage}
+                            page={currentPage}
+                            onChange={handlePageUpdate}
+                            showFirstButton
+                            showLastButton
+                            size="large"
+                            color="primary"
+                            shape="rounded"
+                        />
+                    </Stack>
                 </Paper>
             </div>
-
         )
-
     }
-
 }
 export default Petitions;
