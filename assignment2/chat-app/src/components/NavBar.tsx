@@ -42,12 +42,12 @@ const NavBar = () => {
                         <ListItemText primary="Petitions" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton component={RouterLink} to="/users">
-                        <ListItemIcon><UsersIcon /></ListItemIcon>
-                        <ListItemText primary="Users" />
-                    </ListItemButton>
-                </ListItem>
+                {/*<ListItem disablePadding>*/}
+                {/*    <ListItemButton component={RouterLink} to="/users">*/}
+                {/*        <ListItemIcon><UsersIcon /></ListItemIcon>*/}
+                {/*        <ListItemText primary="Profile" />*/}
+                {/*    </ListItemButton>*/}
+                {/*</ListItem>*/}
             </List>
             <Divider />
             <List>
@@ -125,7 +125,6 @@ const NavBar = () => {
                     My Petition Website
                 </Typography>
                 <Button color="inherit" component={RouterLink} to="/petitions">Petitions</Button>
-                <Button color="inherit" component={RouterLink} to="/users">Users</Button>
                 <Button color="inherit" component={RouterLink} to="/register">Register</Button>
                 <Button color="inherit" component={RouterLink} to="/login">LogIn</Button>
             </Toolbar>

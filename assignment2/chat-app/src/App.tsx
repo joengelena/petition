@@ -18,7 +18,6 @@ function App() {
             <Routes>
                 <Route path="/petitions" element={<Petitions/>}/>
                 <Route path="/register" element={<Register/>}/>
-                {/*<Route path="/users" element={<Users/>}/>*/}
                 <Route path="/user" element={<User/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="*" element={<NotFound/>}/>
