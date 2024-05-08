@@ -5,8 +5,8 @@ type Petition = {
     creationDate: string,
     imageFileName: string,
     ownerId: number,
-    ownerFirstName: number,
-    ownerLastName: number,
+    ownerFirstName: string,
+    ownerLastName: string,
     supportingCost: number
     categoryId: number,
     ownerImage: string,

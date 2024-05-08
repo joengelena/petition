@@ -17,7 +17,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Petitions/>}/>
                 <Route path="/petitions" element={<Petitions/>}/>
-                <Route path="/petitions/:id" element={<Petition/>}/>
+                <Route path="/petitions/:petitionId" element={<Petition/>}/>
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="*" element={<NotFound/>}/>

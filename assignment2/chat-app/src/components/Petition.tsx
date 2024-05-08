@@ -43,7 +43,6 @@ const Petition = ()=> {
     }
 
     if (errorFlag) {
-        console.log({petitionId})
         return (
 
             <div>
@@ -57,11 +56,13 @@ const Petition = ()=> {
         )
     } else {
         return (
-            <div>
-                <Paper elevation={3} style={card}>
+            <div style={{padding: 15}}>
+                <Paper elevation={3} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
                     <React.Fragment>
                         <h1>Petition {petitionId}</h1>
                         <p>{petition?.title}</p>
+                        <img src={`${baseUrl}/petitions/${petitionId}/image`} width="700" height="700"/>
+                        <hr/>
                     </React.Fragment>
 
                 </Paper>
