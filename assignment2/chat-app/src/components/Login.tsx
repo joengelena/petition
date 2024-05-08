@@ -1,5 +1,5 @@
 import axios from "axios";
-import {Alert, Button, Container, TextField, Typography} from "@mui/material";
+import {Alert, Box, Button, Container, Paper, TextField, Typography} from "@mui/material";
 import React from "react";
 import {useUserInfoStorage} from "../store";
 import {Link, useNavigate} from "react-router-dom";
@@ -50,52 +50,54 @@ const Login = () => {
             );
     }
     return (
-        <Container maxWidth="sm">
-            <Typography variant="h4" component="h1">Log In</Typography>
-            {errorFlag && <Alert severity="error">{errorMessage}</Alert>}
+        <div style={{padding: 50}}>
+            <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 500}}>
+                <Typography variant="h4" style={{fontWeight: 'bold'}}>Log In</Typography>
+                {errorFlag && <Alert severity="error">{errorMessage}</Alert>}
 
-            <TextField
-                required
-                label="Email"
-                variant="outlined"
-                type="email"
-                value={email}
-                placeholder="abc@email.com"
-                onChange={e => setEmail(e.target.value)}
-                fullWidth
-                margin="normal"
-            />
-            <TextField
-                required
-                label="Password"
-                variant="outlined"
-                type={passwordVisible ? "text" : "password"}
-                value={password}
-                placeholder="******"
-                onChange={e => setPassword(e.target.value)}
-                fullWidth
-                margin="normal"
-                InputProps={{
-                    endAdornment: (
-                        <Button onClick={() => setPasswordVisible(!passwordVisible)}>
-                            {passwordVisible ? <VisibilityOff /> : <Visibility />}
-                        </Button>
-                    )
-                }}
-            />
-
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={login}
-                fullWidth
-            >
-                Log In
-            </Button>
-            <Link to="/register">
-                Not Registered?
-            </Link>
-        </Container>
+                <TextField
+                    required
+                    label="Email"
+                    variant="outlined"
+                    type="email"
+                    value={email}
+                    placeholder="abc@email.com"
+                    onChange={e => setEmail(e.target.value)}
+                    fullWidth
+                    margin="normal"
+                />
+                <TextField
+                    required
+                    label="Password"
+                    variant="outlined"
+                    type={passwordVisible ? "text" : "password"}
+                    value={password}
+                    placeholder="******"
+                    onChange={e => setPassword(e.target.value)}
+                    fullWidth
+                    style={{ marginBottom: 8 }}
+                    InputProps={{
+                        endAdornment: (
+                            <Button onClick={() => setPasswordVisible(!passwordVisible)}>
+                                {passwordVisible ? <VisibilityOff /> : <Visibility />}
+                            </Button>
+                        )
+                    }}
+                />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={login}
+                    fullWidth
+                    style={{ marginBottom: 8 }}
+                >
+                    Log In
+                </Button>
+                <Link to="/register" >
+                    Not Registered?
+                </Link>
+            </Paper>
+        </div>
     );
 }
 

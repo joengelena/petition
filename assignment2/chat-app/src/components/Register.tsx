@@ -1,8 +1,8 @@
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useUserInfoStorage} from "../store";
 import React from "react";
 import axios from 'axios';
-import {Container, Button, TextField, Typography, Alert, AlertTitle} from '@mui/material';
+import {Container, Button, TextField, Typography, Alert, AlertTitle, Paper, Box} from '@mui/material';
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 const baseUrl = "http://localhost:4941/api/v1";
 
@@ -81,21 +81,12 @@ const Register = () => {
                 }
             );
     }
-    if (errorFlag) {
-        return (
-            <div>
-                <h1>Users</h1>
-                {errorFlag &&
-                    <Alert severity="error">
-                        <AlertTitle>Error</AlertTitle>
-                        {errorMessage}
-                    </Alert>}
-            </div>
-        )
-    } else {
-        return (
-            <Container maxWidth="sm">
-                <Typography variant="h4" component="h1">Register</Typography>
+    return (
+        <div style={{padding: 50}}>
+            <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 500}}>
+                <Typography variant="h4" style={{fontWeight: 'bold'}}>
+                    Register
+                </Typography>
                 {errorFlag && <Alert severity="error">{errorMessage}</Alert>}
                 <TextField
                     required
@@ -113,7 +104,7 @@ const Register = () => {
                     value={lastName}
                     onChange={e => setLastName(e.target.value)}
                     fullWidth
-                    margin="normal"
+                    style={{ marginBottom: 8 }}
                 />
                 <TextField
                     required
@@ -124,7 +115,7 @@ const Register = () => {
                     placeholder="abc@email.com"
                     onChange={e => setEmail(e.target.value)}
                     fullWidth
-                    margin="normal"
+                    style={{ marginBottom: 8 }}
                 />
                 <TextField
                     required
@@ -135,11 +126,11 @@ const Register = () => {
                     placeholder="******"
                     onChange={e => setPassword(e.target.value)}
                     fullWidth
-                    margin="normal"
+                    style={{ marginBottom: 8 }}
                     InputProps={{
                         endAdornment: (
                             <Button onClick={() => setPasswordVisible(!passwordVisible)}>
-                                {passwordVisible ? <VisibilityOff /> : <Visibility />}
+                                {passwordVisible ? <VisibilityOff/> : <Visibility/>}
                             </Button>
                         )
                     }}
@@ -149,12 +140,16 @@ const Register = () => {
                     color="primary"
                     onClick={register}
                     fullWidth
+                    style={{ marginBottom: 8 }}
                 >
                     Register
                 </Button>
-            </Container>
-        );
-    }
+                <Link to="/login" >
+                    Already Registered?
+                </Link>
+            </Paper>
+        </div>
+    );
 }
 
 export default Register;
