@@ -46,44 +46,30 @@ const Petitions = ()=> {
     const [supportingCost, setSupportingCost] = React.useState("")
     const [categoryIds, setCategoryIds] = React.useState<Array<Number>>([])
 
-    const [sortByOpen, setSortByOpen] = React.useState(false)
-
-
     React.useEffect(() => {
-        if (currentPage > maxPage) {
+        if (currentPage > maxPage && maxPage !== 0) {
             setCurrentPage(maxPage)
         } else{
             getPetitions(currentPage)
         }
+    }, [currentPage, maxPage]);
 
-        // const getPetitions = () => {
-        //     // axios.get(baseUrl + `/petitions`).then(
-        //     //     (response) => {
-        //     //         setErrorFlag(false);
-        //     //         setErrorMessage("");
-        //     //         setPetitions(response.data.petitions);
-        //     //     },
-        //     //     (error) => {
-        //     //         setErrorFlag(true);
-        //     //         setErrorMessage(error.toString());
-        //     //     }
-        //     // );
-        // };
+    React.useEffect(() => {
         const getCategories = () => {
             axios.get(baseUrl + `/petitions/categories`)
                 .then((response) => {
-                    setErrorFlag(false);
-                    setErrorMessage("");
-                    setCategories(response.data)
-                },
-                (error) => {
-                    setErrorFlag(true);
-                    setErrorMessage(error.toString());
-                }
-            );
+                        setErrorFlag(false);
+                        setErrorMessage("");
+                        setCategories(response.data)
+                    },
+                    (error) => {
+                        setErrorFlag(true);
+                        setErrorMessage(error.toString());
+                    }
+                );
         };
         getCategories()
-    }, [currentPage, maxPage]);
+    }, [baseUrl])
 
     const handlePageUpdate = (event: ChangeEvent<unknown>, page: number) => {
         setCurrentPage(page);
@@ -91,7 +77,7 @@ const Petitions = ()=> {
 
     const getPetitions = (pageNum: number) => {
         let allQuery = []
-        const startIndex = (currentPage - 1) * 10
+        const startIndex = (pageNum - 1) * 10
 
         if (searchQuery.length !== 0) {
             allQuery.push("q=" + searchQuery)
@@ -174,7 +160,7 @@ const Petitions = ()=> {
                 </TableCell>
                 <TableCell>
                     <Typography variant="body1">
-                        {petition.categoryId}
+                        {categories.find(category => category.categoryId === petition.categoryId)?.name || "Unknown"}
                     </Typography>
                 </TableCell>
                 <TableCell>
@@ -211,7 +197,7 @@ const Petitions = ()=> {
         return (
             <div style={{padding: 15}}>
                 <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
-                    <Typography variant="h2" style={{ fontWeight: 'bold' }}>
+                    <Typography variant="h3" style={{ fontWeight: 'bold', padding: 10 }}>
                         Petitions
                     </Typography>
 
