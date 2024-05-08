@@ -8,7 +8,7 @@ import {
     TableCell, TableContainer, TableHead, TableRow, TextField, DialogTitle,
     Box, FormControl, InputLabel, Select, SelectChangeEvent, MenuItem,
     Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider,
-    useTheme, IconButton, ToggleButton, Pagination, Typography,
+    useTheme, IconButton, ToggleButton, Pagination, Typography, Avatar,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -76,8 +76,8 @@ const Petitions = ()=> {
         //     // );
         // };
         const getCategories = () => {
-            axios.get(baseUrl + `/petitions/categories`).then(
-                (response) => {
+            axios.get(baseUrl + `/petitions/categories`)
+                .then((response) => {
                     setErrorFlag(false);
                     setErrorMessage("");
                     setCategories(response.data)
@@ -184,7 +184,7 @@ const Petitions = ()=> {
         return petitions.map((petition: Petition) =>
             <TableRow
                 hover tabIndex={-1}
-                key={petition.title}
+                key={petition.petitionId}
                 component={Link}
                 to={`/petitions/${petition.petitionId}`}
                 style={{ textDecoration: 'none' }}
@@ -193,26 +193,35 @@ const Petitions = ()=> {
                     <img src={`${baseUrl}/petitions/${petition.petitionId}/image`} width="100" height="100"/>
                 </TableCell>
                 <TableCell>
-                    {petition.title}
+                    <Typography variant="body1">
+                        {petition.title}
+                    </Typography>
                 </TableCell>
                 <TableCell>
-                    {petition.creationDate}
+                    <Typography variant="body1">
+                        {petition.creationDate}
+                    </Typography>
                 </TableCell>
                 <TableCell>
-                    {petition.categoryId}
+                    <Typography variant="body1">
+                        {petition.categoryId}
+                    </Typography>
                 </TableCell>
                 <TableCell>
-                    {petition.ownerFirstName + " " + petition.ownerLastName}
+                    <Typography variant="body1">
+                        {petition.ownerFirstName + " " + petition.ownerLastName}
+                    </Typography>
                 </TableCell>
                 <TableCell>
-                    <img src={`${baseUrl}/users/${petition.ownerId}/image`} width="100" height="100"/>
+                    <Avatar
+                        src={`${baseUrl}/users/${petition.ownerId}/image`}
+                        alt={`${petition.ownerLastName}`}
+                        style={{ width: 80, height: 80 }} // Smaller Avatar for a cleaner look
+                    />
                 </TableCell>
                 <TableCell>
                     {petition.supportingCost}
                 </TableCell>
-                {/*<TableCell align="right"><Link*/}
-                {/*    to={"/petitions/" + row.petitionId}>Go to petitions</Link>*/}
-                {/*</TableCell>*/}
             </TableRow>
         )
     }
