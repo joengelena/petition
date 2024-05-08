@@ -195,7 +195,7 @@ const Petitions = ()=> {
         )
     } else {
         return (
-            <div style={{padding: 15}}>
+            <div style={{padding: 50}}>
                 <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
                     <Typography variant="h3" style={{ fontWeight: 'bold', padding: 10 }}>
                         Petitions
@@ -264,7 +264,7 @@ const Petitions = ()=> {
                                     <TableCell>Image</TableCell>
                                     <TableCell>Title</TableCell>
                                     <TableCell>Creation Date</TableCell>
-                                    <TableCell>Category Id</TableCell>
+                                    <TableCell>Category</TableCell>
                                     <TableCell>Owner Name</TableCell>
                                     <TableCell>Owner Image</TableCell>
                                     <TableCell>Supporting Cost</TableCell>

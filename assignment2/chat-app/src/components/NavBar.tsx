@@ -106,7 +106,7 @@ const NavBar = () => {
 
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" sx={{bgcolor: '#0068cf'}}>
             <Toolbar>
                 <IconButton
                     size="medium"

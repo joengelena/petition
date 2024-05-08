@@ -7,7 +7,7 @@ type Petition = {
     ownerId: number,
     ownerFirstName: string,
     ownerLastName: string,
-    supportingCost: number
+    supportingCost: number,
     categoryId: number,
     ownerImage: string,
     numberOfSupporters: number,
