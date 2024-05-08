@@ -9,7 +9,17 @@ type Petition = {
     ownerLastName: number,
     supportingCost: number
     categoryId: number,
-    ownerImage: string
+    ownerImage: string,
+    numberOfSupporters: number,
+    moneyRaised: number,
+    supportTiers: SupportTier[]
+}
+
+type SupportTier = {
+    supportTierId: number,
+    title: string,
+    description: string,
+    cost: number
 }
 
 type Category = {
