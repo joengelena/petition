@@ -25,13 +25,8 @@ import LastPageIcon from '@mui/icons-material/LastPage';
 import {Search} from "@mui/icons-material";
 const baseUrl = "http://localhost:4941/api/v1";
 
-const card: CSS.Properties = {
-    padding: "10px",
-    margin: "20px",
-}
-
 const Petitions = ()=> {
-    const {id} = useParams();
+    const {petitionId} = useParams();
     const [petitions, setPetitions] = React.useState<Array<Petition>>([]);
     const [categories, setCategories] = React.useState<Array<Category>>([]);
     const [errorFlag, setErrorFlag] = React.useState(false)
@@ -239,38 +234,49 @@ const Petitions = ()=> {
         )
     } else {
         return (
-            <div>
-                <Paper elevation={3} style={card}>
-                    <h1>Petitions</h1>
-                    <TextField
-                        label="Search"
-                        type="search"
-                        variant="outlined"
-                        value={searchQuery}
-                        onChange={(event) => setSearchQuery(event.target.value)}
-                    >
-                    </TextField>
-                    <Box sx={{minWidth: 120}}>
-                        <FormControl fullWidth>
-                            <InputLabel id="sortby-select-label">Sort By</InputLabel>
-                            <Select
-                                labelId="sortby-select-label"
-                                id="sortby-select"
-                                style={{width: "300px"}}
-                                value={sortByQuery}
-                                label="Sort By"
-                                onChange={handleSortByClick}
-                            >
-                                {sortingOptions.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Box>
-                    <React.Fragment>
-                        <Button onClick={toggleDrawer(true, setCategoriesOpen)}>Categories</Button>
+            <div style={{padding: 15}}>
+                <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
+                    <Typography variant="h2" style={{ fontWeight: 'bold' }}>
+                        Petitions
+                    </Typography>
+
+                    <Stack direction="row" spacing={2} marginBottom={2}>
+                        <TextField
+                            label="Search"
+                            type="search"
+                            variant="outlined"
+                            value={searchQuery}
+                            onChange={(event) => setSearchQuery(event.target.value)}
+                            size="medium"
+                            style={{minWidth: 120, maxWidth: 300, marginBottom: 2}}
+                        />
+                        <Box style={{minWidth: 120, maxWidth:300, marginBottom: 2}}>
+                            <FormControl fullWidth>
+                                <InputLabel id="sortby-select-label">Sort By</InputLabel>
+                                <Select
+                                    labelId="sortby-select-label"
+                                    id="sortby-select"
+                                    value={sortByQuery}
+                                    label="Sort By"
+                                    onChange={handleSortByClick}
+                                >
+                                    {sortingOptions.map((option) => (
+                                        <MenuItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Box>
+
+                        <Button
+                            style={{minWidth: 120, width:300, marginBottom: 2}}
+                            variant="outlined"
+                            onClick={toggleDrawer(true, setCategoriesOpen)}
+                        >
+                            Categories
+                        </Button>
+
                         <Drawer
                             anchor='right'
                             open={categoriesOpen}
@@ -278,9 +284,11 @@ const Petitions = ()=> {
                         >
                             {CategoryDrawer}
                         </Drawer>
-                    </React.Fragment>
-                    <Button onClick={() => getPetitions(1)}>Search</Button>
-                    <TableContainer component={Paper}>
+
+                        <Button variant="contained" onClick={() => getPetitions(1)}>Search</Button>
+                    </Stack>
+
+                    <TableContainer component={Paper} style={{marginTop: 20}}>
                         <Table>
                             <TableHead>
                                 <TableRow>
@@ -298,8 +306,7 @@ const Petitions = ()=> {
                             </TableBody>
                         </Table>
                     </TableContainer>
-
-                    <Stack spacing={2} alignItems="center">
+                    <Stack spacing={2} alignItems="center" marginY={4}>
                         <Typography>
                             Page {currentPage} of {maxPage}
                         </Typography>
