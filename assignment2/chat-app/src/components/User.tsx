@@ -115,7 +115,7 @@ const User = () => {
                     setUser(response.data)
                     setEditedUser(prevEditedUser => ({
                         ...prevEditedUser,
-                        user_id: response.data.user_id
+                        userId: response.data.userId
                     }));
                 }, (error) => {
                     setErrorFlag(true)
