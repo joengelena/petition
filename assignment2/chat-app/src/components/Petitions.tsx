@@ -46,8 +46,7 @@ const Petitions = ()=> {
     const [supportingCost, setSupportingCost] = React.useState("")
     const [categoryIds, setCategoryIds] = React.useState<Array<Number>>([])
 
-    const [sortByOpen, setSortByOpen] = React.useState(false);
-    const [categoriesOpen, setCategoriesOpen] = React.useState(false);
+    const [sortByOpen, setSortByOpen] = React.useState(false)
 
 
     React.useEffect(() => {
@@ -86,17 +85,8 @@ const Petitions = ()=> {
         getCategories()
     }, [currentPage, maxPage]);
 
-    // const handleChangeSortBy = (event: SelectChangeEvent) => {
-    //     setSortByQuery(event.target.value);
-    //     getPetitions(1)
-    // };
-
     const handlePageUpdate = (event: ChangeEvent<unknown>, page: number) => {
         setCurrentPage(page);
-    };
-
-    const toggleDrawer = (newOpen: boolean, setFunction: React.Dispatch<React.SetStateAction<boolean>>) => () => {
-        setFunction(newOpen);
     };
 
     const getPetitions = (pageNum: number) => {
@@ -147,31 +137,16 @@ const Petitions = ()=> {
         setSortByQuery(event.target.value)
     };
 
-    const CategoryDrawer = (
-        <Box sx={{width: 350}} role="presentation">
-            <List>
-                {categories.map((category) => (
-                    <ListItem key={category.name} disablePadding>
-                        <ListItemButton
-                            onClick={() => handleCategoryClick(category.categoryId)}
-                            selected={categoryIds.includes(category.categoryId)}>
-                            <ListItemText primary={category.name}/>
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-        </Box>
-    )
+    const handleCategoryClick = (event: SelectChangeEvent<Number[]>) => {
+        const categoryIdToHandle = event.target.value as Number[]
 
-    const handleCategoryClick = (categoryId: number) => {
         setCategoryIds(prevIds => {
-            if (prevIds.includes(categoryId)) {
-                // Filter out the id to remove it
-                return prevIds.filter(id => id !== categoryId);
-            } else {
-                // Return a new array with the new id added
-                return [...prevIds, categoryId];
-            }
+            const addedIds = categoryIdToHandle.filter(id => !prevIds.includes(id));
+            const removedIds = prevIds.filter(id => !categoryIdToHandle.includes(id));
+
+            return prevIds
+                .concat(addedIds)
+                .filter(id => !removedIds.includes(id));
         });
     }
 
@@ -240,7 +215,7 @@ const Petitions = ()=> {
                         Petitions
                     </Typography>
 
-                    <Stack direction="row" spacing={2} marginBottom={2}>
+                    <Stack direction="row" spacing={2} marginBottom={2} justifyContent="center">
                         <TextField
                             label="Search"
                             type="search"
@@ -248,9 +223,9 @@ const Petitions = ()=> {
                             value={searchQuery}
                             onChange={(event) => setSearchQuery(event.target.value)}
                             size="medium"
-                            style={{minWidth: 120, maxWidth: 300, marginBottom: 2}}
+                            style={{width: 300, marginBottom: 2}}
                         />
-                        <Box style={{minWidth: 120, maxWidth:300, marginBottom: 2}}>
+                        <Box style={{width:300, marginBottom: 2}}>
                             <FormControl fullWidth>
                                 <InputLabel id="sortby-select-label">Sort By</InputLabel>
                                 <Select
@@ -268,23 +243,31 @@ const Petitions = ()=> {
                                 </Select>
                             </FormControl>
                         </Box>
-
-                        <Button
-                            style={{minWidth: 120, width:300, marginBottom: 2}}
-                            variant="outlined"
-                            onClick={toggleDrawer(true, setCategoriesOpen)}
-                        >
-                            Categories
-                        </Button>
-
-                        <Drawer
-                            anchor='right'
-                            open={categoriesOpen}
-                            onClose={toggleDrawer(false, setCategoriesOpen)}
-                        >
-                            {CategoryDrawer}
-                        </Drawer>
-
+                        <Box style={{width:300, marginBottom: 2}}>
+                            <FormControl fullWidth>
+                                <InputLabel id="category-multiple-label">Category</InputLabel>
+                                <Select
+                                    labelId="category-multiple-label"
+                                    id="category-multiple-name"
+                                    multiple
+                                    label="Category"
+                                    value={categoryIds}
+                                    onChange={handleCategoryClick}
+                                    renderValue={(selected) => (
+                                        selected.map(id => {
+                                            const category = categories.find(c => c.categoryId === id);
+                                            return category ? category.name : '';
+                                        }).join(', ')
+                                    )}
+                                >
+                                    {categories.map((category) => (
+                                        <MenuItem key={category.categoryId} value={category.categoryId}>
+                                            {category.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Box>
                         <Button variant="contained" onClick={() => getPetitions(1)}>Search</Button>
                     </Stack>
 
