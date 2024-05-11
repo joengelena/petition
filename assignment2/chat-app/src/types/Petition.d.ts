@@ -22,6 +22,16 @@ type SupportTier = {
     cost: number
 }
 
+type Supporter = {
+    supportId: number,
+    supportTierId: number,
+    supporterId: number,
+    supporterFirstName: string,
+    supporterLastName: string,
+    message: string,
+    timeStamp: string
+}
+
 type Category = {
     categoryId: number,
     name: string
