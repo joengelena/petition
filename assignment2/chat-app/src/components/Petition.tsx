@@ -89,8 +89,20 @@ const Petition = ()=> {
                     }}
                 >
                     <h3 style={{marginBottom: '8px', color: '#000000'}}>{supportTierTitle(supporter.supportTierId)}</h3>
-                    <p style={{marginBottom: '8px', color: '#545454'}}>Message: {supporter.message}</p>
-                    <p style={{marginBottom: '8px', color: '#545454'}}>Time Stamp: {supporter.timeStamp}</p>
+                    <Box key={index} display="flex" alignItems="center" justifyContent='center' gap={2}>
+                        <Avatar
+                            src={`${baseUrl}/users/${supporter?.supporterId}/image`}
+                            alt={`${supporter?.supporterLastName}`}
+                            style={{width: 50, height: 50}}
+                        />
+                        <div>
+                            <p style={{marginBottom: '8px', fontWeight: 'bold'}}>{supporter.supporterFirstName} {supporter.supporterLastName}</p>
+                        </div>
+                    </Box>
+                    {supporter.message && (
+                        <p style={{marginBottom: '8px', color: '#545454'}}>"{supporter.message}"</p>
+                    )}
+                    <p style={{marginBottom: '8px', color: '#545454'}}>{supporter.timestamp}</p>
                 </Box>
             ));
     }

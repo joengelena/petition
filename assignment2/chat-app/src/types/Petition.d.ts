@@ -29,7 +29,7 @@ type Supporter = {
     supporterFirstName: string,
     supporterLastName: string,
     message: string,
-    timeStamp: string
+    timestamp: string
 }
 
 type Category = {
