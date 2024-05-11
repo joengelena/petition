@@ -10,19 +10,6 @@ import {
     Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider,
     useTheme, IconButton, ToggleButton, Pagination, Typography, Avatar,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import {useUserInfoStorage} from "../store";
-import SubjectIcon from "@mui/icons-material/Subject";
-import UsersIcon from "@mui/icons-material/PeopleOutline";
-import RegisterIcon from "@mui/icons-material/AccountBox";
-import LoginIcon from "@mui/icons-material/Login";
-import FirstPageIcon from '@mui/icons-material/FirstPage';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import SearchIcon from '@mui/icons-material/Search';
-import LastPageIcon from '@mui/icons-material/LastPage';
-import {Search} from "@mui/icons-material";
 const baseUrl = "http://localhost:4941/api/v1";
 
 const Petitions = ()=> {
@@ -39,6 +26,8 @@ const Petitions = ()=> {
     const [currentPage, setCurrentPage] = React.useState(1)
 
     const [searchQuery, setSearchQuery] = React.useState("")
+    const [costMinRange, setCostMinRange] = React.useState("")
+    const [costMaxRangeQuery, setCostMaxQuery] = React.useState("")
     const [sortByQuery, setSortByQuery] = React.useState("CREATED_ASC");
 
     const [query, setQuery] = React.useState("")
@@ -139,11 +128,15 @@ const Petitions = ()=> {
     const petition_rows = () => {
         return petitions.map((petition: Petition) =>
             <TableRow
-                hover tabIndex={-1}
+                hover
+                tabIndex={-1}
                 key={petition.petitionId}
                 component={Link}
                 to={`/petitions/${petition.petitionId}`}
-                style={{ textDecoration: 'none' }}
+                sx={{
+                    transition: 'transform 0.2s',
+                    '&:hover': {textDecoration: 'none', transform: 'scale(1.02)'}
+                }}
             >
                 <TableCell>
                     <img src={`${baseUrl}/petitions/${petition.petitionId}/image`} width="100" height="100"/>
@@ -254,6 +247,15 @@ const Petitions = ()=> {
                                 </Select>
                             </FormControl>
                         </Box>
+                        {/*<TextField*/}
+                        {/*    label="Supporting Cost Less Than"*/}
+                        {/*    type="search"*/}
+                        {/*    variant="outlined"*/}
+                        {/*    value={searchQuery}*/}
+                        {/*    onChange={(event) => setSearchQuery(event.target.value)}*/}
+                        {/*    size="medium"*/}
+                        {/*    style={{width: 300, marginBottom: 2}}*/}
+                        {/*/>*/}
                         <Button variant="contained" onClick={() => getPetitions(1)}>Search</Button>
                     </Stack>
 
