@@ -260,12 +260,16 @@ const Petition = ()=> {
                             {petition?.title}
                         </Typography>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                                <img src={`${baseUrl}/petitions/${petitionId}/image`} width="550" height="550"/>
+                            <Grid item xs={12} sm={6}>
+                                <img
+                                    src={`${baseUrl}/petitions/${petitionId}/image`}
+                                    alt="Petition Image"
+                                    style={{ maxWidth: '100%', height: 'auto' }}
+                                />
                             </Grid>
-                            <Grid item xs={6}>
-                                <div style={{display: 'flex', flexDirection: 'column', height: '100%'}}>
-                                    <div style={{flex: 1}}>
+                            <Grid item xs={12} sm={6}>
+                                <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                                    <div style={{ flex: 1 }}>
                                         <Typography variant="h4" style={{padding: 10}}>
                                             Description
                                         </Typography>
@@ -274,13 +278,19 @@ const Petition = ()=> {
                                         <Typography variant="h4" style={{padding: 10}}>
                                             Total Money Raised
                                         </Typography>
-                                        {petition?.moneyRaised !== null ? (
-                                            <Typography variant="body1">${petition?.moneyRaised}</Typography>
-                                        ) : (
-                                            <Typography variant="body1">No money raised yet</Typography>
-                                        )}
+                                        <Typography variant="body1">
+                                            {petition?.moneyRaised !== null
+                                                ? `$${petition?.moneyRaised}`
+                                                : 'No money raised yet'}
+                                        </Typography>
                                     </div>
-                                    <Grid container spacing={2} justifyContent='center' alignItems="center">
+                                    <Grid
+                                        container
+                                        spacing={2}
+                                        justifyContent="center"
+                                        alignItems="center"
+                                        style={{ padding: '10px 0' }}
+                                    >
                                         <Avatar
                                             src={`${baseUrl}/users/${petition?.ownerId}/image`}
                                             alt={`${petition?.ownerLastName}`}
