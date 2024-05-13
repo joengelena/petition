@@ -53,7 +53,7 @@ const Petition = ()=> {
                     gap={2}
                     p={3}
                     sx={{
-                        border: '4px solid #0068cf',
+                        border: '4px solid #0067cd',
                         borderRadius: 2,
                         backgroundColor: '#f5f5f5',
                         maxWidth: '300px',
@@ -62,8 +62,8 @@ const Petition = ()=> {
                     }}
                 >
                     <h3 style={{marginBottom: '8px', color: '#000000'}}>{tier.title}</h3>
-                    <p style={{marginBottom: '16px', color: '#545454'}}>{tier.description}</p>
-                    <p style={{color: '#0068cf', fontWeight: 'bold'}}>Cost: {tier.cost}</p>
+                    <p style={{marginBottom: '16px', color: '#414141'}}>{tier.description}</p>
+                    <p style={{color: '#0067cd', fontWeight: 'bold'}}>Cost: {tier.cost}</p>
                 </Box>
             )
         )
@@ -80,7 +80,7 @@ const Petition = ()=> {
                     gap={2}
                     p={3}
                     sx={{
-                        border: '4px solid #0068cf',
+                        border: '4px solid #0067cd',
                         borderRadius: 2,
                         backgroundColor: '#f5f5f5',
                         maxWidth: '300px',
@@ -100,7 +100,7 @@ const Petition = ()=> {
                         </div>
                     </Box>
                     {supporter.message && (
-                        <p style={{marginBottom: '8px', color: '#545454'}}>"{supporter.message}"</p>
+                        <p style={{marginBottom: '8px', color: '#414141'}}>"{supporter.message}"</p>
                     )}
                     <p style={{marginBottom: '8px', color: '#545454'}}>{supporter.timestamp}</p>
                 </Box>
