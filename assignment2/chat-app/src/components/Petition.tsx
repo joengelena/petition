@@ -1,7 +1,19 @@
 import React from "react";
 import axios from "axios";
 import {Link, useParams} from "react-router-dom";
-import {Alert, AlertTitle, Avatar, Box, Grid, Paper, TableCell, TableRow, Typography} from "@mui/material";
+import {
+    Alert,
+    AlertTitle,
+    Avatar,
+    Box,
+    Grid,
+    Paper,
+    Table, TableBody,
+    TableCell, TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from "@mui/material";
 import CSS from "csstype";
 const baseUrl = "http://localhost:4941/api/v1";
 
@@ -11,12 +23,35 @@ const Petition = ()=> {
     const [errorMessage, setErrorMessage] = React.useState("")
     const [petition, setPetition] = React.useState<Petition>();
     const [supporters, setSupporters] = React.useState<Supporter[]>();
+    const [similarPetitions, setSimilarPetitions] = React.useState<Array<Petition>>([]);
+    const [maxPage, setMaxPage] = React.useState(1)
+    const [categories, setCategories] = React.useState<Array<Category>>([]);
+
 
     React.useEffect(() => {
-        getPetition()
-    },[petitionId])
+        axios.get(baseUrl + `/petitions/${petitionId}`)
+            .then((response) => {
+                    setErrorFlag(false)
+                    setErrorMessage("")
+                    setPetition(response.data)
+                },
+                (error) => {
+                    setErrorFlag(true)
+                    setErrorMessage(error.toString());
+            })
 
-    React.useEffect(() => {
+        axios.get(baseUrl + `/petitions/categories`)
+            .then((response) => {
+                    setErrorFlag(false);
+                    setErrorMessage("");
+                    setCategories(response.data)
+                },
+                (error) => {
+                    setErrorFlag(true);
+                    setErrorMessage(error.toString());
+                }
+            );
+
         axios.get(baseUrl + `/petitions/${petitionId}/supporters`)
             .then((response) => {
                 setErrorFlag(false);
@@ -29,19 +64,38 @@ const Petition = ()=> {
             });
     }, [petitionId]);
 
-
-    const getPetition = () => {
-        axios.get(baseUrl + `/petitions/${petitionId}`)
-            .then((response) => {
-                    setErrorFlag(false)
-                    setErrorMessage("")
-                    setPetition(response.data)
-                },
-                (error) => {
-                    setErrorFlag(true)
-                    setErrorMessage(error.toString());
+    React.useEffect(() => {
+        const getPetitionsCategoryId = () => {
+            const query = `categoryIds=${petition?.categoryId}`
+            axios.get(`${baseUrl}/petitions?count=10&${query}`)
+                .then((response) => {
+                    setSimilarPetitions(response.data.petitions);
+                    setErrorFlag(false);
                 })
-    }
+                .catch((error) => {
+                    setErrorFlag(true);
+                    setErrorMessage('Error fetching petitions: ' + error);
+                });
+        }
+        const getPetitionsOwnerId = () => {
+            const query = `ownerId=${petition?.ownerId}`
+            axios.get(`${baseUrl}/petitions?count=10&${query}`)
+                .then((response) => {
+                    setSimilarPetitions(response.data.petitions);
+                    setErrorFlag(false);
+                })
+                .catch((error) => {
+                    setErrorFlag(true);
+                    setErrorMessage('Error fetching petitions: ' + error);
+                });
+        }
+        const getSimilarPetitions = () => {
+            getPetitionsCategoryId()
+            getPetitionsOwnerId()
+        };
+
+        getSimilarPetitions();
+    }, [petition]);
 
 
     const getSupportTiers = () => {
@@ -59,17 +113,24 @@ const Petition = ()=> {
                         maxWidth: '300px',
                         width: '100%',
                         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                        justifyContent: 'space-between'
                     }}
                 >
-                    <h3 style={{marginBottom: '8px', color: '#000000'}}>{tier.title}</h3>
-                    <p style={{marginBottom: '16px', color: '#414141'}}>{tier.description}</p>
+                    <div>
+                        <h3 style={{marginBottom: '8px', color: '#000000'}}>{tier.title}</h3>
+                        <p style={{marginBottom: '16px', color: '#414141'}}>{tier.description}</p>
+                    </div>
                     <p style={{color: '#0067cd', fontWeight: 'bold'}}>Cost: {tier.cost}</p>
                 </Box>
             )
         )
     }
     const getSupporters = () => {
-        if (!supporters) return null; // or display a loading indicator
+        if (!supporters || supporters.length === 0) {
+            return (
+                <Typography variant="h6">No supporters yet</Typography>
+            );
+        }
         return supporters
             .filter(supporter => supporter.supportTierId && petition?.supportTiers.some(tier => tier.supportTierId === supporter.supportTierId))
             .map((supporter, index) => (
@@ -86,31 +147,96 @@ const Petition = ()=> {
                         maxWidth: '300px',
                         width: '100%',
                         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                        justifyContent: 'space-between'
                     }}
                 >
-                    <h3 style={{marginBottom: '8px', color: '#000000'}}>{supportTierTitle(supporter.supportTierId)}</h3>
-                    <Box key={index} display="flex" alignItems="center" justifyContent='center' gap={2}>
-                        <Avatar
-                            src={`${baseUrl}/users/${supporter?.supporterId}/image`}
-                            alt={`${supporter?.supporterLastName}`}
-                            style={{width: 50, height: 50}}
-                        />
-                        <div>
-                            <p style={{marginBottom: '8px', fontWeight: 'bold'}}>{supporter.supporterFirstName} {supporter.supporterLastName}</p>
-                        </div>
-                    </Box>
-                    {supporter.message && (
-                        <p style={{marginBottom: '8px', color: '#414141'}}>"{supporter.message}"</p>
-                    )}
+                    <div>
+                        <h3 style={{marginBottom: '15px', color: '#000000'}}>{supportTierTitle(supporter.supportTierId)}</h3>
+                        <Box key={index} display="flex" alignItems="center" gap={2}>
+                            <Avatar
+                                src={`${baseUrl}/users/${supporter?.supporterId}/image`}
+                                alt={`${supporter?.supporterLastName}`}
+                                style={{width: 50, height: 50}}
+                            />
+                            <div>
+                                <p style={{fontWeight: 'bold'}}>{supporter.supporterFirstName} {supporter.supporterLastName}</p>
+                            </div>
+                        </Box>
+                        {supporter.message && (
+                            <p style={{marginBottom: '8px', color: '#414141'}}>"{supporter.message}"</p>
+                        )}
+                    </div>
                     <p style={{marginBottom: '8px', color: '#545454'}}>{supporter.timestamp}</p>
                 </Box>
             ));
     }
 
-
     const supportTierTitle = (supportTierId: number) => {
         const supportTier = petition?.supportTiers.find(tier => tier.supportTierId === supportTierId);
         return supportTier?.title;
+    }
+
+
+
+    const similarPetition_rows = () => {
+        if (similarPetitions.length === 1) {
+            return (
+                <TableRow>
+                    <TableCell colSpan={7} align="center">
+                        <Typography variant="body1">No similar petitions found at the moment.</Typography>
+                    </TableCell>
+                </TableRow>
+            );
+        }
+
+        return similarPetitions
+            .filter(similarPetition => petitionId && similarPetition.petitionId.toString() !== petitionId)
+            .map((similarPetition: Petition) =>
+                <TableRow
+                    hover
+                    tabIndex={-1}
+                    key={similarPetition.petitionId}
+                    component={Link}
+                    to={`/petitions/${similarPetition.petitionId}`}
+                    sx={{
+                        '&:hover': {textDecoration: 'none'}
+                    }}
+                >
+                    <TableCell>
+                        <img src={`${baseUrl}/petitions/${similarPetition.petitionId}/image`} width="100" height="100"/>
+                    </TableCell>
+                    <TableCell>
+                        <Typography variant="body1">
+                            {similarPetition.title}
+                        </Typography>
+                    </TableCell>
+                    <TableCell>
+                        <Typography variant="body1">
+                            {similarPetition.creationDate}
+                        </Typography>
+                    </TableCell>
+                    <TableCell>
+                        <Typography variant="body1">
+                            {categories.find(category => category.categoryId === similarPetition.categoryId)?.name || "Unknown"}
+                        </Typography>
+                    </TableCell>
+                    <TableCell>
+                        <Typography variant="body1">
+                            {similarPetition.ownerFirstName + " " + similarPetition.ownerLastName}
+                        </Typography>
+                    </TableCell>
+                    <TableCell>
+                        <Avatar
+                            src={`${baseUrl}/users/${similarPetition.ownerId}/image`}
+                            alt={`${similarPetition.ownerLastName}`}
+                            style={{ width: 80, height: 80 }}
+                        />
+                    </TableCell>
+                    <TableCell>
+                        {similarPetition.supportingCost}
+                    </TableCell>
+                </TableRow>
+            )
     }
 
     if (errorFlag) {
@@ -148,7 +274,11 @@ const Petition = ()=> {
                                         <Typography variant="h4" style={{padding: 10}}>
                                             Total Money Raised
                                         </Typography>
-                                        <Typography variant="body1">${petition?.moneyRaised}</Typography>
+                                        {petition?.moneyRaised !== null ? (
+                                            <Typography variant="body1">${petition?.moneyRaised}</Typography>
+                                        ) : (
+                                            <Typography variant="body1">No money raised yet</Typography>
+                                        )}
                                     </div>
                                     <Grid container spacing={2} justifyContent='center' alignItems="center">
                                         <Avatar
@@ -184,8 +314,30 @@ const Petition = ()=> {
                         >
                             {getSupporters()}
                         </Box>
-
-                        <Typography variant="body1" style={{padding: 10, textAlign: 'right'}}>Total {petition?.numberOfSupporters} existing supporters</Typography>
+                        <Typography variant="body1" style={{
+                            padding: 10,
+                            textAlign: 'right'
+                        }}>Total {petition?.numberOfSupporters} existing supporters</Typography>
+                        <hr/>
+                        <h2 style={{padding: '10px', marginBottom: "10px"}}>Similar Petitions</h2>
+                        <TableContainer component={Paper} style={{marginTop: 20}}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Image</TableCell>
+                                        <TableCell>Title</TableCell>
+                                        <TableCell>Creation Date</TableCell>
+                                        <TableCell>Category</TableCell>
+                                        <TableCell>Owner Name</TableCell>
+                                        <TableCell>Owner Image</TableCell>
+                                        <TableCell>Supporting Cost</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {similarPetition_rows()}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                     </React.Fragment>
                 </Paper>
             </div>
