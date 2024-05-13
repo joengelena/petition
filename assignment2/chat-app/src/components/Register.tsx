@@ -4,6 +4,8 @@ import React, {FormEvent} from "react";
 import axios from 'axios';
 import {Container, Button, TextField, Typography, Alert, AlertTitle, Paper, Box, styled, Avatar} from '@mui/material';
 import {Visibility, VisibilityOff, CloudUpload} from "@mui/icons-material";
+import {Simulate} from "react-dom/test-utils";
+import select = Simulate.select;
 const baseUrl = "http://localhost:4941/api/v1";
 
 const Register = () => {
@@ -26,8 +28,8 @@ const Register = () => {
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
 
-    let token = '';
-    let userId = -1;
+    const [token, setToken] = React.useState('')
+    const [userId, setUserId] = React.useState(-1)
 
     const register = () => {
         const config = {
@@ -44,20 +46,17 @@ const Register = () => {
 
         axios(config)
             .then((response) => {
-                userId = response.data.userId;
+                setUserId(response.data.userId)
                 console.log("user is successfully registered");
-                if (image !== null) {
-                    uploadImage()
-                }
-                navigate('/petitions')
+                login();
                 setErrorFlag(false)
                 setErrorMessage("");
-                login();
             },
             (error) => {
                 console.error(error);
                 setErrorFlag(true);
-                setErrorMessage(error.response.statusText.substring(11));
+                setErrorMessage(error.toString());
+
             }
         );
     };
@@ -75,8 +74,13 @@ const Register = () => {
 
         axios(config)
             .then((response) => {
-                token = response.data.token
-                userId = response.data.userId
+                setToken(response.data.token)
+                setUserId(response.data.userId)
+                if (image !== null) {
+                    uploadImage(response.data.token, response.data.userId)
+                } else {
+                    navigate('/petitions')
+                }
                 setUserIdInStorage(String(userId))
                 setTokenInStorage(token)
                 setErrorMessage("")
@@ -84,28 +88,32 @@ const Register = () => {
                 },
                 (error) => {
                     setErrorFlag(true)
-                    setErrorMessage(error.response.statusText);
+                    setErrorMessage(error.toString());
+
                 }
             );
     }
 
-    const uploadImage = () => {
-        const config = {
-            method: 'put',
-            url: `${baseUrl}/users/${userId}/image`,
-            headers: {'Content-Type': image?.type, 'X-Authorization': tokenLocal}
-        }
-        axios(config)
+    const uploadImage = (tokenUser: number, userIdUser: string) => {
+        console.log(image)
+
+        axios.put(`${baseUrl}/users/${userIdUser}/image`, image, {headers:
+                {
+                    "X-Authorization": tokenUser,
+                    "Content-Type": image?.type
+                }})
             .then((response) => {
+                    console.log("upload image")
+                    navigate('/petitions')
                     setErrorMessage("")
                     setErrorFlag(false)
                 },
                 (error) => {
+                    console.log(error)
                     setErrorFlag(true)
-                    setErrorMessage(error)
+                    setErrorMessage(error.toString());
                 }
             );
-
     }
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,6 +126,7 @@ const Register = () => {
                 setErrorMessage("")
             } else {
                 setImage(null);
+                setErrorFlag(true)
                 setErrorMessage("Image file type must be JPEG, PNG, or GIF");
             }
         }
@@ -189,7 +198,11 @@ const Register = () => {
                         )
                     }}
                 />
-                {errorFlag && <Alert severity="error">{errorMessage}</Alert>}
+                {errorFlag &&
+                    <Alert severity="error">
+                        <AlertTitle>Error</AlertTitle>
+                        {errorMessage}
+                    </Alert>}
                 <Button
                     type="submit"
                     variant="contained"
