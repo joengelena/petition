@@ -8,7 +8,7 @@ import {
     TableCell, TableContainer, TableHead, TableRow, TextField, DialogTitle,
     Box, FormControl, InputLabel, Select, SelectChangeEvent, MenuItem,
     Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider,
-    useTheme, IconButton, ToggleButton, Pagination, Typography, Avatar,
+    useTheme, IconButton, ToggleButton, Pagination, Typography, Avatar, InputAdornment,
 } from "@mui/material";
 const baseUrl = "http://localhost:4941/api/v1";
 
@@ -26,10 +26,8 @@ const Petitions = ()=> {
     const [currentPage, setCurrentPage] = React.useState(1)
 
     const [searchQuery, setSearchQuery] = React.useState("")
-    const [costMinRange, setCostMinRange] = React.useState("")
-    const [costMaxRangeQuery, setCostMaxQuery] = React.useState("")
+    const [supportingCostFilter, setSupportingCostFilter] = React.useState("")
     const [sortByQuery, setSortByQuery] = React.useState("CREATED_ASC");
-
     const [query, setQuery] = React.useState("")
 
     const [supportingCost, setSupportingCost] = React.useState("")
@@ -81,6 +79,13 @@ const Petitions = ()=> {
                 allQuery.push("categoryIds=" + categoryIds[i])
             }
         }
+
+        if (supportingCostFilter.length !== 0) {
+            allQuery.push("supportingCost=" + supportingCostFilter)
+        }
+
+        console.log(allQuery)
+
         const endQuery = allQuery.join("&")
         axios.get(`${baseUrl}/petitions?count=10&startIndex=${startIndex}&${endQuery}`)
             .then((response) => {
@@ -93,12 +98,6 @@ const Petitions = ()=> {
                     setErrorMessage('Error fetching petitions: ' + error)
             })
     }
-
-    // const handleSearchEnterKey = (event: any) => {
-    //     if (event.key === "Enter") {
-    //         getPetitions(1)
-    //     }
-    // }
 
     const sortingOptions = [
         {value: "ALPHABETICAL_ASC", label: "Ascending Alphabetically"},
@@ -201,7 +200,6 @@ const Petitions = ()=> {
                             variant="outlined"
                             value={searchQuery}
                             onChange={(event) => setSearchQuery(event.target.value)}
-                            size="medium"
                             style={{width: 300, marginBottom: 2}}
                         />
                         <Box style={{width:300, marginBottom: 2}}>
@@ -247,15 +245,17 @@ const Petitions = ()=> {
                                 </Select>
                             </FormControl>
                         </Box>
-                        {/*<TextField*/}
-                        {/*    label="Supporting Cost Less Than"*/}
-                        {/*    type="search"*/}
-                        {/*    variant="outlined"*/}
-                        {/*    value={searchQuery}*/}
-                        {/*    onChange={(event) => setSearchQuery(event.target.value)}*/}
-                        {/*    size="medium"*/}
-                        {/*    style={{width: 300, marginBottom: 2}}*/}
-                        {/*/>*/}
+                        <TextField
+                            label="Supporting Cost"
+                            type="search"
+                            variant="outlined"
+                            value={supportingCostFilter}
+                            onChange={(event) => setSupportingCostFilter(event.target.value)}
+                            style={{width: 300, marginBottom: 2}}
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">{"<="}</InputAdornment>,
+                            }}
+                        />
                         <Button variant="contained" onClick={() => getPetitions(1)}>Search</Button>
                     </Stack>
 
@@ -277,6 +277,7 @@ const Petitions = ()=> {
                             </TableBody>
                         </Table>
                     </TableContainer>
+
                     <Stack spacing={2} alignItems="center" marginY={4}>
                         <Typography>
                             Page {currentPage} of {maxPage}
