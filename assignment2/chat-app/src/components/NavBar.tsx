@@ -1,8 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-    AppBar, Toolbar, Typography, Button, IconButton, Drawer, List,
-    ListItem, ListItemButton, ListItemIcon, ListItemText, Box, Divider
+    AppBar,
+    Toolbar,
+    Typography,
+    Button,
+    IconButton,
+    Drawer,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Box,
+    Divider,
+    Dialog,
+    DialogContent,
+    DialogContentText,
+    DialogTitle, DialogActions
 } from '@mui/material';
 import {Link as RouterLink, useNavigate} from 'react-router-dom';
 import {useUserInfoStorage} from "../store";
@@ -26,8 +41,8 @@ const NavBar = () => {
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
     const [drawerOpen, setDrawerOpen] = useState(false);
-
-    const [open, setOpen] = React.useState(false);
+    const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+    const [open, setOpen] = useState(false);
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
@@ -69,7 +84,7 @@ const NavBar = () => {
 
     React.useEffect(() => {
         if (token !== "" && userId !== "") { // when the user is logged in
-            setSettings([]);
+            setSettings(["Petitions", "Logout"]);
         } else { // when the user is NOT logged in
             setSettings(["Login", "Register", "Petitions"]);
         }
@@ -91,19 +106,49 @@ const NavBar = () => {
         };
         axios (config)
             .then(function (response) {
+                removeTokenFromLocal();
+                removeUserIdFromLocal();
                 setErrorFlag(false);
                 setErrorMessage("");
-                removeTokenFromLocal()
-                removeUserIdFromLocal()
                 navigate("/login");
             })
             .catch(function (error) {
                 setErrorFlag(true);
                 setErrorMessage(error.toString());
             });
+
     }
 
+    const handleLogoutModalOpen = () => {
+        setLogoutModalOpen(true);
+    };
+    const handleLogoutModalClose = () => {
+        setLogoutModalOpen(false);
+    };
 
+    const logoutConfirmationModal = () => {
+        return (
+            <Dialog
+                open={logoutModalOpen}
+                onClose={handleLogoutModalClose}
+                aria-labelledby="logout-dialog-title"
+                aria-describedby="logout-dialog-description"
+            >
+                <DialogTitle id="logout-dialog-title">Log Out</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="logout-dialog-description">
+                        Are you sure you want to log out?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleLogoutModalClose}>Cancel</Button>
+                    <Button style={{color: '#FF3333'}} onClick={handleLogoutUser} autoFocus>
+                        Logout
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
+    };
 
     return (
         <AppBar position="static" sx={{bgcolor: '#0068cf'}}>
@@ -127,6 +172,8 @@ const NavBar = () => {
                 <Button color="inherit" component={RouterLink} to="/petitions">Petitions</Button>
                 <Button color="inherit" component={RouterLink} to="/register">Register</Button>
                 <Button color="inherit" component={RouterLink} to="/login">LogIn</Button>
+                <Button color="inherit" onClick={handleLogoutModalOpen}>LogOut</Button>
+                {logoutConfirmationModal()}
             </Toolbar>
         </AppBar>
     );
