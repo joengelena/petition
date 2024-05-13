@@ -78,13 +78,12 @@ const Register = () => {
                 token = response.data.token
                 userId = response.data.userId
                 setUserIdInStorage(String(userId))
-                setTokenInStorage(token);
-                setErrorMessage("");
+                setTokenInStorage(token)
+                setErrorMessage("")
                 setErrorFlag(false)
                 },
                 (error) => {
-                    console.error(error);
-                    setErrorFlag(true);
+                    setErrorFlag(true)
                     setErrorMessage(error.response.statusText);
                 }
             );
@@ -102,22 +101,21 @@ const Register = () => {
                     setErrorFlag(false)
                 },
                 (error) => {
-                    console.error(error);
-                    setErrorFlag(true);
-                    setErrorMessage(error);
+                    setErrorFlag(true)
+                    setErrorMessage(error)
                 }
             );
 
     }
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const files = event.target.files;
+        const files = event.target.files
         if (files && files.length > 0) {
-            const selectedFile = files[0];
+            const selectedFile = files[0]
             if (allowedImageTypes.includes(selectedFile.type)) {
-                setImage(selectedFile);
+                setImage(selectedFile)
                 setErrorFlag(false)
-                setErrorMessage("");
+                setErrorMessage("")
             } else {
                 setImage(null);
                 setErrorMessage("Image file type must be JPEG, PNG, or GIF");
