@@ -125,6 +125,16 @@ const Petitions = ()=> {
     }
 
     const petition_rows = () => {
+        if (petitions.length === 0) {
+            return (
+                <TableRow>
+                    <TableCell colSpan={7} align="center">
+                        <Typography variant="body1">No petitions found.</Typography>
+                    </TableCell>
+                </TableRow>
+            );
+        }
+
         return petitions.map((petition: Petition) =>
             <TableRow
                 hover
@@ -133,8 +143,7 @@ const Petitions = ()=> {
                 component={Link}
                 to={`/petitions/${petition.petitionId}`}
                 sx={{
-                    transition: 'transform 0.2s',
-                    '&:hover': {textDecoration: 'none', transform: 'scale(1.02)'}
+                    '&:hover': {textDecoration: 'none'}
                 }}
             >
                 <TableCell>
