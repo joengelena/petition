@@ -1,15 +1,18 @@
 import {Link, useNavigate} from "react-router-dom";
 import {useUserInfoStorage} from "../store";
-import React from "react";
+import React, {FormEvent} from "react";
 import axios from 'axios';
-import {Container, Button, TextField, Typography, Alert, AlertTitle, Paper, Box} from '@mui/material';
-import {Visibility, VisibilityOff} from "@mui/icons-material";
+import {Container, Button, TextField, Typography, Alert, AlertTitle, Paper, Box, styled, Avatar} from '@mui/material';
+import {Visibility, VisibilityOff, CloudUpload} from "@mui/icons-material";
 const baseUrl = "http://localhost:4941/api/v1";
 
 const Register = () => {
     const navigate = useNavigate();
     const setTokenInStorage = useUserInfoStorage(state => state.setToken);
     const setUserIdInStorage = useUserInfoStorage(state => state.setUserId);
+    const tokenLocal = useUserInfoStorage(state => state.token);
+    const userIdLocal = useUserInfoStorage(state => state.userId);
+
     const [firstName, setFirstName] = React.useState("");
     const [lastName, setLastName] = React.useState("");
     const [email, setEmail] = React.useState("");
@@ -43,6 +46,10 @@ const Register = () => {
             .then((response) => {
                 userId = response.data.userId;
                 console.log("user is successfully registered");
+                if (image !== null) {
+                    uploadImage()
+                }
+                navigate('/petitions')
                 setErrorFlag(false)
                 setErrorMessage("");
                 login();
@@ -73,6 +80,7 @@ const Register = () => {
                 setUserIdInStorage(String(userId))
                 setTokenInStorage(token);
                 setErrorMessage("");
+                setErrorFlag(false)
                 },
                 (error) => {
                     console.error(error);
@@ -81,13 +89,61 @@ const Register = () => {
                 }
             );
     }
+
+    const uploadImage = () => {
+        const config = {
+            method: 'put',
+            url: `${baseUrl}/users/${userId}/image`,
+            headers: {'Content-Type': image?.type, 'X-Authorization': tokenLocal}
+        }
+        axios(config)
+            .then((response) => {
+                    setErrorMessage("")
+                    setErrorFlag(false)
+                },
+                (error) => {
+                    console.error(error);
+                    setErrorFlag(true);
+                    setErrorMessage(error);
+                }
+            );
+
+    }
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+        if (files && files.length > 0) {
+            const selectedFile = files[0];
+            if (allowedImageTypes.includes(selectedFile.type)) {
+                setImage(selectedFile);
+                setErrorFlag(false)
+                setErrorMessage("");
+            } else {
+                setImage(null);
+                setErrorMessage("Image file type must be JPEG, PNG, or GIF");
+            }
+        }
+    };
+
     return (
         <div style={{padding: 50}}>
             <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 500}}>
                 <Typography variant="h4" style={{fontWeight: 'bold'}}>
                     Register
                 </Typography>
-                {errorFlag && <Alert severity="error">{errorMessage}</Alert>}
+                <Box display="flex" justifyContent="center" marginBottom={2} marginTop={2}>
+                    <Avatar sx={{ width: 80, height: 80 }} src={image ? URL.createObjectURL(image) : ''} />
+                </Box>
+                <Button
+                    component="label"
+                    role={undefined}
+                    variant="contained"
+                    tabIndex={-1}
+                    startIcon={<CloudUpload/>}
+                >
+                    Upload file
+                    <input type="file" onChange={handleFileChange} style={{display: 'none'}}/>
+                </Button>
                 <TextField
                     required
                     label="First Name"
@@ -135,12 +191,14 @@ const Register = () => {
                         )
                     }}
                 />
+                {errorFlag && <Alert severity="error">{errorMessage}</Alert>}
                 <Button
+                    type="submit"
                     variant="contained"
                     color="primary"
-                    onClick={register}
                     fullWidth
-                    style={{ marginBottom: 8 }}
+                    style={{ marginTop: 8, marginBottom: 8 }}
+                    onClick={register}
                 >
                     Register
                 </Button>
