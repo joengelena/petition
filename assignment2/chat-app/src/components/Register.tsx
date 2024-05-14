@@ -10,10 +10,8 @@ const baseUrl = "http://localhost:4941/api/v1";
 
 const Register = () => {
     const navigate = useNavigate();
-    const setTokenInStorage = useUserInfoStorage(state => state.setToken);
-    const setUserIdInStorage = useUserInfoStorage(state => state.setUserId);
-    const tokenLocal = useUserInfoStorage(state => state.token);
-    const userIdLocal = useUserInfoStorage(state => state.userId);
+    const setUserInStorage = useUserInfoStorage(state => state.setUser);
+    const userLocal = useUserInfoStorage(state => state.user);
 
     const [firstName, setFirstName] = React.useState("");
     const [lastName, setLastName] = React.useState("");
@@ -23,8 +21,6 @@ const Register = () => {
     const [image, setImage] = React.useState<File | null>(null);
     const allowedImageTypes = ["image/jpeg", "image/jpg", "image/gif", "image/png"];
 
-    const removeTokenFromLocal = useUserInfoStorage(state => state.removeToken);
-    const removeUserIdFromLocal = useUserInfoStorage(state => state.removeUserId);
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
 
@@ -47,10 +43,10 @@ const Register = () => {
         axios(config)
             .then((response) => {
                 setUserId(response.data.userId)
-                console.log("user is successfully registered");
-                login();
+                console.log("user is successfully registered - ");
                 setErrorFlag(false)
-                setErrorMessage("");
+                setErrorMessage("")
+                login();
             },
             (error) => {
                 console.error(error);
@@ -74,63 +70,19 @@ const Register = () => {
 
         axios(config)
             .then((response) => {
+                console.log("final")
                 setToken(response.data.token)
                 setUserId(response.data.userId)
-                if (image !== null) {
-                    uploadImage(response.data.token, response.data.userId)
-                } else {
-                    navigate('/petitions')
-                }
-                setUserIdInStorage(String(userId))
-                setTokenInStorage(token)
+                setUserInStorage({userId: response.data.userId, token: response.data.token})
                 setErrorMessage("")
                 setErrorFlag(false)
-                },
-                (error) => {
-                    setErrorFlag(true)
-                    setErrorMessage(error.toString());
-
-                }
-            );
+                navigate(`/users/${response.data.userId}/uploadImage`);
+            })
+            .catch((error) => {
+                setErrorFlag(true);
+                setErrorMessage(error.toString());
+            });
     }
-
-    const uploadImage = (tokenUser: number, userIdUser: string) => {
-        console.log(image)
-
-        axios.put(`${baseUrl}/users/${userIdUser}/image`, image, {headers:
-                {
-                    "X-Authorization": tokenUser,
-                    "Content-Type": image?.type
-                }})
-            .then((response) => {
-                    console.log("upload image")
-                    navigate('/petitions')
-                    setErrorMessage("")
-                    setErrorFlag(false)
-                },
-                (error) => {
-                    console.log(error)
-                    setErrorFlag(true)
-                    setErrorMessage(error.toString());
-                }
-            );
-    }
-
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const files = event.target.files
-        if (files && files.length > 0) {
-            const selectedFile = files[0]
-            if (allowedImageTypes.includes(selectedFile.type)) {
-                setImage(selectedFile)
-                setErrorFlag(false)
-                setErrorMessage("")
-            } else {
-                setImage(null);
-                setErrorFlag(true)
-                setErrorMessage("Image file type must be JPEG, PNG, or GIF");
-            }
-        }
-    };
 
     return (
         <div style={{padding: 50}}>
@@ -138,19 +90,6 @@ const Register = () => {
                 <Typography variant="h4" style={{fontWeight: 'bold'}}>
                     Register
                 </Typography>
-                <Box display="flex" justifyContent="center" marginBottom={2} marginTop={2}>
-                    <Avatar sx={{ width: 80, height: 80 }} src={image ? URL.createObjectURL(image) : ''} />
-                </Box>
-                <Button
-                    component="label"
-                    role={undefined}
-                    variant="contained"
-                    tabIndex={-1}
-                    startIcon={<CloudUpload/>}
-                >
-                    Upload file
-                    <input type="file" onChange={handleFileChange} style={{display: 'none'}}/>
-                </Button>
                 <TextField
                     required
                     label="First Name"
@@ -203,12 +142,13 @@ const Register = () => {
                         <AlertTitle>Error</AlertTitle>
                         {errorMessage}
                     </Alert>}
+
                 <Button
                     type="submit"
                     variant="contained"
                     color="primary"
                     fullWidth
-                    style={{ marginTop: 8, marginBottom: 8 }}
+                    style={{ marginBottom: 8 }}
                     onClick={register}
                 >
                     Register

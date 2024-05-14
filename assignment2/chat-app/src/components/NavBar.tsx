@@ -32,10 +32,8 @@ const baseUrl = "http://localhost:4941/api/v1";
 
 const NavBar = () => {
     const navigate = useNavigate();
-    const token = useUserInfoStorage(state => state.token);
-    const userId = useUserInfoStorage(state => state.userId);
-    const removeTokenFromLocal = useUserInfoStorage(state => state.removeToken);
-    const removeUserIdFromLocal = useUserInfoStorage(state => state.removeUserId);
+    const userLocal = useUserInfoStorage(state => state.user);
+    const removeUserInStorage = useUserInfoStorage(state => state.removeUser);
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
     const [settings, setSettings] = React.useState(["Login", "Register"]);
     const [errorFlag, setErrorFlag] = React.useState(false)
@@ -83,12 +81,12 @@ const NavBar = () => {
     );
 
     React.useEffect(() => {
-        if (token !== "" && userId !== "") { // when the user is logged in
+        if (userLocal.token !== "" && String(userLocal.userId) !== "") { // when the user is logged in
             setSettings(["Petitions", "Logout"]);
         } else { // when the user is NOT logged in
             setSettings(["Login", "Register", "Petitions"]);
         }
-    }, [token, userId])
+    }, [userLocal])
 
     const handleUserMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorElUser(event.currentTarget);
@@ -102,12 +100,11 @@ const NavBar = () => {
         const config = {
             method: "post",
             url: baseUrl + "/users/logout",
-            headers: { "X-Authorization": token }
+            headers: { "X-Authorization": userLocal.token }
         };
         axios (config)
             .then(function (response) {
-                removeTokenFromLocal();
-                removeUserIdFromLocal();
+                removeUserInStorage();
                 setErrorFlag(false);
                 setErrorMessage("");
                 navigate("/login");

@@ -1,35 +1,26 @@
 import create from 'zustand';
 
 interface UserInfo {
-    token: string;
-    setToken: (token: string) => void;
-    removeToken: () => void;
-    userId: string;
-    setUserId: (userId: string) => void;
-    removeUserId: () => void;
+    user: LoginUser;
+    setUser: (newUser: LoginUser) => void;
+    removeUser: () => void;
 }
 
-const getLocalStorage = (key: string): string => JSON.parse(window.localStorage.getItem(key) as string);
-const setLocalStorage = (key: string, value: string) => window.localStorage.setItem(key, JSON.stringify(value));
+const getLocalStorage = (key: string): LoginUser => JSON.parse(window.localStorage.getItem(key) as string);
+const setLocalStorage = (key: string, value: LoginUser) => window.localStorage.setItem(key, JSON.stringify(value));
+const removeLocalStorage = (key: string) => window.localStorage.removeItem(key);
+
 
 const userInfoStorage = create<UserInfo>((set) => ({
-    token: getLocalStorage('token') || '',
-    setToken: (newToken: string) => set(() => {
-        setLocalStorage('token', newToken)
-        return {token: newToken}
+    user: getLocalStorage('user') || {userId: -1, token: ""},
+    setUser: (newUser: LoginUser) => set(() => {
+        console.log("user storage: " + newUser)
+        setLocalStorage('user', newUser)
+        return {user: newUser}
     }),
-    removeToken: () => set(() => {
-        setLocalStorage('token', '')
-        return {token: ''}
-    }),
-    userId: getLocalStorage('userId') || '',
-    setUserId: (newUserId: string) => set(() => {
-        setLocalStorage('userId', newUserId)
-        return {userId: newUserId}
-    }),
-    removeUserId: () => set(() => {
-        setLocalStorage('userId', '')
-        return {userId: ''}
+    removeUser: () => set(() => {
+        removeLocalStorage('user');
+        return {user: {userId: -1, token: ""}}
     })
 }))
 

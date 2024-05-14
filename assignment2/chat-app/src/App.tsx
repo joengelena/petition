@@ -4,7 +4,8 @@ import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Petitions from "./components/Petitions";
 import NotFound from "./components/NotFound";
 import Register from "./components/Register";
-import Login from "./components/Login";
+import Login from "./components/Login"
+import UploadImage from "./components/UploadImage";
 import NavBar from "./components/NavBar";
 import Petition from "./components/Petition";
 
@@ -20,6 +21,7 @@ function App() {
                 <Route path="/petitions/:petitionId" element={<Petition/>}/>
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/login" element={<Login/>}/>
+                <Route path="/users/:userId/uploadImage" element={<UploadImage />} />
                 <Route path="*" element={<NotFound/>}/>
             </Routes>
           </div>

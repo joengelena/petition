@@ -9,13 +9,12 @@ const baseUrl = "http://localhost:4941/api/v1";
 const Login = () => {
 
     const navigate = useNavigate();
-    const setTokenInStorage = useUserInfoStorage(state => state.setToken);
-    const setUserIdInStorage = useUserInfoStorage(state => state.setUserId);
+    const setUserInStorage = useUserInfoStorage(state => state.setUser);
+
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("")
     const [passwordVisible, setPasswordVisible] = React.useState(false);
-    const removeTokenFromLocal = useUserInfoStorage(state => state.removeToken);
-    const removeUserIdFromLocal = useUserInfoStorage(state => state.removeUserId);
+    const removeUserInStorage = useUserInfoStorage(state => state.removeUser);
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
 
@@ -35,10 +34,7 @@ const Login = () => {
 
         axios(config)
             .then((response) => {
-                    token = response.data.token
-                    userId = response.data.userId
-                    setUserIdInStorage(String(userId))
-                    setTokenInStorage(token)
+                    setUserInStorage({userId: response.data.userId, token: response.data.token})
                     setErrorMessage("")
                     navigate("/user/" + userId)
                 },

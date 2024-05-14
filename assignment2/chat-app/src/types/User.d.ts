@@ -7,3 +7,8 @@ type User = {
     imageFilename: string,
     authToken: string
 }
+
+type LoginUser = {
+    userId: number,
+    token: string
+}

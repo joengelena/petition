@@ -30,9 +30,9 @@ const User = () => {
     const [openEditDialog, setOpenEditDialog] = React.useState(false)
 
     const [snackOpen, setSnackOpen] = React.useState(false)
-    const [snackMessage, setSnackMessage] = React.useState("")
-    const userId = useUserInfoStorage(state => state.userId);
-    const token = useUserInfoStorage(state => state.token);
+    const [snackMessage, setSnackMessage] = React.useState("");
+    const userLocal = useUserInfoStorage(state => state.user)
+
     const handleSnackClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
             return;
@@ -60,7 +60,7 @@ const User = () => {
     };
 
     const deleteUser = () => {
-        axios.delete(baseUrl + '/users/' + userId)
+        axios.delete(`${baseUrl}/users/${userLocal.userId}`)
             .then((response) => {
                 navigate('/users')
                 setSnackMessage("User is deleted successfully")
@@ -100,9 +100,9 @@ const User = () => {
         const getUser = () => {
             const config = {
                 method: "get",
-                url: baseUrl + '/users/' + userId,
+                url: `${baseUrl}/users/${userLocal.userId}`,
                 headers: {
-                    "X-Authorization": token,
+                    "X-Authorization": userLocal.token,
                 },
             };
             axios(config)
@@ -124,7 +124,7 @@ const User = () => {
                 })
             getUser()
         }
-    }, [token])
+    }, )
 
 
     if (errorFlag) {
