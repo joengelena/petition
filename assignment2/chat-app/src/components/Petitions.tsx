@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, {ChangeEvent} from "react";
-import {Link as RouterLink, Link, useParams, useSearchParams} from 'react-router-dom';
+import {Link as RouterLink, Link, useNavigate, useParams, useSearchParams} from 'react-router-dom';
 import CSS from 'csstype';
 import {
     Alert, AlertTitle, Button, Dialog, DialogActions, DialogContent,
@@ -16,6 +16,7 @@ const baseUrl = "http://localhost:4941/api/v1";
 
 const Petitions = ()=> {
     const {petitionId} = useParams();
+    const navigate = useNavigate();
     const [petitions, setPetitions] = React.useState<Array<Petition>>([]);
     const [categories, setCategories] = React.useState<Array<Category>>([]);
     const [errorFlag, setErrorFlag] = React.useState(false)
@@ -208,8 +209,8 @@ const Petitions = ()=> {
                     <Typography variant="h3" style={{ fontWeight: 'bold', padding: 10 }}>
                         Petitions
                     </Typography>
-
-                    <Stack direction="row" spacing={2} marginBottom={2} justifyContent="center">
+                    <Button variant="contained" style={{background: "#0f5132"}} onClick={() => navigate("/createPetition")}>Create Petition</Button>
+                    <Stack direction="row" spacing={2} marginTop={2} marginBottom={2} justifyContent="center">
                         <TextField
                             label="Search"
                             type="search"
