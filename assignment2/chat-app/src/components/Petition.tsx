@@ -24,78 +24,117 @@ const Petition = ()=> {
     const [petition, setPetition] = React.useState<Petition>();
     const [supporters, setSupporters] = React.useState<Supporter[]>();
     const [similarPetitions, setSimilarPetitions] = React.useState<Array<Petition>>([]);
+    const [similarOwnerId, setSimilarOwnerId] = React.useState<Array<Petition>>([]);
+    const [similarCategory, setSimilarCategory] = React.useState<Array<Petition>>([]);
+    const [concatReady, setConcatReady] = React.useState(false)
+
     const [maxPage, setMaxPage] = React.useState(1)
     const [categories, setCategories] = React.useState<Array<Category>>([]);
 
 
     React.useEffect(() => {
-        axios.get(baseUrl + `/petitions/${petitionId}`)
-            .then((response) => {
-                    setErrorFlag(false)
-                    setErrorMessage("")
-                    setPetition(response.data)
-                },
-                (error) => {
-                    setErrorFlag(true)
-                    setErrorMessage(error.toString());
-            })
-
-        axios.get(baseUrl + `/petitions/categories`)
-            .then((response) => {
-                    setErrorFlag(false);
-                    setErrorMessage("");
-                    setCategories(response.data)
-                },
-                (error) => {
-                    setErrorFlag(true);
-                    setErrorMessage(error.toString());
-                }
-            );
-
-        axios.get(baseUrl + `/petitions/${petitionId}/supporters`)
-            .then((response) => {
-                setErrorFlag(false);
-                setErrorMessage("");
-                setSupporters(response.data);
-            })
-            .catch((error) => {
-                setErrorFlag(true);
-                setErrorMessage(error.toString());
-            });
+        const getPetition = () => {
+            axios.get(baseUrl + `/petitions/${petitionId}`)
+                .then((response) => {
+                        setErrorFlag(false)
+                        setErrorMessage("")
+                        setPetition(response.data)
+                    },
+                    (error) => {
+                        setErrorFlag(true)
+                        setErrorMessage(error.toString());
+                })
+        }
+        const getCategories = () => {
+            axios.get(baseUrl + `/petitions/categories`)
+                .then((response) => {
+                        setErrorFlag(false);
+                        setErrorMessage("");
+                        setCategories(response.data)
+                    },
+                    (error) => {
+                        setErrorFlag(true);
+                        setErrorMessage(error.toString());
+                    }
+                );
+        }
+        getPetition()
+        getCategories()
     }, [petitionId]);
 
+
+
     React.useEffect(() => {
+        const getSupporters = () => {
+            axios.get(baseUrl + `/petitions/${petition?.petitionId}/supporters`)
+                .then((response) => {
+                    setErrorFlag(false)
+                    setErrorMessage("")
+                    setSupporters(response.data)
+                })
+                .catch((error) => {
+                    setErrorFlag(true)
+                    setErrorMessage(error.toString())
+                })
+        }
+
         const getPetitionsCategoryId = () => {
             const query = `categoryIds=${petition?.categoryId}`
             axios.get(`${baseUrl}/petitions?count=10&${query}`)
                 .then((response) => {
-                    setSimilarPetitions(response.data.petitions);
-                    setErrorFlag(false);
+                    setErrorMessage('')
+                    setErrorFlag(false)
+                    setConcatReady(true)
+                    setSimilarCategory(response.data.petitions)
                 })
                 .catch((error) => {
-                    setErrorFlag(true);
-                    setErrorMessage('Error fetching petitions: ' + error);
+                    setErrorFlag(true)
+                    setErrorMessage('Error fetching petitions: ' + error)
                 });
         }
+
         const getPetitionsOwnerId = () => {
             const query = `ownerId=${petition?.ownerId}`
             axios.get(`${baseUrl}/petitions?count=10&${query}`)
                 .then((response) => {
-                    setSimilarPetitions(response.data.petitions);
-                    setErrorFlag(false);
+                    setErrorMessage('')
+                    setErrorFlag(false)
+                    setConcatReady(true)
+                    setSimilarOwnerId(response.data.petitions)
                 })
                 .catch((error) => {
-                    setErrorFlag(true);
-                    setErrorMessage('Error fetching petitions: ' + error);
-                });
+                    setErrorFlag(true)
+                    setErrorMessage('Error fetching petitions: ' + error)
+                })
         }
+
         const getSimilarPetitions = () => {
             getPetitionsCategoryId()
             getPetitionsOwnerId()
         };
 
-        getSimilarPetitions();
+        if (petition !== null && petition?.categoryId !== 0 && petition?.ownerId !== 0) {
+            getSupporters()
+            getSimilarPetitions()
+        };
     }, [petition]);
+
+    React.useEffect(() => {
+        const concatenateSimilarPetitions = () => {
+            const array = require("lodash/array")
+            if (similarCategory.length > 0 && similarOwnerId.length > 0) {
+                const similarPetitions = array.uniqBy([...similarCategory, ...similarOwnerId], "petitionId")
+                const similarPetitionsCurrent = similarPetitions.filter((p: Petition) => p.petitionId !== petition?.petitionId)
+                setSimilarPetitions(similarPetitionsCurrent)
+            } else {
+                setConcatReady(false)
+            }
+        }
+
+        if (concatReady) {
+            concatenateSimilarPetitions()
+        }
+    }, [similarCategory, similarOwnerId, concatReady, petition]);
 
 
     const getSupportTiers = () => {
@@ -176,8 +215,6 @@ const Petition = ()=> {
         return supportTier?.title;
     }
 
-
-
     const similarPetition_rows = () => {
         if (similarPetitions.length === 1) {
             return (
@@ -241,7 +278,6 @@ const Petition = ()=> {
 
     if (errorFlag) {
         return (
-
             <div>
                 <h1>Petitions</h1>
                 {errorFlag &&
