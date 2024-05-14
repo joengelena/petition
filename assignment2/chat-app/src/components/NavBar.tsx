@@ -65,6 +65,7 @@ const NavBar = () => {
     };
 
     const handleLogoutUser = () => {
+        console.log("logging out the user...")
         const config = {
             method: "post",
             url: baseUrl + "/users/logout",

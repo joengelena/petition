@@ -43,7 +43,7 @@ const Register = () => {
         axios(config)
             .then((response) => {
                 setUserId(response.data.userId)
-                console.log("user is successfully registered - ");
+                console.log("user is successfully registered");
                 setErrorFlag(false)
                 setErrorMessage("")
                 login();
@@ -70,7 +70,6 @@ const Register = () => {
 
         axios(config)
             .then((response) => {
-                console.log("final")
                 setToken(response.data.token)
                 setUserId(response.data.userId)
                 setUserInStorage({userId: response.data.userId, token: response.data.token})
