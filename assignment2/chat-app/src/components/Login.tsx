@@ -36,7 +36,7 @@ const Login = () => {
             .then((response) => {
                     setUserInStorage({userId: response.data.userId, token: response.data.token})
                     setErrorMessage("")
-                    navigate("/user/" + userId)
+                    navigate("/petitions")
                 },
                 (error) => {
                     console.error(error);
