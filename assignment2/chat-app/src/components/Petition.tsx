@@ -14,6 +14,7 @@ import {
     TableRow,
     Typography
 } from "@mui/material";
+import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import CSS from "csstype";
 const baseUrl = "http://localhost:4941/api/v1";
 
@@ -27,7 +28,7 @@ const Petition = ()=> {
     const [similarOwnerId, setSimilarOwnerId] = React.useState<Array<Petition>>([]);
     const [similarCategory, setSimilarCategory] = React.useState<Array<Petition>>([]);
     const [concatReady, setConcatReady] = React.useState(false)
-
+    const [imageExists, setImageExists] = React.useState(true);
     const [maxPage, setMaxPage] = React.useState(1)
     const [categories, setCategories] = React.useState<Array<Category>>([]);
 
@@ -80,6 +81,8 @@ const Petition = ()=> {
 
         const getPetitionsCategoryId = () => {
             const query = `categoryIds=${petition?.categoryId}`
+            console.log(petition)
+            console.log(query)
             axios.get(`${baseUrl}/petitions?count=10&${query}`)
                 .then((response) => {
                     setErrorMessage('')
@@ -136,8 +139,7 @@ const Petition = ()=> {
         }
     }, [similarCategory, similarOwnerId, concatReady, petition]);
 
-
-    const getSupportTiers = () => {
+        const getSupportTiers = () => {
         return petition?.supportTiers.map((tier, index) => (
                 <Box
                     key={index}
@@ -216,7 +218,7 @@ const Petition = ()=> {
     }
 
     const similarPetition_rows = () => {
-        if (similarPetitions.length === 1) {
+        if (similarPetitions.length === 0) {
             return (
                 <TableRow>
                     <TableCell colSpan={7} align="center">
@@ -240,7 +242,12 @@ const Petition = ()=> {
                     }}
                 >
                     <TableCell>
-                        <img src={`${baseUrl}/petitions/${similarPetition.petitionId}/image`} width="100" height="100"/>
+                        <Avatar
+                            src={`${baseUrl}/petitions/${similarPetition.petitionId}/image`}
+                            style={{ width: 100, height: 100, borderRadius: 0 }}
+                        >
+                            <ImageNotSupportedIcon/>
+                        </Avatar>
                     </TableCell>
                     <TableCell>
                         <Typography variant="body1">
@@ -296,15 +303,16 @@ const Petition = ()=> {
                             {petition?.title}
                         </Typography>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <img
-                                    src={`${baseUrl}/petitions/${petitionId}/image`}
-                                    alt="Petition Image"
-                                    style={{ maxWidth: '100%', height: 'auto' }}
-                                />
+                            <Grid item xs={12} sm={6} >
+                                <Avatar
+                                    src={`${baseUrl}/petitions/${petition?.petitionId}/image`}
+                                    style={{ width: '100%', height: '100%', borderRadius: 0 }}
+                                >
+                                    <ImageNotSupportedIcon/>
+                                </Avatar>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: '400px'}}>
                                     <div style={{ flex: 1 }}>
                                         <Typography variant="h4" style={{padding: 10}}>
                                             Description

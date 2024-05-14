@@ -10,6 +10,8 @@ import {
     Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider,
     useTheme, IconButton, ToggleButton, Pagination, Typography, Avatar, InputAdornment,
 } from "@mui/material";
+import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
+
 const baseUrl = "http://localhost:4941/api/v1";
 
 const Petitions = ()=> {
@@ -147,7 +149,12 @@ const Petitions = ()=> {
                 }}
             >
                 <TableCell>
-                    <img src={`${baseUrl}/petitions/${petition.petitionId}/image`} width="100" height="100"/>
+                    <Avatar
+                        src={`${baseUrl}/petitions/${petition.petitionId}/image`}
+                        style={{ width: 100, height: 100, borderRadius: 0 }}
+                    >
+                        <ImageNotSupportedIcon/>
+                    </Avatar>
                 </TableCell>
                 <TableCell>
                     <Typography variant="body1">
@@ -173,7 +180,7 @@ const Petitions = ()=> {
                     <Avatar
                         src={`${baseUrl}/users/${petition.ownerId}/image`}
                         alt={`${petition.ownerLastName}`}
-                        style={{ width: 80, height: 80 }} // Smaller Avatar for a cleaner look
+                        style={{ width: 80, height: 80 }}
                     />
                 </TableCell>
                 <TableCell>
