@@ -26,7 +26,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import RegisterIcon from '@mui/icons-material/AccountBox';
 import LoginIcon from '@mui/icons-material/Login';
 import SubjectIcon from '@mui/icons-material/Subject';
+import LogoutIcon from '@mui/icons-material/Logout';
 import UsersIcon from '@mui/icons-material/PeopleOutline';
+import {Logout} from "@mui/icons-material";
 
 const baseUrl = "http://localhost:4941/api/v1";
 
@@ -45,40 +47,6 @@ const NavBar = () => {
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
     };
-
-    const DrawerList = (
-        <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-            <List>
-                <ListItem disablePadding>
-                    <ListItemButton component={RouterLink} to="/petitions">
-                        <ListItemIcon><SubjectIcon /></ListItemIcon>
-                        <ListItemText primary="Petitions" />
-                    </ListItemButton>
-                </ListItem>
-                {/*<ListItem disablePadding>*/}
-                {/*    <ListItemButton component={RouterLink} to="/users">*/}
-                {/*        <ListItemIcon><UsersIcon /></ListItemIcon>*/}
-                {/*        <ListItemText primary="Profile" />*/}
-                {/*    </ListItemButton>*/}
-                {/*</ListItem>*/}
-            </List>
-            <Divider />
-            <List>
-                <ListItem disablePadding>
-                    <ListItemButton component={RouterLink} to="/register">
-                        <ListItemIcon><RegisterIcon /></ListItemIcon>
-                        <ListItemText primary="Register" />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton component={RouterLink} to="/login">
-                        <ListItemIcon><LoginIcon /></ListItemIcon>
-                        <ListItemText primary="Login" />
-                    </ListItemButton>
-                </ListItem>
-            </List>
-        </Box>
-    );
 
     React.useEffect(() => {
         if (userLocal.token !== "" && String(userLocal.userId) !== "") { // when the user is logged in
@@ -105,6 +73,7 @@ const NavBar = () => {
         axios (config)
             .then(function (response) {
                 removeUserInStorage();
+                setLogoutModalOpen(false);
                 setErrorFlag(false);
                 setErrorMessage("");
                 navigate("/login");
@@ -122,6 +91,52 @@ const NavBar = () => {
     const handleLogoutModalClose = () => {
         setLogoutModalOpen(false);
     };
+
+    const DrawerList = (
+        <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+            <List>
+                <ListItem disablePadding>
+                    <ListItemButton component={RouterLink} to="/petitions">
+                        <ListItemIcon><SubjectIcon /></ListItemIcon>
+                        <ListItemText primary="Petitions" />
+                    </ListItemButton>
+                </ListItem>
+            </List>
+            <Divider />
+            <List>
+                {settings.map((setting, index) => (
+                    setting === "Register" && (
+                        <ListItem key={index} disablePadding>
+                            <ListItemButton component={RouterLink} to="/register">
+                                <ListItemIcon><RegisterIcon /></ListItemIcon>
+                                <ListItemText primary="Register" />
+                            </ListItemButton>
+                        </ListItem>
+                    )
+                ))}
+                {settings.map((setting, index) => (
+                    setting === "Login" && (
+                        <ListItem key={index} disablePadding>
+                            <ListItemButton component={RouterLink} to="/login">
+                                <ListItemIcon><LoginIcon /></ListItemIcon>
+                                <ListItemText primary="Login" />
+                            </ListItemButton>
+                        </ListItem>
+                    )
+                ))}
+                {settings.map((setting, index) => (
+                    setting === "Logout" && (
+                        <ListItem key={index} disablePadding>
+                            <ListItemButton onClick={handleLogoutModalOpen}>
+                                <ListItemIcon><LogoutIcon /></ListItemIcon>
+                                <ListItemText primary="Logout" />
+                            </ListItemButton>
+                        </ListItem>
+                    )
+                ))}
+            </List>
+        </Box>
+    );
 
     const logoutConfirmationModal = () => {
         return (
@@ -166,10 +181,34 @@ const NavBar = () => {
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                     My Petition Website
                 </Typography>
-                <Button color="inherit" component={RouterLink} to="/petitions">Petitions</Button>
-                <Button color="inherit" component={RouterLink} to="/register">Register</Button>
-                <Button color="inherit" component={RouterLink} to="/login">LogIn</Button>
-                <Button color="inherit" onClick={handleLogoutModalOpen}>LogOut</Button>
+                {settings.map((setting, index) => (
+                    setting === "Petitions" && (
+                        <Button key={index} color="inherit" component={RouterLink} to="/petitions">
+                            Petitions
+                        </Button>
+                    )
+                ))}
+                {settings.map((setting, index) => (
+                    setting === "Register" && (
+                        <Button key={index} color="inherit" component={RouterLink} to="/register">
+                            Register
+                        </Button>
+                    )
+                ))}
+                {settings.map((setting, index) => (
+                    setting === "Login" && (
+                        <Button key={index} color="inherit" component={RouterLink} to="/login">
+                            Login
+                        </Button>
+                    )
+                ))}
+                {settings.map((setting, index) => (
+                    setting === "Logout" && (
+                        <Button key={index} color="inherit" onClick={handleLogoutModalOpen}>
+                            Logout
+                        </Button>
+                    )
+                ))}
                 {logoutConfirmationModal()}
             </Toolbar>
         </AppBar>
