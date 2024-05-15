@@ -1,11 +1,11 @@
 import React from "react";
 import axios from "axios";
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {
     Alert,
     AlertTitle,
     Avatar,
-    Box,
+    Box, Button,
     Grid,
     Paper,
     Table, TableBody,
@@ -31,7 +31,7 @@ const Petition = ()=> {
     const [imageExists, setImageExists] = React.useState(true);
     const [maxPage, setMaxPage] = React.useState(1)
     const [categories, setCategories] = React.useState<Array<Category>>([]);
-
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         const getPetition = () => {
@@ -119,7 +119,7 @@ const Petition = ()=> {
         if (petition !== null && petition?.categoryId !== 0 && petition?.ownerId !== 0) {
             getSupporters()
             getSimilarPetitions()
-        };
+        }
     }, [petition]);
 
     React.useEffect(() => {
@@ -161,11 +161,15 @@ const Petition = ()=> {
                         <h3 style={{marginBottom: '8px', color: '#000000'}}>{tier.title}</h3>
                         <p style={{marginBottom: '16px', color: '#414141'}}>{tier.description}</p>
                     </div>
-                    <p style={{color: '#0067cd', fontWeight: 'bold'}}>Cost: {tier.cost}</p>
+                    <div>
+                        <p style={{color: '#0067cd', fontWeight: 'bold'}}>Cost: {tier.cost}</p>
+                        <Button variant="contained">Support</Button>
+                    </div>
+
                 </Box>
             )
         )
-    }
+        }
     const getSupporters = () => {
         if (!supporters || supporters.length === 0) {
             return (
@@ -235,8 +239,7 @@ const Petition = ()=> {
                     hover
                     tabIndex={-1}
                     key={similarPetition.petitionId}
-                    component={Link}
-                    to={`/petitions/${similarPetition.petitionId}`}
+                    onClick={() => navigate(`/petitions/${similarPetition.petitionId}`)}
                     sx={{
                         '&:hover': {textDecoration: 'none'}
                     }}
