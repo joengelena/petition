@@ -6,9 +6,11 @@ import CreatePetition from "./components/CreatePetition"
 import NotFound from "./components/NotFound";
 import Register from "./components/Register";
 import Login from "./components/Login"
+import Profile from "./components/Profile"
 import UploadImage from "./components/UploadImage";
 import NavBar from "./components/NavBar";
 import Petition from "./components/Petition";
+import EditProfile from "./components/EditProfile";
 
 function App() {
   return (
@@ -23,6 +25,9 @@ function App() {
                 <Route path="/petitions/:petitionId" element={<Petition/>}/>
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/login" element={<Login/>}/>
+                <Route path="/profile" element={<Profile/>}/>
+                <Route path="/editProfile" element={<EditProfile/>}/>
+
                 <Route path="/users/:userId/uploadImage" element={<UploadImage />} />
                 <Route path="*" element={<NotFound/>}/>
             </Routes>
