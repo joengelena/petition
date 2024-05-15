@@ -15,6 +15,20 @@ type Petition = {
     supportTiers: SupportTier[]
 }
 
+type CreatePetition = {
+    title: string,
+    description: string,
+    categoryId: number,
+    supportTiers: CreateSupportTier[]
+}
+
+type CreateSupportTier = {
+    tempId: number,
+    title: string,
+    description: string,
+    cost: number
+}
+
 type SupportTier = {
     supportTierId: number,
     title: string,
