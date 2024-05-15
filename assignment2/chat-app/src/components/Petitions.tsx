@@ -143,8 +143,7 @@ const Petitions = ()=> {
                 hover
                 tabIndex={-1}
                 key={petition.petitionId}
-                component={Link}
-                to={`/petitions/${petition.petitionId}`}
+                onClick={() => navigate(`/petitions/${petition.petitionId}`)}
                 sx={{
                     '&:hover': {textDecoration: 'none'}
                 }}
