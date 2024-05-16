@@ -38,6 +38,12 @@ const CreatePetition = () => {
     const [randomIndex, setRandomIndex] = React.useState(0);
 
     React.useEffect(() => {
+        if (supportTiers.length === 0) {
+            handleAddSupportTier();
+        }
+    }, []);
+
+    React.useEffect(() => {
         const getCategories = () => {
             axios.get(baseUrl + `/petitions/categories`)
                 .then((response) => {
@@ -75,7 +81,7 @@ const CreatePetition = () => {
         })
             .then((response) => {
                 console.log("petition created")
-                navigate('/petitions')
+                navigate(`/petitions/${response.data.petitionId}/uploadImage`);
                 setErrorMessage('')
                 setErrorFlag(false)
 
@@ -109,7 +115,7 @@ const CreatePetition = () => {
 
     const addSupportTier = (tier: CreateSupportTier) => {
         return (
-            <Box style={{width: 400, marginBottom: 2, border: "3px solid #0067cd"}}>
+            <Box style={{width: 400, marginBottom: 2, border: "3px solid #0067cd", borderRadius: "3%"}}>
                 <h4 style={{marginTop: 10}}>Support Tier</h4>
                 <TextField
                     required
@@ -156,7 +162,12 @@ const CreatePetition = () => {
                 />
                 <Button
                     variant="contained"
-                    sx={{background: "#C70000", marginBottom: "4px"}}
+                    sx={{
+                        background: "#C70000",
+                        marginBottom: "8px",
+                        "&:hover": {
+                            background: "#ab0f0f", // Change hover color to red
+                        }}}
                     onClick={() => (handleDeleteSupportTier(tier.tempId))}
                 >Delete</Button>
             </Box>
@@ -231,8 +242,9 @@ const CreatePetition = () => {
                             <AlertTitle>Error</AlertTitle>
                             {errorMessage}
                         </Alert>}
+
                     <Button
-                        variant="contained"
+                        variant="outlined"
                         color="primary"
                         style={{ width: 400 }}
                         onClick={handleAddSupportTier}
@@ -244,7 +256,7 @@ const CreatePetition = () => {
                         type="submit"
                         variant="contained"
                         color="primary"
-                        style={{ width: 400, marginBottom: 2 }}
+                        style={{ width: 400 }}
                         onClick={createPetition}
                     >
                         Create Petition
