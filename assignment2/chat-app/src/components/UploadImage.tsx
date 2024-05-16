@@ -64,7 +64,7 @@ const UploadImage = () => {
 
     return (
         <div style={{ padding: 50 }}>
-            <Paper elevation={2} style={{ padding: 20, margin: 'auto', maxWidth: 500 }}>
+            <Paper elevation={2} style={{ padding: 20, margin: 'auto', maxWidth: 350 }}>
                 <Typography variant="h4" style={{ fontWeight: 'bold' }}>
                     Image Upload
                 </Typography>
@@ -96,7 +96,6 @@ const UploadImage = () => {
                 >
                     Update
                 </Button>
-                {/*have skip button so user can not upload an image*/}
                 <Link to="/Petitions" >
                     Skip
                 </Link>
