@@ -8,9 +8,10 @@ import {
     TableCell, TableContainer, TableHead, TableRow, TextField, DialogTitle,
     Box, FormControl, InputLabel, Select, SelectChangeEvent, MenuItem,
     Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider,
-    useTheme, IconButton, ToggleButton, Pagination, Typography, Avatar, InputAdornment,
+    useTheme, IconButton, ToggleButton, Pagination, Typography, Avatar, InputAdornment, Modal,
 } from "@mui/material";
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
+import {useUserInfoStorage} from "../store";
 
 const baseUrl = "http://localhost:4941/api/v1";
 
@@ -25,6 +26,7 @@ const Petitions = ()=> {
     // const setUserIdToStorage = useUserInfoStorage(state => state.setUserId);
     // const token = useUserInfoStorage(state => state.token);
     // const userId = useUserInfoStorage(state => state.userId);
+    const userLocal = useUserInfoStorage(state => state.user);
     const [maxPage, setMaxPage] = React.useState(1)
     const [currentPage, setCurrentPage] = React.useState(1)
 
@@ -35,6 +37,7 @@ const Petitions = ()=> {
 
     const [supportingCost, setSupportingCost] = React.useState("")
     const [categoryIds, setCategoryIds] = React.useState<Array<Number>>([])
+    const [logInModalOpen, setLogInModalOpen] = React.useState(false);
 
     React.useEffect(() => {
         if (currentPage > maxPage && maxPage !== 0) {
@@ -127,6 +130,42 @@ const Petitions = ()=> {
         });
     }
 
+    const handleCreatePetitionClick = () => {
+        if (userLocal.token !== "" && String(userLocal.userId) !== "") {
+            navigate('/createPetition')
+        } else {
+            setLogInModalOpen(true);
+        }
+    }
+
+    const handleLogInModalClose = () => {
+        setLogInModalOpen(false);
+    };
+
+    const logInModal = () => {
+        return (
+            <Dialog
+                open={logInModalOpen}
+                onClose={handleLogInModalClose}
+                aria-labelledby="login-modal-title"
+                aria-describedby="login-modal-description"
+            >
+                <DialogTitle id="logout-dialog-title">Login Required</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="logout-dialog-description">
+                        You need to log in to create a petition.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button style={{color: '#FF3333'}} onClick={handleLogInModalClose}>Cancel</Button>
+                    <Button onClick={()=>(navigate('/login'))} autoFocus>
+                        Log In
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
+    }
+
     const petition_rows = () => {
         if (petitions.length === 0) {
             return (
@@ -208,7 +247,8 @@ const Petitions = ()=> {
                     <Typography variant="h3" style={{ fontWeight: 'bold', padding: 10 }}>
                         Petitions
                     </Typography>
-                    <Button variant="contained" style={{background: "#0f5132"}} onClick={() => navigate("/createPetition")}>Create Petition</Button>
+                    <Button variant="contained" style={{background: "#0f5132"}} onClick={(handleCreatePetitionClick)}>Create Petition</Button>
+                    {logInModal()}
                     <Stack direction="row" spacing={2} marginTop={2} marginBottom={2} justifyContent="center">
                         <TextField
                             label="Search"
