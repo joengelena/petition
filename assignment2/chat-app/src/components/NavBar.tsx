@@ -27,7 +27,7 @@ import RegisterIcon from '@mui/icons-material/AccountBox';
 import LoginIcon from '@mui/icons-material/Login';
 import SubjectIcon from '@mui/icons-material/Subject';
 import LogoutIcon from '@mui/icons-material/Logout';
-import UsersIcon from '@mui/icons-material/PeopleOutline';
+import ProfileIcon from '@mui/icons-material/AccountCircle';
 import {Logout} from "@mui/icons-material";
 
 const baseUrl = "http://localhost:4941/api/v1";
@@ -50,7 +50,7 @@ const NavBar = () => {
 
     React.useEffect(() => {
         if (userLocal.token !== "" && String(userLocal.userId) !== "") { // when the user is logged in
-            setSettings(["Petitions", "Logout"]);
+            setSettings(["Petitions", "Logout", "Profile"]);
         } else { // when the user is NOT logged in
             setSettings(["Login", "Register", "Petitions"]);
         }
@@ -135,6 +135,16 @@ const NavBar = () => {
                         </ListItem>
                     )
                 ))}
+                {settings.map((setting, index) => (
+                    setting === "Profile" && (
+                        <ListItem key={index} disablePadding>
+                            <ListItemButton component={RouterLink} to="/profile">
+                                <ListItemIcon><ProfileIcon /></ListItemIcon>
+                                <ListItemText primary="Profile" />
+                            </ListItemButton>
+                        </ListItem>
+                    )
+                ))}
             </List>
         </Box>
     );
@@ -200,6 +210,13 @@ const NavBar = () => {
                     setting === "Login" && (
                         <Button key={index} color="inherit" component={RouterLink} to="/login">
                             Login
+                        </Button>
+                    )
+                ))}
+                {settings.map((setting, index) => (
+                    setting === "Profile" && (
+                        <Button key={index} color="inherit" component={RouterLink} to="/profile">
+                            Profile
                         </Button>
                     )
                 ))}
