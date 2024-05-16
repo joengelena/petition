@@ -89,7 +89,13 @@ const CreatePetition = () => {
                 (error) => {
                     console.log(error)
                     setErrorFlag(true)
-                    setErrorMessage(error.toString());
+                    if (error.response.statusText === "Bad Request: data/title must NOT have fewer than 1 characters") {
+                        setErrorMessage("Please fill out the title field")
+                    } else if (error.response.status === 400) {
+                        setErrorMessage("Please fill out the required fields")
+                    } else {
+                        setErrorMessage(error.response.statusText)
+                    }
             })
     }
 
@@ -154,7 +160,7 @@ const CreatePetition = () => {
                     label="Cost"
                     variant="outlined"
                     value={tier.cost}
-                    onChange={(event) => (updateAddSupportTier(tier.tempId, "cost", event.target.value))}
+                    onChange={(event) => (updateAddSupportTier(tier.tempId, "cost", Number(event.target.value)))}
                     InputProps={{
                         startAdornment: <InputAdornment position="start">$</InputAdornment>,
                     }}
