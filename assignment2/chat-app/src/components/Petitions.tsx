@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import {useUserInfoStorage} from "../store";
+import LogInDialog from "./LogInDialog";
 
 const baseUrl = "http://localhost:4941/api/v1";
 
@@ -142,29 +143,6 @@ const Petitions = ()=> {
         setLogInModalOpen(false);
     };
 
-    const logInModal = () => {
-        return (
-            <Dialog
-                open={logInModalOpen}
-                onClose={handleLogInModalClose}
-                aria-labelledby="login-modal-title"
-                aria-describedby="login-modal-description"
-            >
-                <DialogTitle id="logout-dialog-title">Login Required</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="logout-dialog-description">
-                        You need to log in to create a petition.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button style={{color: '#FF3333'}} onClick={handleLogInModalClose}>Cancel</Button>
-                    <Button onClick={()=>(navigate('/login'))} autoFocus>
-                        Log In
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        )
-    }
 
     const petition_rows = () => {
         if (petitions.length === 0) {
@@ -248,7 +226,7 @@ const Petitions = ()=> {
                         Petitions
                     </Typography>
                     <Button variant="contained" style={{background: "#0f5132"}} onClick={(handleCreatePetitionClick)}>Create Petition</Button>
-                    {logInModal()}
+                    <LogInDialog open={logInModalOpen} onClose={handleLogInModalClose} />
                     <Stack direction="row" spacing={2} marginTop={2} marginBottom={2} justifyContent="center">
                         <TextField
                             label="Search"
