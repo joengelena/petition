@@ -321,40 +321,40 @@ const Petition = ()=> {
                     }}
                     alignItems="flex-start"
                 >
-                            <ListItemAvatar>
-                                <Avatar
-                                    src={`${baseUrl}/users/${supporter?.supporterId}/image`}
-                                    alt={`${supporter?.supporterLastName}`}
-                                    style={{width: 50, height: 50}} />
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary={
-                                    <Typography variant="h4"> {/* Adjusted typography variant */}
-                                        {supportTierTitle(supporter.supportTierId)}
+                    <ListItemAvatar style={{ marginRight: 16, justifyContent: 'center'}}>
+                        <Avatar
+                            src={`${baseUrl}/users/${supporter?.supporterId}/image`}
+                            alt={`${supporter?.supporterLastName}`}
+                            style={{width: 70, height: 70}} />
+                    </ListItemAvatar>
+                    <ListItemText
+                        primary={
+                            <Typography variant="h4">
+                                {supportTierTitle(supporter.supportTierId)}
+                            </Typography>
+                        }
+                        secondary={
+                            <React.Fragment>
+                                <Typography
+                                    sx={{ display: 'inline' }}
+                                    component="span"
+                                    variant="h6"
+                                    color="text.primary"
+                                >
+                                    {supporter.supporterFirstName} {supporter.supporterLastName}
+                                </Typography>
+                                {supporter.message && (
+                                    <Typography
+                                        style={{
+                                            color: '#414141',
+                                            wordWrap: 'break-word'
+                                        }}>
+                                        "{supporter.message}"
                                     </Typography>
-                                }
-                                secondary={
-                                    <React.Fragment>
-                                        <Typography
-                                            sx={{ display: 'inline' }}
-                                            component="span"
-                                            variant="body1"
-                                            color="text.primary"
-                                        >
-                                            {supporter.supporterFirstName} {supporter.supporterLastName}
-                                        </Typography>
-                                        {supporter.message && (
-                                            <Typography
-                                                style={{
-                                                    color: '#414141',
-                                                    wordWrap: 'break-word'
-                                                }}>
-                                                "{supporter.message}"
-                                            </Typography>
-                                        )}
-                                    </React.Fragment>
-                                }
-                            />
+                                )}
+                            </React.Fragment>
+                        }
+                    />
                     <Typography
                         variant="body1"
                         style={{
