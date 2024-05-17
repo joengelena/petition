@@ -26,7 +26,7 @@ const LogInDialog: React.FC<LogInDialogProps> = (props) => {
             <DialogTitle id="login-dialog-title">Login Required</DialogTitle>
             <DialogContent>
                 <DialogContentText id="logout-dialog-description">
-                    You need to log in to create a petition.
+                    You need to be logged in to proceed.
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
