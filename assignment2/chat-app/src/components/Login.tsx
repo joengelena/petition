@@ -1,5 +1,5 @@
 import axios from "axios";
-import {Alert, Box, Button, Container, Paper, TextField, Typography} from "@mui/material";
+import {Alert, AlertTitle, Box, Button, Container, Paper, TextField, Typography} from "@mui/material";
 import React from "react";
 import {useUserInfoStorage} from "../store";
 import {Link, useNavigate} from "react-router-dom";
@@ -41,7 +41,15 @@ const Login = () => {
                 (error) => {
                     console.error(error);
                     setErrorFlag(true);
-                    setErrorMessage(error.response.statusText);
+                    if (error.response.statusText === "Invalid email/password") {
+                        setErrorMessage("Please check your email/password and try again")
+                    } else if (error.response.statusText.includes("fewer than 1")) {
+                        setErrorMessage("Please fill out the required fields")
+                    } else if (error.response.statusText.includes("email")) {
+                        setErrorMessage("Please enter a valid email address")
+                    } else if (error.response.statusText.includes("6")) {
+                        setErrorMessage("Password must be at least 6 characters")
+                    }
                 }
             );
     }
@@ -49,8 +57,6 @@ const Login = () => {
         <div style={{padding: 50}}>
             <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 500}}>
                 <Typography variant="h4" style={{fontWeight: 'bold'}}>Log In</Typography>
-                {errorFlag && <Alert severity="error">{errorMessage}</Alert>}
-
                 <TextField
                     required
                     label="Email"
@@ -80,12 +86,17 @@ const Login = () => {
                         )
                     }}
                 />
+                {errorFlag &&
+                    <Alert severity="error">
+                        <AlertTitle>Error</AlertTitle>
+                        {errorMessage}
+                    </Alert>}
                 <Button
                     variant="contained"
                     color="primary"
                     onClick={login}
                     fullWidth
-                    style={{ marginBottom: 8 }}
+                    style={{ marginBottom: 8, marginTop: 8 }}
                 >
                     Log In
                 </Button>
