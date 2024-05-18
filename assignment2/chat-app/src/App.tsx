@@ -7,9 +7,11 @@ import NotFound from "./components/NotFound";
 import Register from "./components/Register";
 import Login from "./components/Login"
 import Profile from "./components/Profile"
-import UploadImage from "./components/UploadImage";
+import UploadImageUser from "./components/UploadImageUser";
+import UploadImagePetition from "./components/UploadImagePetition";
 import NavBar from "./components/NavBar";
 import Petition from "./components/Petition";
+import MyPetitions from "./components/MyPetitions";
 import EditProfile from "./components/EditProfile";
 
 function App() {
@@ -23,12 +25,15 @@ function App() {
                 <Route path="/petitions" element={<Petitions/>}/>
                 <Route path="/createPetition" element={<CreatePetition/>}/>
                 <Route path="/petitions/:petitionId" element={<Petition/>}/>
+                <Route path="/petitions/:petitionId/uploadImage" element={<UploadImagePetition />} />
+
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/profile" element={<Profile/>}/>
                 <Route path="/editProfile" element={<EditProfile/>}/>
+                <Route path="/users/:userId/uploadImage" element={<UploadImageUser />} />
+                <Route path="/myPetitions" element={<MyPetitions />} />
 
-                <Route path="/users/:userId/uploadImage" element={<UploadImage />} />
                 <Route path="*" element={<NotFound/>}/>
             </Routes>
           </div>

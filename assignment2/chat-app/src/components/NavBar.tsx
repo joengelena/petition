@@ -28,7 +28,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import SubjectIcon from '@mui/icons-material/Subject';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ProfileIcon from '@mui/icons-material/AccountCircle';
-import {Logout} from "@mui/icons-material";
+import MyDocumentIcon from '@mui/icons-material/HistoryEdu';
 
 const baseUrl = "http://localhost:4941/api/v1";
 
@@ -50,7 +50,7 @@ const NavBar = () => {
 
     React.useEffect(() => {
         if (userLocal.token !== "" && String(userLocal.userId) !== "") { // when the user is logged in
-            setSettings(["Petitions", "Logout", "Profile"]);
+            setSettings(["Petitions", "Logout", "Profile", "MyPetitions"]);
         } else { // when the user is NOT logged in
             setSettings(["Login", "Register", "Petitions"]);
         }
@@ -102,6 +102,12 @@ const NavBar = () => {
                         <ListItemText primary="Petitions" />
                     </ListItemButton>
                 </ListItem>
+                <ListItem disablePadding>
+                <ListItemButton component={RouterLink} to="/myPetitions">
+                    <ListItemIcon><MyDocumentIcon /></ListItemIcon>
+                    <ListItemText primary="My Petitions" />
+                </ListItemButton>
+            </ListItem>
             </List>
             <Divider />
             <List>
@@ -190,8 +196,15 @@ const NavBar = () => {
                     {DrawerList}
                 </Drawer>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    My Petition Website
+                    Petition Website
                 </Typography>
+                {settings.map((setting, index) => (
+                    setting === "MyPetitions" && (
+                        <Button key={index} color="inherit" component={RouterLink} to="/myPetitions">
+                            My Petitions
+                        </Button>
+                    )
+                ))}
                 {settings.map((setting, index) => (
                     setting === "Petitions" && (
                         <Button key={index} color="inherit" component={RouterLink} to="/petitions">
