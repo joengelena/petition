@@ -19,5 +19,5 @@ type EditUser = {
     lastName?: string,
     email?: string,
     currentPassword?: string,
-    newPassword?: string
+    password?: string
 }
