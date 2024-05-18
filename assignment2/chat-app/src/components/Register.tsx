@@ -51,8 +51,17 @@ const Register = () => {
             (error) => {
                 console.error(error);
                 setErrorFlag(true);
-                setErrorMessage(error.toString());
-
+                if (error.response.statusText.includes("fewer than 1")) {
+                    setErrorMessage("Please fill out the required fields")
+                } else if (error.response.statusText === "Bad Request: data/firstName must NOT have more than 64 characters") {
+                    setErrorMessage("First name too long! Keep it under 64 characters.")
+                } else if (error.response.statusText === "Bad Request: data/lastName must NOT have more than 64 characters") {
+                    setErrorMessage("Last name too long! Keep it under 64 characters.")
+                } else if (error.response.statusText.includes("email")) {
+                    setErrorMessage("Please enter a valid email address")
+                } else if (error.response.statusText.includes("6")) {
+                    setErrorMessage("Password must be at least 6 characters")
+                }
             }
         );
     };
@@ -79,6 +88,7 @@ const Register = () => {
             })
             .catch((error) => {
                 setErrorFlag(true);
+
                 setErrorMessage(error.toString());
             });
     }
@@ -141,13 +151,12 @@ const Register = () => {
                         <AlertTitle>Error</AlertTitle>
                         {errorMessage}
                     </Alert>}
-
                 <Button
                     type="submit"
                     variant="contained"
                     color="primary"
                     fullWidth
-                    style={{ marginBottom: 8 }}
+                    style={{ marginTop: 8, marginBottom: 8 }}
                     onClick={register}
                 >
                     Register
