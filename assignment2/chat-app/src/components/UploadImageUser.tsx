@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, AlertTitle, Avatar, Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
 import { useUserInfoStorage } from "../store";
+import {nlNL} from "@mui/material/locale";
 const baseUrl = "http://localhost:4941/api/v1";
 
-const UploadImage = () => {
+const UploadImageUser = () => {
     const navigate = useNavigate();
     const [image, setImage] = useState<File | null>(null);
     const allowedImageTypes = ["image/jpeg", "image/jpg", "image/gif", "image/png"];
@@ -15,10 +16,38 @@ const UploadImage = () => {
     const [token, setToken] = useState('')
     const [userId, setUserId] = useState(-1)
     const userLocal = useUserInfoStorage(state => state.user)
+    const [initialImageUrl, setInitialImageUrl] = useState('');
+    const [dbImage, setDbImage] = React.useState<boolean>(false);
+
+    React.useEffect(() => {
+        axios.get(`${baseUrl}/users/${userLocal.userId}`, {
+            headers: {
+                    "X-Authorization": userLocal.token }
+            })
+            .then((response) => {
+                    setErrorFlag(false)
+                    setErrorMessage("")
+                },
+                (error) => {
+                    setErrorFlag(true);
+                    setErrorMessage(error.toString());
+                    navigate('/')
+                })
+    }, [userLocal])
+
+    React.useEffect(() => {
+        axios.get(`${baseUrl}/users/${userLocal.userId}/image`)
+            .then((response) => {
+                setDbImage(true)
+                setErrorFlag(false)
+                setErrorMessage("")
+            })
+            .catch((error) => {
+                console.log(error);
+        })
+    }, []);
 
     const uploadImage = () => {
-        console.log(image)
-
         axios.put(`${baseUrl}/users/${userLocal.userId}/image`, image, {
             headers: {
                 "X-Authorization": userLocal.token,
@@ -30,6 +59,7 @@ const UploadImage = () => {
                     navigate('/petitions')
                     setErrorMessage("")
                     setErrorFlag(false)
+                    setImage(response.data)
                 },
                 (error) => {
                     console.log(error)
@@ -46,6 +76,7 @@ const UploadImage = () => {
             const maxSize = 5 * 1024 * 1024; // 5MB in bytes
             if (selectedFile.size <= maxSize) {
                 if (allowedImageTypes.includes(selectedFile.type)) {
+                    setDbImage(false);
                     setImage(selectedFile);
                     setErrorFlag(false);
                     setErrorMessage("");
@@ -62,26 +93,61 @@ const UploadImage = () => {
         }
     }
 
+    const deleteImage = () => {
+        setImage(null)
+        axios.delete(`${baseUrl}/users/${userLocal.userId}/image`, {
+            headers: {
+                "X-Authorization": userLocal.token
+            }
+        })
+            .then((response) => {
+                    console.log("delete image")
+                    setDbImage(false)
+                    setErrorMessage("")
+                    setErrorFlag(false)
+                },
+                (error) => {
+                    console.log(error)
+                    setErrorFlag(true)
+                    if (error.response.status === 404) {
+                        setErrorMessage("Please upload a file to delete")
+                    } else {
+                        setErrorMessage(error.toString());
+
+                    }
+                }
+            )
+    }
+
+    const imgSrc = () => {
+        if (dbImage) {
+            return `${baseUrl}/users/${userLocal.userId}/image`
+        }
+        if (image) {
+            return URL.createObjectURL(image)
+        }
+        return ''
+    }
+
     return (
         <div style={{ padding: 50 }}>
-            <Paper elevation={2} style={{ padding: 20, margin: 'auto', maxWidth: 350 }}>
+            <Paper elevation={2} style={{ padding: 20, margin: 'auto', maxWidth: 400 }}>
                 <Typography variant="h4" style={{ fontWeight: 'bold' }}>
                     Image Upload
                 </Typography>
                 <Box display="flex" justifyContent="center" marginBottom={2} marginTop={2}>
-                    <Avatar sx={{ width: 100, height: 100 }} src={image ? URL.createObjectURL(image) : ''} />
+                    <Avatar sx={{ width: 150, height: 150 }} src={imgSrc()} />
                 </Box>
                 <Button
                     component="label"
-                    role={undefined}
                     variant="contained"
                     tabIndex={-1}
+                    style ={{ width: 150, marginBottom: 40}}
                     startIcon={<CloudUpload />}
                 >
                     Upload file
                     <input type="file" onChange={handleFileChange} style={{ display: 'none' }} />
                 </Button>
-
                 {errorFlag &&
                     <Alert severity="error">
                         <AlertTitle>Error</AlertTitle>
@@ -91,10 +157,21 @@ const UploadImage = () => {
                     type="submit"
                     variant="contained"
                     fullWidth
-                    style={{ background:"#0f5132", marginTop: 8, marginBottom: 8 }}
+                    style={{ background: image === null ? "#bbbbbb": "#0f5132", marginTop: 8}}
                     onClick={() => uploadImage()}
+                    disabled={image === null}
                 >
                     Update
+                </Button>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    fullWidth
+                    style={{ background: "#d90f0f", marginTop: 8, marginBottom: 8 }}
+                    onClick={deleteImage}
+                    // disabled={(dbImage || image) === false}
+                >
+                    Delete
                 </Button>
                 <Link to="/Petitions" >
                     Skip
@@ -104,4 +181,4 @@ const UploadImage = () => {
     );
 }
 
-export default UploadImage;
+export default UploadImageUser;
