@@ -146,7 +146,7 @@ const Petition = ()=> {
         axios.post(`${baseUrl}/petitions/${petitionId}/supporters`, data, {
             headers: {
                 "X-Authorization": userLocal.token
-            },
+            }
         })
             .then((response) => {
                 getSupporters()
@@ -285,10 +285,12 @@ const Petition = ()=> {
                         </Typography>
                     </div>
                     <div>
-                        <p style={{color: '#0067cd', fontWeight: 'bold'}}>Cost: {tier.cost}</p>
+                        <p style={{color: '#0067cd', fontWeight: 'bold'}}>
+                            {tier.cost === 0 ? "FREE" : `$${tier.cost}`}
+                        </p>
                         {petition?.ownerId !== userLocal.userId &&
-                        <Button
-                            variant="contained"
+                            <Button
+                                variant="contained"
                             onClick={()=>(handleSupportTierClick(tier.supportTierId))}
                             disabled={supporters?.some(supporter => supporter.supportTierId === tier.supportTierId && supporter.supporterId === userLocal.userId)}
                         >
