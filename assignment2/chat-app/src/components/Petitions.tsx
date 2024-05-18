@@ -91,8 +91,6 @@ const Petitions = ()=> {
             allQuery.push("supportingCost=" + supportingCostFilter)
         }
 
-        console.log(allQuery)
-
         const endQuery = allQuery.join("&")
         axios.get(`${baseUrl}/petitions?count=10&startIndex=${startIndex}&${endQuery}`)
             .then((response) => {

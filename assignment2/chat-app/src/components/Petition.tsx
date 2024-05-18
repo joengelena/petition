@@ -89,8 +89,6 @@ const Petition = ()=> {
     }
 
     React.useEffect(() => {
-
-
         const getPetitionsCategoryId = () => {
             const query = `categoryIds=${petition?.categoryId}`
             axios.get(`${baseUrl}/petitions?count=10&${query}`)
@@ -131,6 +129,23 @@ const Petition = ()=> {
             getSimilarPetitions()
         }
     }, [petition]);
+
+    React.useEffect(() => {
+        const concatenateSimilarPetitions = () => {
+            const array = require("lodash/array")
+            if (similarCategory.length > 0 && similarOwnerId.length > 0) {
+                const similarPetitions = array.uniqBy([...similarCategory, ...similarOwnerId], "petitionId")
+                const similarPetitionsCurrent = similarPetitions.filter((p: Petition) => p.petitionId !== petition?.petitionId)
+                setSimilarPetitions(similarPetitionsCurrent)
+            } else {
+                setConcatReady(false)
+            }
+        }
+
+        if (concatReady) {
+            concatenateSimilarPetitions()
+        }
+    }, [similarCategory, similarOwnerId, concatReady, petition]);
 
     // const supportATier = () => {
     //     const config = {
@@ -227,23 +242,6 @@ const Petition = ()=> {
             </Dialog>
         )
     }
-
-    React.useEffect(() => {
-        const concatenateSimilarPetitions = () => {
-            const array = require("lodash/array")
-            if (similarCategory.length > 0 && similarOwnerId.length > 0) {
-                const similarPetitions = array.uniqBy([...similarCategory, ...similarOwnerId], "petitionId")
-                const similarPetitionsCurrent = similarPetitions.filter((p: Petition) => p.petitionId !== petition?.petitionId)
-                setSimilarPetitions(similarPetitionsCurrent)
-            } else {
-                setConcatReady(false)
-            }
-        }
-
-        if (concatReady) {
-            concatenateSimilarPetitions()
-        }
-    }, [similarCategory, similarOwnerId, concatReady, petition]);
 
     const getSupportTiers = () => {
         return petition?.supportTiers.map((tier, index) => (
