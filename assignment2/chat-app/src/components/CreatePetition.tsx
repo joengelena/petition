@@ -16,6 +16,7 @@ import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 import axios from "axios";
 import {useUserInfoStorage} from "../store";
 import {Link, useNavigate} from "react-router-dom";
+import {CloudUpload} from "@mui/icons-material";
 
 const baseUrl = "http://localhost:4941/api/v1";
 
@@ -26,7 +27,7 @@ const CreatePetition = () => {
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
     const [categories, setCategories] = React.useState<Array<Category>>([]);
-    const [petition, setPetition] = React.useState<Petition>();
+    const [petition, setPetition] = React.useState<CreatePetition>();
 
     const [title, setTitle] = React.useState('');
     const [description, setDescription] = React.useState('');
@@ -36,6 +37,22 @@ const CreatePetition = () => {
     const [supportTiers, setSupportTiers] = React.useState<Array<CreateSupportTier>>([]);
     const [numSupportTiers, setNumSupportTiers] = React.useState<number>(1);
     const [randomIndex, setRandomIndex] = React.useState(0);
+
+    React.useEffect(() => {
+        axios.get(`${baseUrl}/users/${userLocal.userId}`, {
+            headers: {
+                "X-Authorization": userLocal.token }
+        })
+            .then((response) => {
+                    setErrorFlag(false)
+                    setErrorMessage("")
+                },
+                (error) => {
+                    setErrorFlag(true)
+                    setErrorMessage(error.toString());
+                    navigate('/')
+                })
+    }, [userLocal])
 
     React.useEffect(() => {
         if (supportTiers.length === 0) {
@@ -80,7 +97,6 @@ const CreatePetition = () => {
            },
         })
             .then((response) => {
-                console.log("petition created")
                 navigate(`/petitions/${response.data.petitionId}/uploadImage`);
                 setErrorMessage('')
                 setErrorFlag(false)
@@ -272,6 +288,15 @@ const CreatePetition = () => {
                     >
                         Create Petition
                     </Button>
+                    {/*<Button*/}
+                    {/*    variant="contained"*/}
+                    {/*    color="primary"*/}
+                    {/*    style={{ width: 400 }}*/}
+                    {/*    onClick={()=> {navigate(`/petitions/${petition?.petitionId}/uploadImage`)}}*/}
+                    {/*    startIcon={<CloudUpload />}*/}
+                    {/*>*/}
+                    {/*    Update Photo*/}
+                    {/*</Button>*/}
                     <Link to="/petitions" >
                         Back to Petitions
                     </Link>
