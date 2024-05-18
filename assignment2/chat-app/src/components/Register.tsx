@@ -4,8 +4,6 @@ import React, {FormEvent} from "react";
 import axios from 'axios';
 import {Container, Button, TextField, Typography, Alert, AlertTitle, Paper, Box, styled, Avatar} from '@mui/material';
 import {Visibility, VisibilityOff, CloudUpload} from "@mui/icons-material";
-import {Simulate} from "react-dom/test-utils";
-import select = Simulate.select;
 const baseUrl = "http://localhost:4941/api/v1";
 
 const Register = () => {
