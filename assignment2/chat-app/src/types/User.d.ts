@@ -12,3 +12,12 @@ type LoginUser = {
     userId: number,
     token: string
 }
+
+type EditUser = {
+    userId?: number,
+    firstName?: string,
+    lastName?: string,
+    email?: string,
+    currentPassword?: string,
+    newPassword?: string
+}
