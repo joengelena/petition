@@ -463,7 +463,7 @@ const Petition = ()=> {
                             <Grid item xs={12} sm={6}>
                                 <Avatar
                                     src={`${baseUrl}/petitions/${petition?.petitionId}/image`}
-                                    style={{width: '100%', height: '100%', borderRadius: 0}}
+                                    style={{width: '100%', height: '100%', borderRadius: 10}}
                                 >
                                     <ImageNotSupportedIcon/>
                                 </Avatar>
