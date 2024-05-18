@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from "axios";
 import {useUserInfoStorage} from "../store";
 import {Avatar, Box, Button, Paper, Stack, Typography} from "@mui/material";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 const baseUrl = "http://localhost:4941/api/v1";
 
 
@@ -37,15 +37,15 @@ const Profile = () => {
 
     return (
         <div style={{padding: 50}}>
-            <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 500}}>
-                <Typography variant="h3" style={{fontWeight: 'bold', padding: 10, marginBottom: "10px"}}>
+            <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 400}}>
+                <Typography variant="h3" style={{fontWeight: 'bold'}}>
                     Profile
                 </Typography>
                 <Stack direction="column" spacing={2} marginTop={2} marginBottom={2} justifyContent="center" alignItems="center">
                     <Avatar
-                        src={`${baseUrl}/users/${user?.userId}/image`}
+                        src={`${baseUrl}/users/${userLocal.userId}/image`}
                         alt={`${user?.lastName}`}
-                        style={{ width: 100, height: 100 }}
+                        sx={{ width: 150, height: 150 }}
                     />
                     <Typography sx={{fontWeight: "bold"}} variant="h5">
                         {user?.firstName + " " + user?.lastName}
@@ -56,11 +56,14 @@ const Profile = () => {
                     <Button
                         variant="contained"
                         color="primary"
+                        fullWidth
                         onClick={()=> {navigate('/editProfile')}}
-                        style={{ marginBottom: 8 }}
                     >
                         Edit
                     </Button>
+                    <Link to="/Petitions" >
+                        Back
+                    </Link>
                 </Stack>
 
             </Paper>
