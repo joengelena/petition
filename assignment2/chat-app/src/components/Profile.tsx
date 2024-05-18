@@ -3,6 +3,7 @@ import axios from "axios";
 import {useUserInfoStorage} from "../store";
 import {Avatar, Box, Button, Paper, Stack, Typography} from "@mui/material";
 import {Link, useNavigate} from "react-router-dom";
+import {CloudUpload} from "@mui/icons-material";
 const baseUrl = "http://localhost:4941/api/v1";
 
 
@@ -60,6 +61,15 @@ const Profile = () => {
                         onClick={()=> {navigate('/editProfile')}}
                     >
                         Edit
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        onClick={()=> {navigate(`/users/${userLocal.userId}/uploadImage`)}}
+                        startIcon={<CloudUpload />}
+                    >
+                        Update Photo
                     </Button>
                     <Link to="/Petitions" >
                         Back
