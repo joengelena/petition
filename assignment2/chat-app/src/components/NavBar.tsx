@@ -50,7 +50,7 @@ const NavBar = () => {
 
     React.useEffect(() => {
         if (userLocal.token !== "" && String(userLocal.userId) !== "") { // when the user is logged in
-            setSettings(["Petitions", "Logout", "Profile", "CreatePetition"]);
+            setSettings(["Petitions", "Logout", "Profile"]);
         } else { // when the user is NOT logged in
             setSettings(["Login", "Register", "Petitions"]);
         }
