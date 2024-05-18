@@ -89,10 +89,16 @@ const CreatePetition = () => {
                 (error) => {
                     console.log(error)
                     setErrorFlag(true)
-                    if (error.response.statusText === "Bad Request: data/title must NOT have fewer than 1 characters") {
-                        setErrorMessage("Please fill out the title field")
-                    } else if (error.response.status === 400) {
+                    if (error.response.statusText === "Bad Request: data/supportTiers must NOT have fewer than 1 items") {
+                        setErrorMessage("Please add at least one support tier")
+                    } else if (error.response.statusText.includes("fewer than 1")) {
                         setErrorMessage("Please fill out the required fields")
+                    } else if (error.response.statusText === "Bad Request: data/title must NOT have more than 128 characters") {
+                        setErrorMessage("Title too long! Keep it under 128 characters.")
+                    } else if (error.response.statusText === "Bad Request: data/description must NOT have more than 128 characters") {
+                        setErrorMessage("Description too long! Keep it under 128 characters.")
+                    } else if (error.response.statusText === "Bad Request: data/supportTiers/0/cost must be integer") {
+                        setErrorMessage("Cost must be a number")
                     } else {
                         setErrorMessage(error.response.statusText)
                     }
@@ -244,11 +250,10 @@ const CreatePetition = () => {
                         addSupportTier(supportTier)
                     ))}
                     {errorFlag &&
-                        <Alert severity="error">
+                        <Alert severity="error" sx={{ width: 400 }}>
                             <AlertTitle>Error</AlertTitle>
                             {errorMessage}
                         </Alert>}
-
                     <Button
                         variant="outlined"
                         color="primary"
