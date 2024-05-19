@@ -115,7 +115,6 @@ const UploadImagePetition = () => {
 
     const deleteImage = () => {
         setImage(null);
-        console.log("DELETEEEEEEEEEEEEEEEEEEEEEE")
         axios.delete(`${baseUrl}/petitions/${petition?.petitionId}/image`, {
             headers: {
                 "X-Authorization": userLocal.token
@@ -193,7 +192,7 @@ const UploadImagePetition = () => {
                     type="submit"
                     variant="contained"
                     fullWidth
-                    style={{ background: "#d90f0f", marginTop: 8, marginBottom: 8 }}
+                    style={{ background: "error", marginTop: 8, marginBottom: 8 }}
                     onClick={deleteImage}
                     // disabled={(dbImage || image) === false}
                 >
