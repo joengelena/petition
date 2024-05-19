@@ -26,6 +26,21 @@ const EditProfile = () => {
 
     const [disableSave, setDisableSave] = React.useState(true)
 
+    React.useEffect(() => {
+        axios.get(`${baseUrl}/users/${userLocal.userId}`, {
+            headers: {
+                "X-Authorization": userLocal.token }
+        })
+            .then((response) => {
+                    setErrorFlag(false)
+                    setErrorMessage("")
+                },
+                (error) => {
+                    setErrorFlag(true)
+                    setErrorMessage(error.toString());
+                    navigate('/')
+                })
+    }, [userLocal])
 
     React.useEffect(() => {
         getUser()
