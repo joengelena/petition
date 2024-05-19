@@ -63,13 +63,13 @@ const Petitions = ()=> {
                 );
         };
         getCategories()
-    }, [baseUrl])
+    }, [])
 
     const handlePageUpdate = (event: ChangeEvent<unknown>, page: number) => {
         setCurrentPage(page);
     };
 
-    const getPetitions = (pageNum: number) => {
+    const getPetitions = (pageNum: number)   => {
         let allQuery = []
         const startIndex = (pageNum - 1) * 10
 
@@ -166,7 +166,7 @@ const Petitions = ()=> {
                 <TableCell>
                     <Avatar
                         src={`${baseUrl}/petitions/${petition.petitionId}/image`}
-                        style={{ width: 100, height: 100, borderRadius: 0 }}
+                        style={{ width: 100, height: 100, borderRadius: 3 }}
                     >
                         <ImageNotSupportedIcon/>
                     </Avatar>
