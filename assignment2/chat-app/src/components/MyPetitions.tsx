@@ -3,8 +3,9 @@ import {useNavigate} from "react-router-dom";
 import {useUserInfoStorage} from "../store";
 import React, {ChangeEvent} from "react";
 import {
-    Avatar, Pagination,
-    Paper, Stack,
+    Alert, AlertTitle,
+    Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Pagination,
+    Paper, Snackbar, Stack,
     Table,
     TableBody,
     TableCell,
@@ -28,6 +29,11 @@ const MyPetitions = () => {
     const [concatReady, setConcatReady] = React.useState(false)
     const [myPetitionOwner, setMyPetitionOwner] = React.useState<Array<Petition>>([]);
     const [myPetitionSupporter, setMyPetitionSupporter] = React.useState<Array<Petition>>([]);
+    const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
+    const [selectedPetition, setSelectedPetition] = React.useState<Petition>();
+
+    const [snackMessage, setSnackMessage] = React.useState("");
+    const [snackOpen, setSnackOpen] = React.useState(false)
 
     React.useEffect(() => {
         axios.get(`${baseUrl}/users/${userLocal.userId}`, {
@@ -46,10 +52,8 @@ const MyPetitions = () => {
     }, [userLocal])
 
     React.useEffect(() => {
-        if (userLocal.userId) {
-            getMyPetitions();
-        }
-    }, [userLocal.userId]);
+        getMyPetitions();
+    }, []);
 
     React.useEffect(() => {
         const getCategories = () => {
@@ -68,9 +72,70 @@ const MyPetitions = () => {
         getCategories()
     }, [])
 
+    const handleDeleteModalOpen = (petition: Petition) => {
+        setSelectedPetition(petition);
+        setDeleteModalOpen(true);
+    };
+    const handleDeleteModalClose = () => {
+        setDeleteModalOpen(false);
+        setSelectedPetition(undefined);
+    };
+    const deletePetitionConfirmationModal = () => {
+        return (
+            <Dialog
+                open={deleteModalOpen}
+                onClose={handleDeleteModalClose}
+                aria-labelledby="delete-dialog-title"
+                aria-describedby="delete-dialog-description"
+            >
+                <DialogTitle id="delete-dialog-title">Delete</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="delete-dialog-description">
+                        Are you sure you want to delete the petition "{selectedPetition?.title}"?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDeleteModalClose}>Cancel</Button>
+                    <Button style={{color: '#FF3333'}} onClick={deletePetition} autoFocus>
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
+    };
+
+    const handleSnackClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackOpen(false);
+    };
+
+    const deletePetition = () => {
+        handleDeleteModalClose()
+        const config = {
+            method: "delete",
+            url: `${baseUrl}/petitions/${selectedPetition?.petitionId}`,
+            headers: {
+                "X-Authorization": userLocal.token,
+            },
+        }
+        axios(config)
+            .then((response) => {
+                navigate(`/myPetitions`)
+                setSnackMessage("Petition is deleted successfully")
+                getMyPetitions()
+                setSnackOpen(true)
+                setErrorFlag(false)
+                setErrorMessage("")
+                setSelectedPetition(undefined)
+            }, (error) => {
+            setErrorFlag(true)
+            setErrorMessage(error.toString())
+        })
+    }
 
     const getMyPetitions = async () => {
-
         try {
             const [ownerResponse, supporterResponse] = await Promise.all([
                 axios.get(`${baseUrl}/petitions?count=10&ownerId=${userLocal.userId}`),
@@ -118,7 +183,7 @@ const MyPetitions = () => {
                 <TableCell>
                     <Avatar
                         src={`${baseUrl}/petitions/${petition.petitionId}/image`}
-                        style={{ width: 100, height: 100, borderRadius: 0 }}
+                        style={{ width: 100, height: 100, borderRadius: 3 }}
                     >
                         <ImageNotSupportedIcon/>
                     </Avatar>
@@ -153,16 +218,47 @@ const MyPetitions = () => {
                 <TableCell>
                     {petition.supportingCost}
                 </TableCell>
+                <TableCell>
+                    <Stack direction="column" spacing={1}>
+                        <Button
+                            variant="contained"
+                            style={{ background: petition.ownerId !== userLocal.userId ? "#bbbbbb": "#0f5132" }}
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                navigate(`/petitions/${petition.petitionId}/editPetition`);
+                            }}
+                            disabled={petition.ownerId !== userLocal.userId}
+                        >
+                            Edit
+                        </Button>
+                        <Button
+                            variant="contained"
+                            style={{ background: petition.ownerId !== userLocal.userId || petition.numberOfSupporters >= 1 ? '#bbbbbb' : '#d90f0f' }}
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                handleDeleteModalOpen(petition);
+                            }}
+                            disabled={petition.ownerId !== userLocal.userId || petition.numberOfSupporters >= 1}
+                        >
+                            Delete
+                        </Button>
+                    </Stack>
+                </TableCell>
             </TableRow>
         )
     }
 
     return (
         <div style={{padding: 50}}>
-            <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
+            <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 1500}}>
                 <Typography variant="h3" style={{ fontWeight: 'bold', padding: 10 }}>
                     My Petitions
                 </Typography>
+                {errorFlag &&
+                <Alert severity="error" sx={{ width: 400 }}>
+                    <AlertTitle>Error</AlertTitle>
+                    {errorMessage}
+                </Alert>}
                 <TableContainer component={Paper} style={{marginTop: 20}}>
                     <Table>
                         <TableHead>
@@ -174,13 +270,27 @@ const MyPetitions = () => {
                                 <TableCell>Owner Name</TableCell>
                                 <TableCell>Owner Image</TableCell>
                                 <TableCell>Supporting Cost</TableCell>
+                                <TableCell>Manage</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {myPetition_rows()}
+                            {deletePetitionConfirmationModal()}
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Snackbar
+                    autoHideDuration={6000}
+                    open={snackOpen}
+                    onClose={handleSnackClose}
+                    key={snackMessage}
+                >
+                    <Alert onClose={handleSnackClose} severity="success" sx={{
+                        width: '100%'
+                    }}>
+                        {snackMessage}
+                    </Alert>
+                </Snackbar>
             </Paper>
         </div>
     )
