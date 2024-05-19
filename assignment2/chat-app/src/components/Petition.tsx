@@ -399,7 +399,7 @@ const Petition = ()=> {
                     <TableCell>
                         <Avatar
                             src={`${baseUrl}/petitions/${similarPetition.petitionId}/image`}
-                            style={{ width: 100, height: 100, borderRadius: 0 }}
+                            style={{ width: 100, height: 100, borderRadius: 10 }}
                         >
                             <ImageNotSupportedIcon/>
                         </Avatar>
@@ -454,9 +454,10 @@ const Petition = ()=> {
             <div style={{padding: 50}}>
                 <Paper elevation={3} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
                     <React.Fragment>
-                        <Typography variant="h3" style={{fontWeight: 'bold', padding: 10, marginBottom: "10px"}}>
+                        <Typography variant="h3" style={{fontWeight: 'bold', padding: 10, marginBottom: "10px", wordWrap: 'break-word'}} >
                             {petition?.title}
                         </Typography>
+                        <hr/>
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <Avatar
@@ -477,7 +478,7 @@ const Petition = ()=> {
                                         <Typography variant="h4" style={{padding: 10}}>
                                             Description
                                         </Typography>
-                                        <Typography variant="body1">{petition?.description}</Typography>
+                                        <Typography variant="body1" style={{wordWrap: 'break-word'}}>{petition?.description}</Typography>
 
                                         <Typography variant="h4" style={{padding: 10}}>
                                             Total Money Raised
@@ -526,30 +527,30 @@ const Petition = ()=> {
                                 {displaySupporters()}
                             </List>
                         </div>
-                            <Typography variant="body1" style={{
-                                padding: 10,
-                                textAlign: 'right'
-                            }}>Total {supporters?.length} existing supporters</Typography>
-                            <hr/>
-                            <h2 style={{padding: '10px', marginBottom: "10px"}}>Similar Petitions</h2>
-                            <TableContainer component={Paper} style={{marginTop: 20}}>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Image</TableCell>
-                                            <TableCell>Title</TableCell>
-                                            <TableCell>Creation Date</TableCell>
-                                            <TableCell>Category</TableCell>
-                                            <TableCell>Owner Name</TableCell>
-                                            <TableCell>Owner Image</TableCell>
-                                            <TableCell>Supporting Cost</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {similarPetition_rows()}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                        <Typography variant="body1" style={{
+                            padding: 10,
+                            textAlign: 'right'
+                        }}>Total {supporters?.length} existing supporters</Typography>
+                        <hr/>
+                        <h2 style={{padding: '10px', marginBottom: "10px"}}>Similar Petitions</h2>
+                        <TableContainer component={Paper} style={{marginTop: 20}}>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Image</TableCell>
+                                        <TableCell>Title</TableCell>
+                                        <TableCell>Creation Date</TableCell>
+                                        <TableCell>Category</TableCell>
+                                        <TableCell>Owner Name</TableCell>
+                                        <TableCell>Owner Image</TableCell>
+                                        <TableCell>Supporting Cost</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {similarPetition_rows()}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                     </React.Fragment>
                 </Paper>
             </div>
