@@ -75,16 +75,15 @@ const CreatePetition = () => {
                     }
                 );
         };
-
-
         getCategories()
-    }, [baseUrl])
+    }, [])
 
 
     const handleCategoryClick = (event: SelectChangeEvent<Number>) => {
         const categoryIdToHandle = event.target.value as Number;
         setCategoryId(categoryIdToHandle);
     }
+
    const createPetition = () => {
        axios.post(`${baseUrl}/petitions`, {
            title: title,
@@ -175,7 +174,7 @@ const CreatePetition = () => {
                             overflow: 'auto',
                         },
                     }}
-                    style={{ marginBottom: 8 }}
+                    style={{width: 350, marginBottom: 8 }}
                 />
                 <TextField
                     required
