@@ -9,6 +9,7 @@ import Login from "./components/Login"
 import Profile from "./components/Profile"
 import UploadImageUser from "./components/UploadImageUser";
 import UploadImagePetition from "./components/UploadImagePetition";
+import EditPetition from "./components/EditPetition";
 import NavBar from "./components/NavBar";
 import Petition from "./components/Petition";
 import MyPetitions from "./components/MyPetitions";
@@ -25,6 +26,7 @@ function App() {
                 <Route path="/petitions" element={<Petitions/>}/>
                 <Route path="/createPetition" element={<CreatePetition/>}/>
                 <Route path="/petitions/:petitionId" element={<Petition/>}/>
+                <Route path="/petitions/:petitionId/editPetition" element={<EditPetition/>}/>
                 <Route path="/petitions/:petitionId/uploadImage" element={<UploadImagePetition />} />
 
                 <Route path="/register" element={<Register/>}/>
