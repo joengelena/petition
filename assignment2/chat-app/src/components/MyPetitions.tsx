@@ -4,7 +4,7 @@ import {useUserInfoStorage} from "../store";
 import React, {ChangeEvent} from "react";
 import {
     Alert, AlertTitle,
-    Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Pagination,
+    Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Pagination,
     Paper, Snackbar, Stack,
     Table,
     TableBody,
@@ -65,7 +65,7 @@ const MyPetitions = () => {
                     },
                     (error) => {
                         setErrorFlag(true);
-                        setErrorMessage(error.toString());
+                        setErrorMessage(error.response.statusText);
                     }
                 );
         };
@@ -233,7 +233,7 @@ const MyPetitions = () => {
                         </Button>
                         <Button
                             variant="contained"
-                            style={{ background: petition.ownerId !== userLocal.userId || petition.numberOfSupporters >= 1 ? '#bbbbbb' : '#d90f0f' }}
+                            style={{ background: petition.ownerId !== userLocal.userId || petition.numberOfSupporters >= 1 ? '#bbbbbb' : '#b00e0e' }}
                             onClick={(event) => {
                                 event.stopPropagation();
                                 handleDeleteModalOpen(petition);
@@ -254,11 +254,13 @@ const MyPetitions = () => {
                 <Typography variant="h3" style={{ fontWeight: 'bold', padding: 10 }}>
                     My Petitions
                 </Typography>
-                {errorFlag &&
-                <Alert severity="error" sx={{ width: 400 }}>
-                    <AlertTitle>Error</AlertTitle>
-                    {errorMessage}
-                </Alert>}
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    {errorFlag &&
+                        <Alert severity="error" sx={{width: 400}}>
+                            <AlertTitle>Error</AlertTitle>
+                            {errorMessage}
+                        </Alert>}
+                </Box>
                 <TableContainer component={Paper} style={{marginTop: 20}}>
                     <Table>
                         <TableHead>
