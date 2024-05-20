@@ -85,6 +85,15 @@ const CreatePetition = () => {
     }
 
    const createPetition = () => {
+       for (let tier of supportTiers) {
+           if (isNaN(Number(tier.cost))) {
+               setErrorFlag(true);
+               setErrorMessage("Cost must be a number");
+               return;
+           } else {
+               tier.cost = Number(tier.cost)
+           }
+       }
        axios.post(`${baseUrl}/petitions`, {
            title: title,
            description: description,
@@ -122,7 +131,7 @@ const CreatePetition = () => {
 
     const handleAddSupportTier = () => {
         if (supportTiers.length < 3) {
-            setSupportTiers([...supportTiers, {tempId: randomIndex, title: '', description: '', cost: 0}])
+            setSupportTiers([...supportTiers, {tempId: randomIndex, title: '', description: '', cost: ""}])
             setRandomIndex(randomIndex + 1)
         }
     }
@@ -181,7 +190,7 @@ const CreatePetition = () => {
                     label="Cost"
                     variant="outlined"
                     value={tier.cost}
-                    onChange={(event) => (updateAddSupportTier(tier.tempId, "cost", Number(event.target.value)))}
+                    onChange={(event) => (updateAddSupportTier(tier.tempId, "cost", event.target.value))}
                     InputProps={{
                         startAdornment: <InputAdornment position="start">$</InputAdornment>,
                     }}
@@ -274,7 +283,7 @@ const CreatePetition = () => {
                         color="primary"
                         style={{ width: 400 }}
                         onClick={handleAddSupportTier}
-                        disabled={supportTiers.length == 3}
+                        disabled={supportTiers.length === 3}
                     >
                         Add Support Tier
                     </Button>
