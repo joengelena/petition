@@ -1,7 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { Alert, AlertTitle, Avatar, Box, Button, Paper, TextField, Typography } from "@mui/material";
+import {
+    Alert,
+    AlertTitle,
+    Avatar,
+    Box,
+    Button,
+    Dialog, DialogActions,
+    DialogContent, DialogContentText,
+    DialogTitle,
+    Paper,
+    TextField,
+    Typography
+} from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
 import { useUserInfoStorage } from "../store";
 import {nlNL} from "@mui/material/locale";
@@ -18,6 +30,7 @@ const UploadImageUser = () => {
     const userLocal = useUserInfoStorage(state => state.user)
     const [initialImageUrl, setInitialImageUrl] = useState('');
     const [dbImage, setDbImage] = React.useState<boolean>(false);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
     React.useEffect(() => {
         axios.get(`${baseUrl}/users/${userLocal.userId}`, {
@@ -94,6 +107,8 @@ const UploadImageUser = () => {
     }
 
     const deleteImage = () => {
+        // TODO when there is a local image, and no db image, when i delete the image, i get an error "pleas upload..."
+        setDeleteModalOpen(false)
         setImage(null)
         axios.delete(`${baseUrl}/users/${userLocal.userId}/image`, {
             headers: {
@@ -109,7 +124,7 @@ const UploadImageUser = () => {
                 (error) => {
                     console.log(error)
                     setErrorFlag(true)
-                    if (error.response.status === 404) {
+                    if (error.response.status === 404) { // TODO MIGHT BE KIND OF BAD since it gives the message even when the user is deleting the local file
                         setErrorMessage("Please upload a file to delete")
                     } else {
                         setErrorMessage(error.toString());
@@ -128,6 +143,35 @@ const UploadImageUser = () => {
         }
         return ''
     }
+
+    const handleDeleteModalOpen = () => {
+        setDeleteModalOpen(true);
+    };
+    const handleDeleteModalClose= () => {
+        setDeleteModalOpen(false);
+    };
+
+    const deleteConfirmationModal = () => {
+        return (
+            <Dialog
+                open={deleteModalOpen}
+                onClose={handleDeleteModalClose}
+            >
+                <DialogTitle>Delete Image</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to delete the image?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDeleteModalClose}>Cancel</Button>
+                    <Button style={{color: '#FF3333'}} onClick={deleteImage} autoFocus>
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
+    };
 
     return (
         <div style={{ padding: 50 }}>
@@ -168,11 +212,12 @@ const UploadImageUser = () => {
                     variant="contained"
                     fullWidth
                     style={{ background: "#d90f0f", marginTop: 8, marginBottom: 8 }}
-                    onClick={deleteImage}
+                    onClick={(handleDeleteModalOpen)}
                     // disabled={(dbImage || image) === false}
                 >
                     Delete
                 </Button>
+                {deleteConfirmationModal()}
                 <Link to="/Petitions" >
                     Skip
                 </Link>
