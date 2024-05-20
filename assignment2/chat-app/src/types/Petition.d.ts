@@ -26,14 +26,21 @@ type EditPetition = {
     title?: string,
     description?: string,
     categoryId?: number
-    // supportTiers: CreateSupportTier[]
+    supportTiers: CreateSupportTier[]
 }
 
 type CreateSupportTier = {
     tempId: number,
     title: string,
     description: string,
-    cost: number
+    cost: number | string
+}
+
+type EditSupportTier = {
+    tempId?: number,
+    title?: string,
+    description?: string,
+    cost?: number | string
 }
 
 type SupportTier = {
