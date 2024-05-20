@@ -26,15 +26,18 @@ const Petition = ()=> {
     const userLocal = useUserInfoStorage(state => state.user);
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
+
     const [petition, setPetition] = React.useState<Petition>();
     const [supporters, setSupporters] = React.useState<Supporter[]>();
     const [similarPetitions, setSimilarPetitions] = React.useState<Array<Petition>>([]);
     const [similarOwnerId, setSimilarOwnerId] = React.useState<Array<Petition>>([]);
     const [similarCategory, setSimilarCategory] = React.useState<Array<Petition>>([]);
+
     const [concatReady, setConcatReady] = React.useState(false)
     const [imageExists, setImageExists] = React.useState(true);
     const [maxPage, setMaxPage] = React.useState(1)
     const [categories, setCategories] = React.useState<Array<Category>>([]);
+
     const [logInDialogOpen, setLogInDialogOpen] = React.useState(false);
     const [supportDialogOpen, setSupportDialogOpen] = React.useState(false);
 
@@ -245,59 +248,59 @@ const Petition = ()=> {
 
     const getSupportTiers = () => {
         return petition?.supportTiers.map((tier, index) => (
-                <Box
-                    key={index}
-                    display="flex"
-                    flexDirection="column"
-                    gap={2}
-                    p={3}
-                    sx={{
-                        border: '4px solid #0067cd',
-                        borderRadius: 2,
-                        backgroundColor: '#f5f5f5',
-                        maxWidth: '300px',
-                        width: '100%',
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                        justifyContent: 'space-between'
-                    }}
-                >
-                    <div>
-                        <Typography
-                            variant="h4"
-                            style={{
-                            fontWeight: 'bold',
-                            marginBottom: '8px',
-                            color: '#000000',
-                            wordWrap: 'break-word'
-                        }}>
-                            {tier.title}
-                        </Typography>
-                        <Typography
-                            variant="body1"
-                            style={{
-                            marginBottom: '16px',
-                            color: '#414141',
-                            wordWrap: 'break-word'
-                        }}>
-                            {tier.description}
-                        </Typography>
-                    </div>
-                    <div>
-                        <p style={{color: '#0067cd', fontWeight: 'bold'}}>
-                            {tier.cost === 0 ? "FREE" : `$${tier.cost}`}
-                        </p>
-                        {petition?.ownerId !== userLocal.userId &&
-                            <Button
-                                variant="contained"
-                            onClick={()=>(handleSupportTierClick(tier.supportTierId))}
-                            disabled={supporters?.some(supporter => supporter.supportTierId === tier.supportTierId && supporter.supporterId === userLocal.userId)}
-                        >
-                            {supporters?.some(supporter => supporter.supportTierId === tier.supportTierId && supporter.supporterId === userLocal.userId) ? "Supported" : "Support"}
-                        </Button>}
-                        {supportATierDialog()}
-                        <LogInDialog open={logInDialogOpen} onClose={handleLogInDialogClose}/>
-                    </div>
-                </Box>
+            <Box
+                key={index}
+                display="flex"
+                flexDirection="column"
+                gap={2}
+                p={3}
+                sx={{
+                    border: '4px solid #0067cd',
+                    borderRadius: 2,
+                    backgroundColor: '#f5f5f5',
+                    maxWidth: '300px',
+                    width: '100%',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                    justifyContent: 'space-between'
+                }}
+            >
+                <div>
+                    <Typography
+                        variant="h4"
+                        style={{
+                        fontWeight: 'bold',
+                        marginBottom: '8px',
+                        color: '#000000',
+                        wordWrap: 'break-word'
+                    }}>
+                        {tier.title}
+                    </Typography>
+                    <Typography
+                        variant="body1"
+                        style={{
+                        marginBottom: '16px',
+                        color: '#414141',
+                        wordWrap: 'break-word'
+                    }}>
+                        {tier.description}
+                    </Typography>
+                </div>
+                <div>
+                    <p style={{color: '#0067cd', fontWeight: 'bold'}}>
+                        {tier.cost === 0 ? "FREE" : `$${tier.cost}`}
+                    </p>
+                    {petition?.ownerId !== userLocal.userId &&
+                        <Button
+                            variant="contained"
+                        onClick={()=>(handleSupportTierClick(tier.supportTierId))}
+                        disabled={supporters?.some(supporter => supporter.supportTierId === tier.supportTierId && supporter.supporterId === userLocal.userId)}
+                    >
+                        {supporters?.some(supporter => supporter.supportTierId === tier.supportTierId && supporter.supporterId === userLocal.userId) ? "Supported" : "Support"}
+                    </Button>}
+                    {supportATierDialog()}
+                    <LogInDialog open={logInDialogOpen} onClose={handleLogInDialogClose}/>
+                </div>
+            </Box>
             )
         )
     }
@@ -438,126 +441,119 @@ const Petition = ()=> {
             )
     }
 
-    if (errorFlag) {
-        return (
-            <div>
-                <h1>Petitions</h1>
-                {errorFlag &&
-                    <Alert severity="error">
-                        <AlertTitle>Error</AlertTitle>
-                        {errorMessage}
-                    </Alert>}
-            </div>
-        )
-    } else {
-        return (
-            <div style={{padding: 50}}>
-                <Paper elevation={3} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
-                    <React.Fragment>
-                        <Typography variant="h3" style={{fontWeight: 'bold', padding: 10, marginBottom: "10px", wordWrap: 'break-word'}} >
-                            {petition?.title}
-                        </Typography>
-                        <hr/>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <Avatar
-                                    src={`${baseUrl}/petitions/${petition?.petitionId}/image`}
-                                    style={{width: '100%', height: '100%', borderRadius: 10}}
-                                >
-                                    <ImageNotSupportedIcon/>
-                                </Avatar>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <div style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    height: '100%',
-                                    minHeight: '400px'
-                                }}>
-                                    <div style={{flex: 1}}>
-                                        <Typography variant="h4" style={{padding: 10}}>
-                                            Description
-                                        </Typography>
-                                        <Typography variant="body1" style={{wordWrap: 'break-word'}}>{petition?.description}</Typography>
 
-                                        <Typography variant="h4" style={{padding: 10}}>
-                                            Total Money Raised
-                                        </Typography>
-                                        <Typography variant="body1">
-                                            {petition?.moneyRaised !== null
-                                                ? `$${petition?.moneyRaised}`
-                                                : 'No money raised yet'}
-                                        </Typography>
-                                    </div>
-                                    <Grid
-                                        container
-                                        spacing={2}
-                                        justifyContent="center"
-                                        alignItems="center"
-                                        style={{padding: '10px 0'}}
-                                    >
-                                        <Avatar
-                                            src={`${baseUrl}/users/${petition?.ownerId}/image`}
-                                            alt={`${petition?.ownerLastName}`}
-                                            style={{width: 60, height: 60}}
-                                        />
-                                        <Typography variant="h5" style={{padding: 10, fontWeight: 'bold'}}>
-                                            {petition?.ownerFirstName + " " + petition?.ownerLastName}
-                                        </Typography>
-                                        <Typography variant="body1" style={{padding: 10}}>
-                                            {petition?.creationDate}
-                                        </Typography>
-                                    </Grid>
-                                </div>
-                            </Grid>
+    return (
+        <div style={{padding: 50}}>
+            <Paper elevation={3} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
+                <React.Fragment>
+                    <Typography variant="h3" style={{fontWeight: 'bold', padding: 10, marginBottom: "10px", wordWrap: 'break-word'}} >
+                        {petition?.title}
+                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                        {errorFlag &&
+                            <Alert severity="error" sx={{width: 400}}>
+                                <AlertTitle>Error</AlertTitle>
+                                {errorMessage}
+                            </Alert>}
+                    </Box>
+                    <hr/>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                            <Avatar
+                                src={`${baseUrl}/petitions/${petition?.petitionId}/image`}
+                                style={{width: '100%', minHeight: '400px', height: '100%', borderRadius: 10}}
+                            >
+                                <ImageNotSupportedIcon/>
+                            </Avatar>
                         </Grid>
-                        <hr/>
-                        <h2 style={{padding: '10px', marginBottom: "10px"}}>Available Support Tiers</h2>
-                        <Box
-                            display="flex"
-                            justifyContent="center"
-                            gap={3}
-                        >
-                            {getSupportTiers()}
-                        </Box>
-                        <hr/>
-                        <h2 style={{padding: '10px', marginBottom: "10px"}}>Supporters</h2>
-                        <div style={{maxHeight: '500px', overflow: 'auto'}}>
-                            <List sx={{width: '100%'}}>
-                                {displaySupporters()}
-                            </List>
-                        </div>
-                        <Typography variant="body1" style={{
-                            padding: 10,
-                            textAlign: 'right'
-                        }}>Total {supporters?.length} existing supporters</Typography>
-                        <hr/>
-                        <h2 style={{padding: '10px', marginBottom: "10px"}}>Similar Petitions</h2>
-                        <TableContainer component={Paper} style={{marginTop: 20}}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Image</TableCell>
-                                        <TableCell>Title</TableCell>
-                                        <TableCell>Creation Date</TableCell>
-                                        <TableCell>Category</TableCell>
-                                        <TableCell>Owner Name</TableCell>
-                                        <TableCell>Owner Image</TableCell>
-                                        <TableCell>Supporting Cost</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {similarPetition_rows()}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </React.Fragment>
-                </Paper>
-            </div>
+                        <Grid item xs={12} sm={6}>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                height: '100%',
+                                minHeight: '400px'
+                            }}>
+                                <div style={{flex: 1}}>
+                                    <Typography variant="h4" style={{padding: 10}}>
+                                        Description
+                                    </Typography>
+                                    <Typography variant="body1" style={{wordWrap: 'break-word'}}>{petition?.description}</Typography>
 
+                                    <Typography variant="h4" style={{padding: 10}}>
+                                        Total Money Raised
+                                    </Typography>
+                                    <Typography variant="body1">
+                                        {petition?.moneyRaised !== null
+                                            ? `$${petition?.moneyRaised}`
+                                            : 'No money raised yet'}
+                                    </Typography>
+                                </div>
+                                <Grid
+                                    container
+                                    spacing={2}
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    style={{padding: '10px 0'}}
+                                >
+                                    <Avatar
+                                        src={`${baseUrl}/users/${petition?.ownerId}/image`}
+                                        alt={`${petition?.ownerLastName}`}
+                                        style={{width: 60, height: 60}}
+                                    />
+                                    <Typography variant="h5" style={{padding: 10, fontWeight: 'bold'}}>
+                                        {petition?.ownerFirstName + " " + petition?.ownerLastName}
+                                    </Typography>
+                                    <Typography variant="body1" style={{padding: 10}}>
+                                        {petition?.creationDate}
+                                    </Typography>
+                                </Grid>
+                            </div>
+                        </Grid>
+                    </Grid>
+                    <hr/>
+                    <h2 style={{padding: '10px', marginBottom: "10px"}}>Available Support Tiers</h2>
+                    <Box
+                        display="flex"
+                        justifyContent="center"
+                        gap={3}
+                    >
+                        {getSupportTiers()}
+                    </Box>
+                    <hr/>
+                    <h2 style={{padding: '10px', marginBottom: "10px"}}>Supporters</h2>
+                    <div style={{maxHeight: '500px', overflow: 'auto'}}>
+                        <List sx={{width: '100%'}}>
+                            {displaySupporters()}
+                        </List>
+                    </div>
+                    <Typography variant="body1" style={{
+                        padding: 10,
+                        textAlign: 'right'
+                    }}>Total {supporters?.length} existing supporters</Typography>
+                    <hr/>
+                    <h2 style={{padding: '10px', marginBottom: "10px"}}>Similar Petitions</h2>
+                    <TableContainer component={Paper} style={{marginTop: 20}}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Image</TableCell>
+                                    <TableCell>Title</TableCell>
+                                    <TableCell>Creation Date</TableCell>
+                                    <TableCell>Category</TableCell>
+                                    <TableCell>Owner Name</TableCell>
+                                    <TableCell>Owner Image</TableCell>
+                                    <TableCell>Supporting Cost</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {similarPetition_rows()}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </React.Fragment>
+            </Paper>
+        </div>
     )
-    }
-
 }
 
 export default Petition;
