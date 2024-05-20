@@ -36,7 +36,6 @@ const Petitions = ()=> {
     const [sortByQuery, setSortByQuery] = React.useState("CREATED_ASC");
     const [query, setQuery] = React.useState("")
 
-    const [supportingCost, setSupportingCost] = React.useState("")
     const [categoryIds, setCategoryIds] = React.useState<Array<Number>>([])
     const [logInModalOpen, setLogInModalOpen] = React.useState(false);
 
@@ -58,7 +57,7 @@ const Petitions = ()=> {
                     },
                     (error) => {
                         setErrorFlag(true);
-                        setErrorMessage(error.toString());
+                        setErrorMessage(error.response.statusText);
                     }
                 );
         };
@@ -100,8 +99,12 @@ const Petitions = ()=> {
                 },
                 (error) => {
                     setErrorFlag(true)
-                    setErrorMessage('Error fetching petitions: ' + error)
-            })
+                    if (error.response.statusText.includes("integer")) {
+                        setErrorMessage("Supporting Cost value must be an integer");
+                    } else {
+                        setErrorMessage(error.response.statusText);
+                    }
+                })
     }
 
     const sortingOptions = [
@@ -205,129 +208,124 @@ const Petitions = ()=> {
         )
     }
 
-    if (errorFlag) {
-        return (
-            <div>
-                <h1>Petitions</h1>
-                {errorFlag &&
-                    <Alert severity="error">
-                        <AlertTitle>Error</AlertTitle>
-                        {errorMessage}
-                    </Alert>}
-            </div>
-        )
-    } else {
-        return (
-            <div style={{padding: 50}}>
-                <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
-                    <Typography variant="h3" style={{ fontWeight: 'bold', padding: 10 }}>
-                        Petitions
+
+    return (
+        <div style={{padding: 50}}>
+            <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
+                <Typography variant="h3" style={{ fontWeight: 'bold', padding: 10 }}>
+                    Petitions
+                </Typography>
+                <Button variant="contained" style={{background: "#0f5132", marginBottom: 6}} onClick={(handleCreatePetitionClick)}>Create Petition</Button>
+                <LogInDialog open={logInModalOpen} onClose={handleLogInModalClose} />
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    {errorFlag &&
+                        <Alert severity="error" sx={{width: 400}}>
+                            <AlertTitle>Error</AlertTitle>
+                            {errorMessage}
+                        </Alert>}
+                </Box>
+                <Stack direction="row" spacing={2} marginTop={2} marginBottom={2} justifyContent="center">
+                    <TextField
+                        label="Search"
+                        type="search"
+                        variant="outlined"
+                        value={searchQuery}
+                        onChange={(event) => setSearchQuery(event.target.value)}
+                        style={{width: 300, marginBottom: 2}}
+                    />
+                    <Box style={{width:300, marginBottom: 2}}>
+                        <FormControl fullWidth>
+                            <InputLabel id="sortby-select-label">Sort By</InputLabel>
+                            <Select
+                                labelId="sortby-select-label"
+                                id="sortby-select"
+                                value={sortByQuery}
+                                label="Sort By"
+                                onChange={handleSortByClick}
+                            >
+                                {sortingOptions.map((option) => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Box>
+                    <Box style={{width:300, marginBottom: 2}}>
+                        <FormControl fullWidth>
+                            <InputLabel id="category-multiple-label">Category</InputLabel>
+                            <Select
+                                labelId="category-multiple-label"
+                                id="category-multiple-name"
+                                multiple
+                                label="Category"
+                                value={categoryIds}
+                                onChange={handleCategoryClick}
+                                renderValue={(selected) => (
+                                    selected.map(id => {
+                                        const category = categories.find(c => c.categoryId === id);
+                                        return category ? category.name : '';
+                                    }).join(', ')
+                                )}
+                            >
+                                {categories.map((category) => (
+                                    <MenuItem key={category.categoryId} value={category.categoryId}>
+                                        {category.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Box>
+                    <TextField
+                        label="Supporting Cost"
+                        type="search"
+                        variant="outlined"
+                        value={supportingCostFilter}
+                        onChange={(event) => setSupportingCostFilter(event.target.value)}
+                        style={{width: 300, marginBottom: 2}}
+                        InputProps={{
+                            startAdornment: <InputAdornment position="start">{"<="}</InputAdornment>,
+                        }}
+                    />
+                    <Button variant="contained" onClick={() => getPetitions(1)}>Search</Button>
+                </Stack>
+
+                <TableContainer component={Paper} style={{marginTop: 20}}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Image</TableCell>
+                                <TableCell>Title</TableCell>
+                                <TableCell>Creation Date</TableCell>
+                                <TableCell>Category</TableCell>
+                                <TableCell>Owner Name</TableCell>
+                                <TableCell>Owner Image</TableCell>
+                                <TableCell>Supporting Cost</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {petition_rows()}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+
+                <Stack spacing={2} alignItems="center" marginY={4}>
+                    <Typography>
+                        Page {currentPage} of {maxPage}
                     </Typography>
-                    <Button variant="contained" style={{background: "#0f5132"}} onClick={(handleCreatePetitionClick)}>Create Petition</Button>
-                    <LogInDialog open={logInModalOpen} onClose={handleLogInModalClose} />
-                    <Stack direction="row" spacing={2} marginTop={2} marginBottom={2} justifyContent="center">
-                        <TextField
-                            label="Search"
-                            type="search"
-                            variant="outlined"
-                            value={searchQuery}
-                            onChange={(event) => setSearchQuery(event.target.value)}
-                            style={{width: 300, marginBottom: 2}}
-                        />
-                        <Box style={{width:300, marginBottom: 2}}>
-                            <FormControl fullWidth>
-                                <InputLabel id="sortby-select-label">Sort By</InputLabel>
-                                <Select
-                                    labelId="sortby-select-label"
-                                    id="sortby-select"
-                                    value={sortByQuery}
-                                    label="Sort By"
-                                    onChange={handleSortByClick}
-                                >
-                                    {sortingOptions.map((option) => (
-                                        <MenuItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Box>
-                        <Box style={{width:300, marginBottom: 2}}>
-                            <FormControl fullWidth>
-                                <InputLabel id="category-multiple-label">Category</InputLabel>
-                                <Select
-                                    labelId="category-multiple-label"
-                                    id="category-multiple-name"
-                                    multiple
-                                    label="Category"
-                                    value={categoryIds}
-                                    onChange={handleCategoryClick}
-                                    renderValue={(selected) => (
-                                        selected.map(id => {
-                                            const category = categories.find(c => c.categoryId === id);
-                                            return category ? category.name : '';
-                                        }).join(', ')
-                                    )}
-                                >
-                                    {categories.map((category) => (
-                                        <MenuItem key={category.categoryId} value={category.categoryId}>
-                                            {category.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Box>
-                        <TextField
-                            label="Supporting Cost"
-                            type="search"
-                            variant="outlined"
-                            value={supportingCostFilter}
-                            onChange={(event) => setSupportingCostFilter(event.target.value)}
-                            style={{width: 300, marginBottom: 2}}
-                            InputProps={{
-                                startAdornment: <InputAdornment position="start">{"<="}</InputAdornment>,
-                            }}
-                        />
-                        <Button variant="contained" onClick={() => getPetitions(1)}>Search</Button>
-                    </Stack>
-
-                    <TableContainer component={Paper} style={{marginTop: 20}}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Image</TableCell>
-                                    <TableCell>Title</TableCell>
-                                    <TableCell>Creation Date</TableCell>
-                                    <TableCell>Category</TableCell>
-                                    <TableCell>Owner Name</TableCell>
-                                    <TableCell>Owner Image</TableCell>
-                                    <TableCell>Supporting Cost</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {petition_rows()}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-
-                    <Stack spacing={2} alignItems="center" marginY={4}>
-                        <Typography>
-                            Page {currentPage} of {maxPage}
-                        </Typography>
-                        <Pagination
-                            count={maxPage}
-                            page={currentPage}
-                            onChange={handlePageUpdate}
-                            showFirstButton
-                            showLastButton
-                            size="large"
-                            color="primary"
-                            shape="rounded"
-                        />
-                    </Stack>
-                </Paper>
-            </div>
-        )
-    }
+                    <Pagination
+                        count={maxPage}
+                        page={currentPage}
+                        onChange={handlePageUpdate}
+                        showFirstButton
+                        showLastButton
+                        size="large"
+                        color="primary"
+                        shape="rounded"
+                    />
+                </Stack>
+            </Paper>
+        </div>
+    )
 }
 export default Petitions;
