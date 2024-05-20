@@ -118,7 +118,6 @@ const EditProfile = () => {
                 } else {
                     setErrorMessage(error.response.statusText)
                 }
-                console.log(error.response)
             })
     }
 
