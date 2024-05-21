@@ -458,15 +458,15 @@ const Petition = ()=> {
                     </Box>
                     <hr/>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={7}>
                             <Avatar
                                 src={`${baseUrl}/petitions/${petition?.petitionId}/image`}
-                                style={{width: '100%', minHeight: '400px', height: '100%', borderRadius: 10}}
+                                style={{width: 560, height: 400, borderRadius: 10}}
                             >
                                 <ImageNotSupportedIcon/>
                             </Avatar>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={5}>
                             <div style={{
                                 display: 'flex',
                                 flexDirection: 'column',

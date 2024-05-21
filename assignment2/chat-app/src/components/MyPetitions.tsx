@@ -183,7 +183,7 @@ const MyPetitions = () => {
                 <TableCell>
                     <Avatar
                         src={`${baseUrl}/petitions/${petition.petitionId}/image`}
-                        style={{ width: 100, height: 100, borderRadius: 3 }}
+                        style={{ width: 160, height: 100, borderRadius: 3 }}
                     >
                         <ImageNotSupportedIcon/>
                     </Avatar>
