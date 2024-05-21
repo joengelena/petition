@@ -30,6 +30,7 @@ const UploadImageUser = () => {
     const userLocal = useUserInfoStorage(state => state.user)
     const [initialImageUrl, setInitialImageUrl] = useState('');
     const [dbImage, setDbImage] = React.useState<boolean>(false);
+    const [newImgSelected, setNewImgSelected] = React.useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
     React.useEffect(() => {
@@ -89,7 +90,7 @@ const UploadImageUser = () => {
             const maxSize = 5 * 1024 * 1024; // 5MB in bytes
             if (selectedFile.size <= maxSize) {
                 if (allowedImageTypes.includes(selectedFile.type)) {
-                    setDbImage(false);
+                    setNewImgSelected(true);
                     setImage(selectedFile);
                     setErrorFlag(false);
                     setErrorMessage("");
@@ -110,32 +111,35 @@ const UploadImageUser = () => {
         // TODO when there is a local image, and no db image, when i delete the image, i get an error "pleas upload..."
         setDeleteModalOpen(false)
         setImage(null)
-        axios.delete(`${baseUrl}/users/${userLocal.userId}/image`, {
-            headers: {
-                "X-Authorization": userLocal.token
-            }
-        })
-            .then((response) => {
-                    console.log("delete image")
-                    setDbImage(false)
-                    setErrorMessage("")
-                    setErrorFlag(false)
-                },
-                (error) => {
-                    console.log(error)
-                    setErrorFlag(true)
-                    if (error.response.status === 404) { // TODO MIGHT BE KIND OF BAD since it gives the message even when the user is deleting the local file
-                        setErrorMessage("Please upload a file to delete")
-                    } else {
-                        setErrorMessage(error.response.statusText);
-
-                    }
+        console.log(dbImage)
+        if (dbImage) {
+            console.log("in the delete req")
+            axios.delete(`${baseUrl}/users/${userLocal.userId}/image`, {
+                headers: {
+                    "X-Authorization": userLocal.token
                 }
-            )
+            })
+                .then((response) => {
+                        console.log("delete image")
+                        setDbImage(false)
+                        setErrorMessage("")
+                        setErrorFlag(false)
+                    },
+                    (error) => {
+                        console.log(error)
+                        setErrorFlag(true)
+                        if (error.response.status === 404) {
+                            setErrorMessage("Please upload a file to delete")
+                        } else {
+                            setErrorMessage(error.response.statusText);
+                        }
+                    }
+                )
+        }
     }
 
     const imgSrc = () => {
-        if (dbImage) {
+        if (!newImgSelected && dbImage) {
             return `${baseUrl}/users/${userLocal.userId}/image`
         }
         if (image) {
@@ -201,25 +205,26 @@ const UploadImageUser = () => {
                     type="submit"
                     variant="contained"
                     fullWidth
-                    style={{ background: image === null ? "#bbbbbb": "#0f5132", marginTop: 10}}
+                    style={{ background: image === null ? "#bbbbbb": "#0f5132", marginTop: 8, marginBottom: 8}}
                     onClick={() => uploadImage()}
                     disabled={image === null}
                 >
                     Update
                 </Button>
-                <Button
-                    type="submit"
-                    variant="contained"
-                    fullWidth
-                    style={{ background: "#d90f0f", marginTop: 8, marginBottom: 8 }}
-                    onClick={(handleDeleteModalOpen)}
-                    // disabled={(dbImage || image) === false}
-                >
-                    Delete
-                </Button>
+                {(dbImage || image) &&
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        fullWidth
+                        style={{ background: "#d90f0f", marginBottom: 8 }}
+                        onClick={(handleDeleteModalOpen)}
+                    >
+                        Delete
+                    </Button>
+                }
                 {deleteConfirmationModal()}
                 <Link to="/Petitions" >
-                    Skip
+                    Exit
                 </Link>
             </Paper>
         </div>
