@@ -127,7 +127,7 @@ const UploadImageUser = () => {
                     if (error.response.status === 404) { // TODO MIGHT BE KIND OF BAD since it gives the message even when the user is deleting the local file
                         setErrorMessage("Please upload a file to delete")
                     } else {
-                        setErrorMessage(error.toString());
+                        setErrorMessage(error.response.statusText);
 
                     }
                 }
@@ -186,7 +186,7 @@ const UploadImageUser = () => {
                     component="label"
                     variant="contained"
                     tabIndex={-1}
-                    style ={{ width: 150, marginBottom: 40}}
+                    style ={{ width: 150, marginBottom: 10}}
                     startIcon={<CloudUpload />}
                 >
                     Upload file
@@ -201,7 +201,7 @@ const UploadImageUser = () => {
                     type="submit"
                     variant="contained"
                     fullWidth
-                    style={{ background: image === null ? "#bbbbbb": "#0f5132", marginTop: 8}}
+                    style={{ background: image === null ? "#bbbbbb": "#0f5132", marginTop: 10}}
                     onClick={() => uploadImage()}
                     disabled={image === null}
                 >
