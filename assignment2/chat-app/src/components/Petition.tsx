@@ -332,7 +332,10 @@ const Petition = ()=> {
                     </ListItemAvatar>
                     <ListItemText
                         primary={
-                            <Typography variant="h4">
+                            <Typography
+                                variant="h4"
+                                style={{wordWrap: 'break-word'}}
+                            >
                                 {supportTierTitle(supporter.supportTierId)}
                             </Typography>
                         }
