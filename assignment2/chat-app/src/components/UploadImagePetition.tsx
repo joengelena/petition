@@ -1,7 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import {Link, useNavigate, useParams} from "react-router-dom";
-import { Alert, AlertTitle, Avatar, Box, Button, Paper, TextField, Typography } from "@mui/material";
+import {
+    Alert,
+    AlertTitle,
+    Avatar,
+    Box,
+    Button,
+    Dialog, DialogActions,
+    DialogContent, DialogContentText,
+    DialogTitle,
+    Paper,
+    TextField,
+    Typography
+} from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
 import { useUserInfoStorage } from "../store";
 import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
@@ -55,7 +67,6 @@ const UploadImagePetition = () => {
     }, [])
 
     React.useEffect(() => {
-
         axios.get(`${baseUrl}/petitions/${Number(petitionId)}/image`)
             .then((response) => {
                 setDbImage(true)
@@ -113,32 +124,6 @@ const UploadImagePetition = () => {
         }
     }
 
-    const deleteImage = () => {
-        setImage(null);
-        axios.delete(`${baseUrl}/petitions/${petition?.petitionId}/image`, {
-            headers: {
-                "X-Authorization": userLocal.token
-            }
-        })
-            .then((response) => {
-                    console.log("delete image")
-                    setDbImage(false)
-                    setErrorMessage("")
-                    setErrorFlag(false)
-                },
-                (error) => {
-                    console.log(error)
-                    setErrorFlag(true)
-                    if (error.response.status === 404) {
-                        setErrorMessage("Please upload a file to delete")
-                    } else {
-                        setErrorMessage(error.toString());
-
-                    }
-                }
-            )
-    }
-
     const imgSrc = () => {
         if (dbImage) {
             return `${baseUrl}/petitions/${petition?.petitionId}/image`
@@ -151,14 +136,14 @@ const UploadImagePetition = () => {
 
     return (
         <div style={{ padding: 50 }}>
-            <Paper elevation={2} style={{ padding: 20, margin: 'auto', maxWidth: 400 }}>
+            <Paper elevation={2} style={{ padding: 20, margin: 'auto', maxWidth: 450 }}>
                 <Typography variant="h4" style={{ fontWeight: 'bold' }}>
                     Image Upload
                 </Typography>
                 <Box display="flex" justifyContent="center" marginBottom={2} marginTop={2}>
                     <Avatar
                         src={imgSrc()}
-                        style={{width: 150, height: 150, borderRadius: 5}}
+                        style={{width: 400, height: 250, borderRadius: 3}}
                     >
                         <ImageNotSupportedIcon/>
                     </Avatar>
@@ -167,7 +152,7 @@ const UploadImagePetition = () => {
                     component="label"
                     variant="contained"
                     tabIndex={-1}
-                    style ={{ width: 150, marginBottom: 40}}
+                    style ={{ width: 150, marginBottom: 10}}
                     startIcon={<CloudUpload />}
                 >
                     Upload file
@@ -182,21 +167,11 @@ const UploadImagePetition = () => {
                     type="submit"
                     variant="contained"
                     fullWidth
-                    style={{ background: image === null ? "#bbbbbb": "#0f5132", marginTop: 8}}
+                    style={{ background: image === null ? "#bbbbbb": "#0f5132", marginTop: 10, marginBottom: 8}}
                     onClick={() => uploadImage()}
                     disabled={image === null}
                 >
                     Update
-                </Button>
-                <Button
-                    type="submit"
-                    variant="contained"
-                    fullWidth
-                    style={{ background: "error", marginTop: 8, marginBottom: 8 }}
-                    onClick={deleteImage}
-                    // disabled={(dbImage || image) === false}
-                >
-                    Delete
                 </Button>
                 <Link to="/Petitions" >
                     Skip
