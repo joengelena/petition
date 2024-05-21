@@ -54,6 +54,19 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petition, petit
                 })
     }, [userLocal])
 
+    React.useEffect(() => {
+        axios.get(`${baseUrl}/petitions/${petitionId}/supporters`)
+            .then((response) => {
+                setErrorFlag(false);
+                setErrorMessage("");
+                setSupporters(response.data);
+            })
+            .catch((error) => {
+                setErrorFlag(true);
+                setErrorMessage(error.toString());
+            });
+    }, [petitionId]);
+
     const handleDeleteAddNewSupportTier = () => {
         setCreateSupportTier(undefined)
     }
@@ -197,7 +210,6 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petition, petit
                 <DialogActions>
                     <Button onClick={handleDeleteSupportTierModalClose}>Cancel</Button>
                     <Button
-                        // variant="contained"
                         style={{color: '#FF3333'}}
                         onClick={() => (deleteSupportTier())}
                         autoFocus
@@ -307,7 +319,8 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petition, petit
                             background: "#ab0f0f", // Change hover color to red
                         }}}
                     onClick={handleDeleteAddNewSupportTier}
-                >Delete</Button>
+                >
+                    Delete</Button>
             </Box>
 
         )
