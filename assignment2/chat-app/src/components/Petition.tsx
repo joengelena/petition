@@ -248,22 +248,26 @@ const Petition = ()=> {
 
     const getSupportTiers = () => {
         return petition?.supportTiers.map((tier, index) => (
-            <Box
+            <Grid
+                item
                 key={index}
-                display="flex"
-                flexDirection="column"
-                gap={2}
                 p={3}
-                sx={{
-                    border: '4px solid #0067cd',
-                    borderRadius: 2,
-                    backgroundColor: '#f5f5f5',
-                    maxWidth: '300px',
-                    width: '100%',
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                    justifyContent: 'space-between'
-                }}
+                xs={10}
+                md={4}
             >
+                <div
+                    style={{
+                        border: '4px solid #0067cd',
+                        borderRadius: 9,
+                        backgroundColor: '#f5f5f5',
+                        height: 300,
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                        alignContent: "center",
+                        justifyContent: 'space-between',
+                        padding: "10px",
+                        overflow: 'auto'
+                    }}
+                    >
                 <div>
                     <Typography
                         variant="h4"
@@ -300,7 +304,8 @@ const Petition = ()=> {
                     {supportATierDialog()}
                     <LogInDialog open={logInDialogOpen} onClose={handleLogInDialogClose}/>
                 </div>
-            </Box>
+                </div>
+            </Grid>
             )
         )
     }
@@ -460,11 +465,11 @@ const Petition = ()=> {
                             </Alert>}
                     </Box>
                     <hr/>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={4}>
                         <Grid item xs={12} sm={7}>
                             <Avatar
                                 src={`${baseUrl}/petitions/${petition?.petitionId}/image`}
-                                style={{width: 560, height: 400, borderRadius: 10}}
+                                style={{width: "100%", height: 400, borderRadius: 7}}
                             >
                                 <ImageNotSupportedIcon/>
                             </Avatar>
@@ -515,13 +520,13 @@ const Petition = ()=> {
                     </Grid>
                     <hr/>
                     <h2 style={{padding: '10px', marginBottom: "10px"}}>Available Support Tiers</h2>
-                    <Box
-                        display="flex"
+                    <Grid
+                        container
+                        spacing={2}
                         justifyContent="center"
-                        gap={3}
                     >
                         {getSupportTiers()}
-                    </Box>
+                    </Grid>
                     <hr/>
                     <h2 style={{padding: '10px', marginBottom: "10px"}}>Supporters</h2>
                     <div style={{maxHeight: '500px', overflow: 'auto'}}>
