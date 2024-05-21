@@ -117,10 +117,10 @@ const CreatePetition = () => {
                         setErrorMessage("Please add at least one support tier")
                     } else if (error.response.statusText.includes("fewer than 1")) {
                         setErrorMessage("Please fill out the required fields")
-                    } else if (error.response.statusText === "Bad Request: data/title must NOT have more than 128 characters") {
+                    } else if (error.response.statusText.includes("title must NOT have more than 128 characters")) {
                         setErrorMessage("Title too long! Keep it under 128 characters.")
-                    } else if (error.response.statusText === "Bad Request: data/description must NOT have more than 128 characters") {
-                        setErrorMessage("Description too long! Keep it under 128 characters.")
+                    } else if (error.response.statusText.includes("data/description must NOT have more than 1024 characters")) {
+                        setErrorMessage("Description too long! Keep it under 1024 characters.")
                     } else if (error.response.statusText === "Bad Request: data/supportTiers/0/cost must be integer") {
                         setErrorMessage("Cost must be a number")
                     } else {
