@@ -169,7 +169,7 @@ const Petitions = ()=> {
                 <TableCell>
                     <Avatar
                         src={`${baseUrl}/petitions/${petition.petitionId}/image`}
-                        style={{ width: 100, height: 100, borderRadius: 3 }}
+                        style={{ width: 160, height: 100, borderRadius: 3 }}
                     >
                         <ImageNotSupportedIcon/>
                     </Avatar>
@@ -211,11 +211,17 @@ const Petitions = ()=> {
 
     return (
         <div style={{padding: 50}}>
-            <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
+            <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 1400}}>
                 <Typography variant="h3" style={{ fontWeight: 'bold', padding: 10 }}>
                     Petitions
                 </Typography>
-                <Button variant="contained" style={{background: "#0f5132", marginBottom: 6}} onClick={(handleCreatePetitionClick)}>Create Petition</Button>
+                <Button
+                    variant="contained"
+                    style={{background: "#0f5132", marginBottom: 6, width: 200}}
+                    onClick={(handleCreatePetitionClick)}
+                >
+                    + Create Petition
+                </Button>
                 <LogInDialog open={logInModalOpen} onClose={handleLogInModalClose} />
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     {errorFlag &&
