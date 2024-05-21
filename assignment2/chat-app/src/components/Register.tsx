@@ -59,6 +59,10 @@ const Register = () => {
                     setErrorMessage("Please enter a valid email address")
                 } else if (error.response.statusText.includes("6")) {
                     setErrorMessage("Password must be at least 6 characters")
+                } else if (error.response.statusText === "Forbidden: Email already in use") {
+                    setErrorMessage("Email is already in use. Please enter a different email")
+                } else {
+                    setErrorMessage(error.response.statusText)
                 }
             }
         );
@@ -86,8 +90,7 @@ const Register = () => {
             })
             .catch((error) => {
                 setErrorFlag(true);
-
-                setErrorMessage(error.toString());
+                setErrorMessage(error.response.statusText);
             });
     }
 
