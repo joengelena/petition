@@ -33,7 +33,6 @@ const EditPetition = () => {
     const [originalPetition, setOriginalPetition] = React.useState<EditPetition>();
 
     const [categories, setCategories] = React.useState<Array<Category>>([]);
-    // const [categoryIds, setCategoryIds] = React.useState<Array<Number>>([])
     const [categoryId, setCategoryId] = useState<number | string>("");
 
 
@@ -69,13 +68,6 @@ const EditPetition = () => {
                 })
     }, [userLocal, navigate])
 
-    // const unDisableSave = () => {
-    //     if (title === editPetition?.title || description === editPetition?.description || categoryId === editPetition?.categoryId) {
-    //         setDisableSave(false)
-    //     } else {
-    //         setDisableSave(true)
-    //     }
-    // }
     const unDisableSave = () => {
         if (editPetition) {
             const { title: originalTitle, description: originalDescription, categoryId: originalCategoryId } = editPetition;
@@ -86,16 +78,6 @@ const EditPetition = () => {
             }
         }
     };
-    // const editPetition = (key: string, newValue: string | number) => {
-    //     setPetition(petition => {
-    //         if (petition) {
-    //             return {
-    //                 ...petition,
-    //                 [key] : newValue
-    //             }
-    //         }
-    //     });
-    // }
 
     React.useEffect(() => {
         axios.get(baseUrl + `/petitions/categories`)
@@ -121,7 +103,6 @@ const EditPetition = () => {
             .then((response) => {
                 const petitionData = response.data
                 setEditPetition(petitionData)
-                // setOriginalPetition(petitionData)
 
                 setTitle(petitionData.title);
                 setDescription(petitionData.description);
@@ -138,7 +119,6 @@ const EditPetition = () => {
     }
 
     const handleCategoryClick = (event: SelectChangeEvent<number>) => {
-        // editPetition("catergoryId", event.target.value as number);
         const categoryIdToHandle = event.target.value as number;
         setCategoryId(categoryIdToHandle);
 
@@ -151,37 +131,6 @@ const EditPetition = () => {
         setSnackOpen(false);
     };
 
-    // const updatePetition = () => {
-    //     axios.patch(`${baseUrl}/petitions/${petitionId}`, petition, {
-    //         headers: {
-    //             "X-Authorization": userLocal.token
-    //         }
-    //     })
-    //         .then((response) => {
-    //
-    //             navigate(`/petitions/${petitionId}`);
-    //             console.log(response)
-    //             setErrorFlag(false)
-    //             setErrorMessage("")
-    //         })
-    //         .catch((error) => {
-    //             console.log(error)
-    //             setErrorFlag(true)
-    //             if (error.response.statusText === "Bad Request: data/supportTiers must NOT have fewer than 1 items") {
-    //                 setErrorMessage("Please add at least one support tier")
-    //             } else if (error.response.statusText.includes("fewer than 1")) {
-    //                 setErrorMessage("Please fill out the required fields")
-    //             } else if (error.response.statusText === "Bad Request: data/supportTiers/0/cost must be integer") {
-    //                 setErrorMessage("Cost must be a number")
-    //             } else if (error.response.statusText.includes("title must NOT have more than 128 characters")) {
-    //                 setErrorMessage("Title too long! Keep it under 128 characters.")
-    //             } else if (error.response.statusText.includes("data/description must NOT have more than 1024 characters")) {
-    //                 setErrorMessage("Description too long! Keep it under 1024 characters.")
-    //             } else {
-    //                 setErrorMessage(error.response.statusText)
-    //             }
-    //         })
-    // }
     const updatePetition = () => {
         const data: EditPetition = {};
         if (title !== '') {
@@ -199,14 +148,13 @@ const EditPetition = () => {
             }
         })
             .then((response) => {
-                navigate(`/petitions/${petitionId}`);
-                console.log(response)
-                // setPetition(editPetition)
+                setSnackMessage("Petition is updated successfully")
+                setSnackOpen(true)
+                getPetition()
                 setErrorFlag(false)
                 setErrorMessage("")
             })
             .catch((error) => {
-                console.log(error)
                 setErrorFlag(true)
                 if (error.response.statusText === "Bad Request: data/supportTiers must NOT have fewer than 1 items") {
                     setErrorMessage("Please add at least one support tier")
@@ -258,7 +206,6 @@ const EditPetition = () => {
                         multiline
                         variant="outlined"
                         value={title}
-                        // onChange={(event) => editPetition("title", event.target.value)}
                         onChange={(event) => setTitle(event.target.value)}
                         InputProps={{
                             style: {
@@ -274,7 +221,6 @@ const EditPetition = () => {
                         multiline
                         variant="outlined"
                         value={description}
-                        // onChange={(event) => editPetition("description", event.target.value)}
                         onChange={(event) => setDescription(event.target.value)}
                         InputProps={{
                             style: {
@@ -288,40 +234,23 @@ const EditPetition = () => {
                     <Box style={{width: 400, marginBottom: 2}}>
                         <FormControl fullWidth>
                             <InputLabel required id="category-single-label">Category</InputLabel>
-                            <Select
-                            labelId="category-multiple-label"
-                            id="category-multiple-name"
-                            label="Category"
-                            value={Number(categoryId)}
-                            onChange={handleCategoryClick}
-                            renderValue={(selected) => {
-                                const category = categories.find(c => c.categoryId === selected);
-                                return category ? category.name : '';
-                            }}
-                        >
-                            {categories.map((category) => (
-                                <MenuItem key={category.categoryId} value={category.categoryId}>
-                                    {category.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                            {/*<Select*/}
-                            {/*    label="Category"*/}
-                            {/*    value={categoryIds}*/}
-                            {/*    onChange={handleCategoryClick}*/}
-                            {/*    renderValue={(selected) => (*/}
-                            {/*        selected.map(id => {*/}
-                            {/*            const category = categories.find(c => c.categoryId === id);*/}
-                            {/*            return category ? category.name : '';*/}
-                            {/*        }).join(', ')*/}
-                            {/*    )}*/}
-                            {/*>*/}
-                            {/*    {categories.map((category) => (*/}
-                            {/*        <MenuItem key={category.categoryId} value={category.categoryId}>*/}
-                            {/*            {category.name}*/}
-                            {/*        </MenuItem>*/}
-                            {/*    ))}*/}
-                            {/*</Select>*/}
+                                <Select
+                                labelId="category-multiple-label"
+                                id="category-multiple-name"
+                                label="Category"
+                                value={Number(categoryId)}
+                                onChange={handleCategoryClick}
+                                renderValue={(selected) => {
+                                    const category = categories.find(c => c.categoryId === selected);
+                                    return category ? category.name : '';
+                                }}
+                            >
+                                {categories.map((category) => (
+                                    <MenuItem key={category.categoryId} value={category.categoryId}>
+                                        {category.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
                         </FormControl>
                     </Box>
                     <Button
@@ -334,7 +263,7 @@ const EditPetition = () => {
                         Save
                     </Button>
                     <hr style={{width: '100%'}}/>
-                    <h2 style={{marginBottom: "10px"}}>Support Tiers</h2>
+
                     <EditSupportTiers petitionId={petitionId} />
 
                     <Link to="/MyPetitions">
