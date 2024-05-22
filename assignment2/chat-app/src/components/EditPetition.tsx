@@ -40,7 +40,7 @@ const EditPetition = () => {
     const [title, setTitle] = React.useState('');
     const [description, setDescription] = React.useState('');
 
-    const [disableSave, setDisableSave] = React.useState(false)
+    const [disableSave, setDisableSave] = React.useState(true)
 
     const [snackMessage, setSnackMessage] = React.useState("");
     const [snackOpen, setSnackOpen] = React.useState(false)
@@ -48,6 +48,10 @@ const EditPetition = () => {
     React.useEffect(() => {
         getPetition()
     }, [])
+
+    React.useEffect(()=>{
+        unDisableSave()
+    }, [title, description, categoryId, editPetition])
 
     React.useEffect(() => {
         axios.get(`${baseUrl}/users/${userLocal.userId}`, {
@@ -65,14 +69,23 @@ const EditPetition = () => {
                 })
     }, [userLocal, navigate])
 
+    // const unDisableSave = () => {
+    //     if (title === editPetition?.title || description === editPetition?.description || categoryId === editPetition?.categoryId) {
+    //         setDisableSave(false)
+    //     } else {
+    //         setDisableSave(true)
+    //     }
+    // }
     const unDisableSave = () => {
-        if (originalPetition?.title === editPetition?.title || originalPetition?.description === editPetition?.description || originalPetition?.categoryId === editPetition?.categoryId) {
-            setDisableSave(false)
-        } else {
-            setDisableSave(true)
+        if (editPetition) {
+            const { title: originalTitle, description: originalDescription, categoryId: originalCategoryId } = editPetition;
+            if (title !== originalTitle || description !== originalDescription || categoryId !== originalCategoryId) {
+                setDisableSave(false);
+            } else {
+                setDisableSave(true);
+            }
         }
-    }
-
+    };
     // const editPetition = (key: string, newValue: string | number) => {
     //     setPetition(petition => {
     //         if (petition) {
@@ -108,11 +121,11 @@ const EditPetition = () => {
             .then((response) => {
                 const petitionData = response.data
                 setEditPetition(petitionData)
-                setOriginalPetition(petitionData)
+                // setOriginalPetition(petitionData)
 
-                setTitle(petitionData.title || '');
-                setDescription(petitionData.description || '');
-                setCategoryId(petitionData.categoryId || '');
+                setTitle(petitionData.title);
+                setDescription(petitionData.description);
+                setCategoryId(petitionData.categoryId);
 
                 setErrorFlag(false)
                 setErrorMessage("")
