@@ -108,7 +108,6 @@ const UploadImageUser = () => {
     }
 
     const deleteImage = () => {
-        // TODO when there is a local image, and no db image, when i delete the image, i get an error "pleas upload..."
         setDeleteModalOpen(false)
         setImage(null)
         console.log(dbImage)
