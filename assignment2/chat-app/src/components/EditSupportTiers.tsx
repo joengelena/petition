@@ -10,7 +10,7 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, InputAdornment, Stack,
+    DialogTitle, Grid, InputAdornment, Stack,
     TextField, Typography
 } from "@mui/material";
 const baseUrl = "http://localhost:4941/api/v1";
@@ -22,6 +22,11 @@ interface EditPetitionChildComponent {
 const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) => {
     const navigate = useNavigate();
     const userLocal = useUserInfoStorage(state => state.user);
+
+    const [editTierErrorFlag, setEditTierErrorFlag] = useState(false)
+    const [editTierErrorMessage, setEditTierErrorMessage] = useState("")
+    const [addTierErrorFlag, setAddTierErrorFlag] = useState(false)
+    const [addTierErrorMessage, setAddTierErrorMessage] = useState("")
     const [errorFlag, setErrorFlag] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
 
@@ -36,7 +41,6 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
 
     const [editSupportTierModalOpen, setEditSupportTierModalOpen] = React.useState(false);
     const [deleteSupportTierModalOpen, setDeleteSupportTierModalOpen] = React.useState(false);
-
     const [originalSupportTier, setOriginalSupportTier] = React.useState<SupportTier | null>();
 
     React.useEffect(() => {
@@ -86,12 +90,6 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
             });
     }, [petitionId]);
 
-
-
-    const handleDeleteAddNewSupportTier = () => {
-        setCreateSupportTier(undefined)
-    }
-
     const handleAddNewSupportTier = () => {
         if (petition && petition.supportTiers && petition.supportTiers.length < 3) {
             setCreateSupportTier({tempId: randomIndex, title: '', description: '', cost: ""})
@@ -117,8 +115,8 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
             cost: createSupportTier?.cost
         }
         if (isNaN(Number(data.cost))) {
-            setErrorFlag(true);
-            setErrorMessage("Cost must be a number");
+            setAddTierErrorFlag(true);
+            setAddTierErrorMessage("Cost must be a number");
             return;
         } else {
             data.cost = Number(data.cost)
@@ -131,12 +129,12 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
             .then((response) => {
                 console.log(response)
                 window.location.reload()
-                setErrorFlag(false)
-                setErrorMessage("")
+                setAddTierErrorFlag(false)
+                setAddTierErrorMessage("")
             })
             .catch((error) => {
-                setErrorFlag(true)
-                setErrorMessage(error.response.statusText)
+                setAddTierErrorFlag(true)
+                setAddTierErrorMessage(error.response.statusText)
                 console.log(error.response)
             })
     }
@@ -146,9 +144,6 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
     };
 
     const updateEditSupportTier = (key: string, newValue: string | number) => {
-        console.log("im editing: " + key)
-        console.log(newValue)
-
         setSelectedSupportTier(prevTier => {
             if (prevTier) {
                 return {
@@ -161,11 +156,10 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
     const editSupportTier = () => {
         const data: EditSupportTier = {};
         if (isNaN(Number(selectedSupportTier?.cost))) {
-            setErrorFlag(true);
-            setErrorMessage("Cost must be a number");
+            setEditTierErrorFlag(true);
+            setEditTierErrorMessage("Cost must be a number");
             return;
         }
-
         if (selectedSupportTier?.title !== '') {
             data.title = selectedSupportTier?.title
         }
@@ -182,16 +176,16 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
             }
         })
             .then((response) => {
-                window.location.reload()
                 handleEditModalClose()
                 console.log(response)
-                setErrorFlag(false)
-                setErrorMessage("")
+                setEditTierErrorFlag(false)
+                setEditTierErrorMessage("")
                 handleEditModalClose()
+                window.location.reload()
             })
             .catch((error) => {
-                setErrorFlag(true)
-                setErrorMessage(error.response.statusText)
+                setEditTierErrorFlag(true)
+                setEditTierErrorMessage(error.response.statusText)
                 console.log(error.response)
             })
 
@@ -203,6 +197,8 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
         setEditSupportTierModalOpen(true);
     };
     const handleEditModalClose = () => {
+        setEditTierErrorMessage("")
+        setEditTierErrorFlag(false)
         setEditSupportTierModalOpen(false);
         setSelectedSupportTier(null);
     };
@@ -214,6 +210,11 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
     const handleDeleteSupportTierModalClose = () => {
         setDeleteSupportTierModalOpen(false)
         setSelectedSupportTier(null);
+    }
+    const handleDeleteAddNewSupportTier = () => {
+        setAddTierErrorMessage("")
+        setAddTierErrorFlag(false)
+        setCreateSupportTier(undefined)
     }
 
     const deleteSupportTierConfirmationModal = () => {
@@ -266,17 +267,20 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
         return (
             <Box
                 style={{
-                    width: 400,
-                    marginBottom: 2,
+                    width: 350,
+                    padding: 15,
+                    minHeight: 320,
                     border: "3px solid #0067cd",
                     borderRadius: "3%"
                 }}>
                 <h4 style={{marginTop: 10}}>Support Tier</h4>
-                {errorFlag &&
-                    <Alert severity="error">
-                        <AlertTitle>Error</AlertTitle>
-                        {errorMessage}
-                    </Alert>}
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    {addTierErrorFlag &&
+                        <Alert severity="error" style={{width: 300}}>
+                            <AlertTitle>Error</AlertTitle>
+                            {addTierErrorMessage}
+                        </Alert>}
+                </Box>
                 <TextField
                     required
                     label="Title"
@@ -286,12 +290,12 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                     onChange={(event) => (editNewSupportTier("title", event.target.value))}
                     InputProps={{
                         style: {
-                            minWidth: 350,
+                            minWidth: 300,
                             resize: 'vertical',
                             overflow: 'auto',
                         },
                     }}
-                    style={{ marginBottom: 8 }}
+                    style={{ marginBottom: 8, marginTop: 8 }}
                 />
                 <TextField
                     required
@@ -302,12 +306,12 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                     onChange={(event) => (editNewSupportTier("description", event.target.value))}
                     InputProps={{
                         style: {
-                            width: 350,
+                            minWidth: 300,
                             resize: 'vertical',
                             overflow: 'auto',
                         },
                     }}
-                    style={{width: 350, marginBottom: 8 }}
+                    style={{ marginBottom: 8 }}
                 />
                 <TextField
                     required
@@ -316,32 +320,38 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                     value={createSupportTier?.cost}
                     onChange={(event) => (editNewSupportTier("cost", event.target.value))}
                     InputProps={{
+                        style: {
+                            minWidth: 300
+                        },
                         startAdornment: <InputAdornment position="start">$</InputAdornment>,
                     }}
-                    style={{ width: 350, marginBottom: 8 }}
+                    style={{ marginBottom: 8 }}
                 />
                 <Button
                     variant="contained"
                     sx={{
-                        background: "#1c7c31",
+                        background: "#C70000",
                         marginRight: 1,
                         marginBottom: "8px",
                         "&:hover": {
-                            background: "#ab0f0f", // Change hover color to red
-                        }}}
-                    onClick={createNewSupportTier}
-                >Save</Button>
-                <Button
-                    variant="contained"
-                    sx={{
-                        background: "#C70000",
-                        marginBottom: "8px",
-                        "&:hover": {
-                            background: "#ab0f0f", // Change hover color to red
+                            background: "#ab0f0f",
                         }}}
                     onClick={handleDeleteAddNewSupportTier}
                 >
-                    Delete</Button>
+                    Delete
+                </Button>
+                <Button
+                    variant="contained"
+                    sx={{
+                        background: "#1c7c31",
+                        marginBottom: "8px",
+                        "&:hover": {
+                            background: "#196728", // Change hover color to red
+                        }}}
+                    onClick={createNewSupportTier}
+                >
+                    Save
+                </Button>
             </Box>
 
         )
@@ -349,29 +359,28 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
 
     const editSupportTierModal = () => {
         const isNotChanged = () => {
-            console.log("hehe")
             return (originalSupportTier?.title == selectedSupportTier?.title &&
                 originalSupportTier?.description == selectedSupportTier?.description &&
                 originalSupportTier?.cost == selectedSupportTier?.cost);
         }
-
         return (
             <Dialog
                 open={editSupportTierModalOpen}
                 onClose={handleEditModalClose}
             >
                 <DialogTitle>Edit Support Tier</DialogTitle>
-                {errorFlag &&
-                    <Alert severity="error">
-                        <AlertTitle>Error</AlertTitle>
-                        {errorMessage}
-                    </Alert>}
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    {editTierErrorFlag &&
+                        <Alert severity="error" style={{width: 350}}>
+                            <AlertTitle>Error</AlertTitle>
+                            {editTierErrorMessage}
+                        </Alert>}
+                </Box>
                 <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <TextField
                         label="Title"
                         multiline
                         variant="outlined"
-                        sx={{marginTop: 2}}
                         value={selectedSupportTier?.title}
                         onChange={(event) => (updateEditSupportTier("title", event.target.value))}
                         InputProps={{
@@ -410,15 +419,19 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleEditModalClose}>Cancel</Button>
                     <Button
-                        style={{background: '#1c7c31'}}
-                        variant="contained"
+                        onClick={handleEditModalClose}
+                        style={{color: "#FF3333"}}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                    sx={{ color: isNotChanged() ? "#bbbbbb" : '#1c7c31' }}
                         onClick={(editSupportTier)}
                         disabled={isNotChanged()}
                         autoFocus
                     >
-                        save
+                        Save
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -428,21 +441,24 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
 
     const getSupportTiers = () => {
         return petition?.supportTiers.map((tier, index) => (
-                <Box
-                    key={index}
-                    display="flex"
-                    flexDirection="column"
-                    gap={2}
-                    p={3}
-                    sx={{
+            <Grid
+                item
+                key={index}
+                p={3}
+                xs={10}
+                md={4}
+            >
+                <div
+                    style={{
                         border: '4px solid #0067cd',
-                        borderRadius: 2,
+                        borderRadius: 9,
                         backgroundColor: '#f5f5f5',
-                        maxWidth: '300px',
-                        minWidth:'250px',
-                        width: '100%',
+                        height: 300,
                         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                        justifyContent: 'space-between'
+                        alignContent: "center",
+                        justifyContent: 'space-between',
+                        padding: "10px",
+                        overflow: 'auto'
                     }}
                 >
                     <div>
@@ -473,35 +489,52 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                         <Stack direction="row" spacing={1} style={{justifyContent: "center"}}>
                             <Button
                                 variant="contained"
-                                style={{backgroundColor: hasSupporters(tier.supportTierId) ? "#bbbbbb" : "#0F5132FF"}}
+                                sx={{
+                                    backgroundColor:
+                                        hasSupporters(tier.supportTierId) ||  petition?.supportTiers.length === 1
+                                            ? "#bbbbbb" : "#C70000",
+                                    "&:hover": {
+                                        background: "#ab0f0f",
+                                    }}}
+                                onClick={() => (handleDeleteSupportTierModalOpen(tier))}
+                                disabled={hasSupporters(tier.supportTierId) || petition?.supportTiers.length === 1}
+                            >
+                                Delete
+                            </Button>
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    backgroundColor: hasSupporters(tier.supportTierId) ? "#bbbbbb" : "#1c7c31",
+                                    "&:hover": {
+                                        background: "#196728", // Change hover color to red
+                                    }}}
                                 onClick={() => (handleEditModalOpen(tier))}
                                 disabled={hasSupporters(tier.supportTierId)}
                             >
                                 Edit
                             </Button>
-                            <Button
-                                variant="contained"
-                                style={{backgroundColor: hasSupporters(tier.supportTierId) ? "#bbbbbb" : "#b00e0e"}}
-                                onClick={() => (handleDeleteSupportTierModalOpen(tier))}
-                                disabled={hasSupporters(tier.supportTierId)}
-                            >
-                                Delete
-                            </Button>
                         </Stack>
                     </div>
-                </Box>
+                </div>
+            </Grid>
             )
         )
     }
     return (
         <>
-            <Box
-                display="flex"
+            <h2 style={{marginBottom: "10px"}}>Support Tiers</h2>
+            {errorFlag &&
+                <Alert severity="error" style={{width: '400px'}}>
+                    <AlertTitle>Error</AlertTitle>
+                    {errorMessage}
+                </Alert>}
+            <Grid
+                container
+                spacing={2}
                 justifyContent="center"
-                gap={3}
             >
                 {getSupportTiers()}
-            </Box>
+            </Grid>
             {createSupportTier ? addSupportTier() :
                 <Button
                     variant="outlined"
