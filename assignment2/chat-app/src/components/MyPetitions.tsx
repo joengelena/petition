@@ -277,7 +277,7 @@ const MyPetitions = () => {
                         </TableHead>
                         <TableBody>
                             {myPetition_rows()}
-                            {deletePetitionConfirmationModal()}
+                            {deleteModalOpen && deletePetitionConfirmationModal()}
                         </TableBody>
                     </Table>
                 </TableContainer>
