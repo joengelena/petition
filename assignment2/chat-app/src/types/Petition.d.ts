@@ -26,7 +26,6 @@ type EditPetition = {
     title?: string,
     description?: string,
     categoryId?: number
-    supportTiers: SupportTier[]
 }
 
 type CreateSupportTier = {

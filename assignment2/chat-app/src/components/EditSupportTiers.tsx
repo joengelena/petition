@@ -16,15 +16,16 @@ import {
 const baseUrl = "http://localhost:4941/api/v1";
 
 interface EditPetitionChildComponent {
-    petition: EditPetition;
     petitionId: string | undefined;
 }
 
-const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petition, petitionId}) => {
+const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) => {
     const navigate = useNavigate();
     const userLocal = useUserInfoStorage(state => state.user);
     const [errorFlag, setErrorFlag] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
+
+    const [petition, setPetition] = React.useState<Petition>()
 
     const [createSupportTier, setCreateSupportTier] = React.useState<CreateSupportTier>();
 
@@ -55,6 +56,24 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petition, petit
     }, [userLocal])
 
     React.useEffect(() => {
+        axios.get(`${baseUrl}/petitions/${petitionId}`, {
+            headers: {
+                "X-Authorization": userLocal.token
+            }
+        })
+            .then((response) => {
+                    const petitionData = response.data
+                    setPetition(petitionData)
+
+                    setErrorFlag(false)
+                    setErrorMessage("")
+                    console.log(petitionData)
+                },
+                (error) => {
+                    setErrorFlag(true)
+                    setErrorMessage(error.status);
+                })
+
         axios.get(`${baseUrl}/petitions/${petitionId}/supporters`)
             .then((response) => {
                 setErrorFlag(false);
@@ -67,12 +86,14 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petition, petit
             });
     }, [petitionId]);
 
+
+
     const handleDeleteAddNewSupportTier = () => {
         setCreateSupportTier(undefined)
     }
 
     const handleAddNewSupportTier = () => {
-        if (petition?.supportTiers.length < 3) {
+        if (petition && petition.supportTiers && petition.supportTiers.length < 3) {
             setCreateSupportTier({tempId: randomIndex, title: '', description: '', cost: ""})
             setRandomIndex(randomIndex + 1)
         }
@@ -487,7 +508,7 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petition, petit
                     color="primary"
                     sx={{width: "400px", marginTop: 3}}
                     onClick={handleAddNewSupportTier}
-                    disabled={petition.supportTiers.length === 3}
+                    disabled={petition?.supportTiers.length === 3}
                 >
                     Add Support Tier
                 </Button>
