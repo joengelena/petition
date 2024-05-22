@@ -55,6 +55,7 @@ const Petition = ()=> {
                         setErrorFlag(false)
                         setErrorMessage("")
                         setPetition(response.data)
+                        getSimilarPetitions(response.data)
                     },
                     (error) => {
                         setErrorFlag(true)
@@ -78,7 +79,7 @@ const Petition = ()=> {
         getCategories()
     }, [petitionId]);
 
-    const getSupporters = () => {
+    const getSupporters = (petition: Petition) => {
         axios.get(baseUrl + `/petitions/${petition?.petitionId}/supporters`)
             .then((response) => {
                 setErrorFlag(false)
@@ -91,7 +92,7 @@ const Petition = ()=> {
             })
     }
 
-    React.useEffect(() => {
+    const getSimilarPetitions = (petition: Petition) => {
         const getPetitionsCategoryId = () => {
             const query = `categoryIds=${petition?.categoryId}`
             axios.get(`${baseUrl}/petitions?count=10&${query}`)
@@ -122,16 +123,12 @@ const Petition = ()=> {
                 })
         }
 
-        const getSimilarPetitions = () => {
+        if (petition !== null && petition?.categoryId !== 0 && petition?.ownerId !== 0) {
+            getSupporters(petition)
             getPetitionsCategoryId()
             getPetitionsOwnerId()
-        };
-
-        if (petition !== null && petition?.categoryId !== 0 && petition?.ownerId !== 0) {
-            getSupporters()
-            getSimilarPetitions()
         }
-    }, [petition]);
+    }
 
     React.useEffect(() => {
         const concatenateSimilarPetitions = () => {
@@ -150,11 +147,6 @@ const Petition = ()=> {
         }
     }, [similarCategory, similarOwnerId, concatReady, petition]);
 
-    // const supportATier = () => {
-    //     const config = {
-    //         method:"post"
-    //     }
-    // }
 
     const supportATier = () => {
         const data = message !== null
@@ -167,7 +159,7 @@ const Petition = ()=> {
             }
         })
             .then((response) => {
-                getSupporters()
+                window.location.reload()
                 setMessage(null)
                 setErrorMessage('');
                 setErrorFlag(false);
@@ -316,7 +308,6 @@ const Petition = ()=> {
             );
         }
         return supporters
-            // .filter(supporter => supporter.supportTierId && petition?.supportTiers.some(tier => tier.supportTierId === supporter.supportTierId))
             .map((supporter, index) => (
                 <ListItem
                     key={index}
@@ -356,6 +347,7 @@ const Petition = ()=> {
                                 </Typography>
                                 {supporter.message && (
                                     <Typography
+                                        component="span"
                                         style={{
                                             color: '#414141',
                                             wordWrap: 'break-word'
@@ -368,6 +360,7 @@ const Petition = ()=> {
                     />
                     <Typography
                         variant="body1"
+                        component="div"
                         style={{
                             marginBottom: '16px',
                             color: '#414141',
