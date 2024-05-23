@@ -15,6 +15,21 @@ const Profile = () => {
     const [errorMessage, setErrorMessage] = useState("")
     const [user, setUser] = React.useState<User>()
 
+    React.useEffect(() => {
+        axios.get(`${baseUrl}/users/${userLocal.userId}`, {
+            headers: {
+                "X-Authorization": userLocal.token }
+        })
+            .then((response) => {
+                    setErrorFlag(false)
+                    setErrorMessage("")
+                },
+                (error) => {
+                    setErrorFlag(true)
+                    setErrorMessage(error.toString());
+                    navigate('/')
+                })
+    }, [userLocal])
 
     React.useEffect(() => {
         const getUser = () => {

@@ -1,28 +1,26 @@
 import React, {ChangeEvent} from "react";
 import axios from "axios";
-import {Link, useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {
     Alert,
     AlertTitle,
     Avatar,
-    Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider,
+    Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
     Grid, List, ListItem, ListItemAvatar, ListItemText,
-    Paper,
-    Table, TableBody,
+    Paper, Table, TableBody,
     TableCell, TableContainer,
     TableHead,
     TableRow, TextField,
     Typography
 } from "@mui/material";
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
-import CSS from "csstype";
 import LogInDialog from "./LogInDialog";
 import {useUserInfoStorage} from "../store";
-import logInDialog from "./LogInDialog";
 const baseUrl = "http://localhost:4941/api/v1";
 
 const Petition = ()=> {
     const {petitionId} = useParams();
+    const navigate = useNavigate();
     const userLocal = useUserInfoStorage(state => state.user);
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
@@ -34,8 +32,6 @@ const Petition = ()=> {
     const [similarCategory, setSimilarCategory] = React.useState<Array<Petition>>([]);
 
     const [concatReady, setConcatReady] = React.useState(false)
-    const [imageExists, setImageExists] = React.useState(true);
-    const [maxPage, setMaxPage] = React.useState(1)
     const [categories, setCategories] = React.useState<Array<Category>>([]);
 
     const [logInDialogOpen, setLogInDialogOpen] = React.useState(false);
@@ -43,10 +39,6 @@ const Petition = ()=> {
 
     const [supportTierId, setSupportTierId] = React.useState(-1);
     const [message, setMessage] = React.useState<String | null>(null);
-
-    const [alreadySupporting, setAlreadySupporting] = React.useState(false)
-
-    const navigate = useNavigate();
 
     React.useEffect(() => {
         const getPetition = () => {
