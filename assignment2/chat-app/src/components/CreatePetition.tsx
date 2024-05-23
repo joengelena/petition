@@ -19,7 +19,6 @@ const CreatePetition = () => {
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
     const [categories, setCategories] = React.useState<Array<Category>>([]);
-    const [petition, setPetition] = React.useState<CreatePetition>();
 
     const [title, setTitle] = React.useState('');
     const [description, setDescription] = React.useState('');
@@ -27,7 +26,6 @@ const CreatePetition = () => {
     const [categoryIds, setCategoryIds] = React.useState<Array<Number>>([])
 
     const [supportTiers, setSupportTiers] = React.useState<Array<CreateSupportTier>>([]);
-    const [numSupportTiers, setNumSupportTiers] = React.useState<number>(1);
     const [randomIndex, setRandomIndex] = React.useState(0);
 
     React.useEffect(() => {
