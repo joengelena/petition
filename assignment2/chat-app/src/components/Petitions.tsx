@@ -208,7 +208,6 @@ const Petitions = ()=> {
         )
     }
 
-
     return (
         <div style={{padding: 50}}>
             <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 1400}}>
@@ -217,7 +216,10 @@ const Petitions = ()=> {
                 </Typography>
                 <Button
                     variant="contained"
-                    style={{background: "#0f5132", marginBottom: 6, width: 200}}
+                    sx={{background: "#1c7c31", marginBottom: 6, width: 200,
+                        "&:hover": {
+                            background: "#196728"
+                        }}}
                     onClick={(handleCreatePetitionClick)}
                 >
                     + Create Petition

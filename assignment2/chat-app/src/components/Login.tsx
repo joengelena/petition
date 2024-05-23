@@ -39,7 +39,6 @@ const Login = () => {
                     navigate("/petitions")
                 },
                 (error) => {
-                    console.error(error);
                     setErrorFlag(true);
                     if (error.response.statusText === "Invalid email/password") {
                         setErrorMessage("Please check your email/password and try again")

@@ -96,7 +96,7 @@ const MyPetitions = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDeleteModalClose}>Cancel</Button>
-                    <Button style={{color: '#FF3333'}} onClick={deletePetition} autoFocus>
+                    <Button style={{color: '#C70000'}} onClick={deletePetition} autoFocus>
                         Delete
                     </Button>
                 </DialogActions>
@@ -222,7 +222,12 @@ const MyPetitions = () => {
                     <Stack direction="column" spacing={1}>
                         <Button
                             variant="contained"
-                            style={{ background: petition.ownerId !== userLocal.userId ? "#bbbbbb": "#0f5132" }}
+                            sx={{
+                                background:
+                                    petition.ownerId !== userLocal.userId ? "#bbbbbb": "#1c7c31",
+                                "&:hover": {
+                                    background: "#196728"
+                                }}}
                             onClick={(event) => {
                                 event.stopPropagation();
                                 navigate(`/petitions/${petition.petitionId}/editPetition`);
@@ -233,7 +238,11 @@ const MyPetitions = () => {
                         </Button>
                         <Button
                             variant="contained"
-                            style={{ background: petition.ownerId !== userLocal.userId || petition.numberOfSupporters >= 1 ? '#bbbbbb' : '#b00e0e' }}
+                            sx={{
+                                background: petition.ownerId !== userLocal.userId || petition.numberOfSupporters >= 1 ? '#bbbbbb' : '#C70000',
+                                "&:hover": {
+                                    background: "#ab0f0f",
+                                }}}
                             onClick={(event) => {
                                 event.stopPropagation();
                                 handleDeleteModalOpen(petition);
@@ -254,6 +263,16 @@ const MyPetitions = () => {
                 <Typography variant="h3" style={{ fontWeight: 'bold', padding: 10 }}>
                     My Petitions
                 </Typography>
+                <Button
+                    variant="contained"
+                    sx={{background: "#1c7c31", marginBottom: 6, width: 200,
+                        "&:hover": {
+                            background: "#196728",
+                        }}}
+                    onClick={() => (navigate('/createPetition'))}
+                >
+                    + Create Petition
+                </Button>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     {errorFlag &&
                         <Alert severity="error" sx={{width: 400}}>

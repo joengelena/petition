@@ -10,7 +10,7 @@ import {
     Dialog, DialogActions,
     DialogContent, DialogContentText,
     DialogTitle,
-    Paper,
+    Paper, Stack,
     TextField,
     Typography
 } from "@mui/material";
@@ -86,14 +86,12 @@ const UploadImagePetition = () => {
             }
         })
             .then((response) => {
-                    console.log("upload image")
                     navigate(`/petitions/${petition?.petitionId}`)
                     setErrorMessage("")
                     setErrorFlag(false)
                     setImage(response.data)
                 },
                 (error) => {
-                    console.log(error)
                     setErrorFlag(true)
                     setErrorMessage(error.toString());
                 }
@@ -140,42 +138,43 @@ const UploadImagePetition = () => {
                 <Typography variant="h4" style={{ fontWeight: 'bold' }}>
                     Image Upload
                 </Typography>
-                <Box display="flex" justifyContent="center" marginBottom={2} marginTop={2}>
-                    <Avatar
-                        src={imgSrc()}
-                        style={{width: 400, height: 250, borderRadius: 3}}
-                    >
+                <Stack direction="column" spacing={2} marginTop={2} marginBottom={2} justifyContent="center" alignItems="center">
+                    <Avatar src={imgSrc()} style={{width: 400, height: 250, borderRadius: 3}}>
                         <ImageNotSupportedIcon/>
                     </Avatar>
-                </Box>
-                <Button
-                    component="label"
-                    variant="contained"
-                    tabIndex={-1}
-                    style ={{ width: 150, marginBottom: 10}}
-                    startIcon={<CloudUpload />}
-                >
-                    Upload file
-                    <input type="file" onChange={handleFileChange} style={{ display: 'none' }} />
-                </Button>
-                {errorFlag &&
-                    <Alert severity="error">
-                        <AlertTitle>Error</AlertTitle>
-                        {errorMessage}
-                    </Alert>}
-                <Button
-                    type="submit"
-                    variant="contained"
-                    fullWidth
-                    style={{ background: image === null ? "#bbbbbb": "#0f5132", marginTop: 10, marginBottom: 8}}
-                    onClick={() => uploadImage()}
-                    disabled={image === null}
-                >
-                    Update
-                </Button>
-                <Link to="/Petitions" >
-                    Skip
-                </Link>
+                    <Button
+                        component="label"
+                        variant="contained"
+                        startIcon={<CloudUpload />}
+                    >
+                        Upload file
+                        <input type="file" onChange={handleFileChange} style={{ display: 'none' }} />
+                    </Button>
+                    <Stack direction="column" spacing={1} sx={{ width: 320 }}>
+                        {errorFlag &&
+                            <Alert severity="error">
+                                <AlertTitle>Error</AlertTitle>
+                                {errorMessage}
+                            </Alert>}
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            fullWidth
+                            sx={{
+                                background: image === null ? "#bbbbbb": "#1c7c31",
+                                "&:hover": {
+                                    background: "#196728"
+                                }}}
+                            onClick={() => uploadImage()}
+                            disabled={image === null}
+                        >
+                            Update
+                        </Button>
+                        <Link to="/myPetitions" >
+                            Exit
+                        </Link>
+                    </Stack>
+                </Stack>
             </Paper>
         </div>
     );

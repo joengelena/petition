@@ -41,13 +41,11 @@ const Register = () => {
         axios(config)
             .then((response) => {
                 setUserId(response.data.userId)
-                console.log("user is successfully registered");
                 setErrorFlag(false)
                 setErrorMessage("")
                 login();
             },
             (error) => {
-                console.error(error);
                 setErrorFlag(true);
                 if (error.response.statusText.includes("fewer than 1")) {
                     setErrorMessage("Please fill out the required fields")

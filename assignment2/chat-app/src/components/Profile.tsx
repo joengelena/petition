@@ -54,26 +54,28 @@ const Profile = () => {
                     <Typography variant="body1">
                         {user?.email}
                     </Typography>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        onClick={()=> {navigate('/editProfile')}}
-                    >
-                        Edit
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        onClick={()=> {navigate(`/users/${userLocal.userId}/uploadImage`)}}
-                        startIcon={<CloudUpload />}
-                    >
-                        Update Photo
-                    </Button>
-                    <Link to="/Petitions" >
-                        Back
-                    </Link>
+                    <Stack direction="column" spacing={1} sx={{ width: 300 }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            onClick={()=> {navigate('/editProfile')}}
+                        >
+                            Edit
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            onClick={()=> {navigate(`/users/${userLocal.userId}/uploadImage`)}}
+                            startIcon={<CloudUpload />}
+                        >
+                            Update Photo
+                        </Button>
+                        <Link to="/Petitions" >
+                            Back
+                        </Link>
+                    </Stack>
                 </Stack>
 
             </Paper>

@@ -10,7 +10,7 @@ import {
     Dialog, DialogActions,
     DialogContent, DialogContentText,
     DialogTitle,
-    Paper,
+    Paper, Stack,
     TextField,
     Typography
 } from "@mui/material";
@@ -69,14 +69,12 @@ const UploadImageUser = () => {
             }
         })
             .then((response) => {
-                    console.log("upload image")
                     navigate('/petitions')
                     setErrorMessage("")
                     setErrorFlag(false)
                     setImage(response.data)
                 },
                 (error) => {
-                    console.log(error)
                     setErrorFlag(true)
                     setErrorMessage(error.toString());
                 }
@@ -110,22 +108,18 @@ const UploadImageUser = () => {
     const deleteImage = () => {
         setDeleteModalOpen(false)
         setImage(null)
-        console.log(dbImage)
         if (dbImage) {
-            console.log("in the delete req")
             axios.delete(`${baseUrl}/users/${userLocal.userId}/image`, {
                 headers: {
                     "X-Authorization": userLocal.token
                 }
             })
                 .then((response) => {
-                        console.log("delete image")
                         setDbImage(false)
                         setErrorMessage("")
                         setErrorFlag(false)
                     },
                     (error) => {
-                        console.log(error)
                         setErrorFlag(true)
                         if (error.response.status === 404) {
                             setErrorMessage("Please upload a file to delete")
@@ -168,7 +162,7 @@ const UploadImageUser = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDeleteModalClose}>Cancel</Button>
-                    <Button style={{color: '#FF3333'}} onClick={deleteImage} autoFocus>
+                    <Button style={{color: '#C70000'}} onClick={deleteImage} autoFocus>
                         Delete
                     </Button>
                 </DialogActions>
@@ -182,49 +176,58 @@ const UploadImageUser = () => {
                 <Typography variant="h4" style={{ fontWeight: 'bold' }}>
                     Image Upload
                 </Typography>
-                <Box display="flex" justifyContent="center" marginBottom={2} marginTop={2}>
+                <Stack direction="column" spacing={2} marginTop={2} marginBottom={2} justifyContent="center" alignItems="center">
                     <Avatar sx={{ width: 150, height: 150 }} src={imgSrc()} />
-                </Box>
-                <Button
-                    component="label"
-                    variant="contained"
-                    tabIndex={-1}
-                    style ={{ width: 150, marginBottom: 10}}
-                    startIcon={<CloudUpload />}
-                >
-                    Upload file
-                    <input type="file" onChange={handleFileChange} style={{ display: 'none' }} />
-                </Button>
-                {errorFlag &&
-                    <Alert severity="error">
-                        <AlertTitle>Error</AlertTitle>
-                        {errorMessage}
-                    </Alert>}
-                <Button
-                    type="submit"
-                    variant="contained"
-                    fullWidth
-                    style={{ background: image === null ? "#bbbbbb": "#0f5132", marginTop: 8, marginBottom: 8}}
-                    onClick={() => uploadImage()}
-                    disabled={image === null}
-                >
-                    Update
-                </Button>
-                {(dbImage || image) &&
                     <Button
-                        type="submit"
+                        component="label"
                         variant="contained"
-                        fullWidth
-                        style={{ background: "#d90f0f", marginBottom: 8 }}
-                        onClick={(handleDeleteModalOpen)}
+                        startIcon={<CloudUpload />}
                     >
-                        Delete
+                        Upload file
+                        <input type="file" onChange={handleFileChange} style={{ display: 'none' }} />
                     </Button>
-                }
-                {deleteConfirmationModal()}
-                <Link to="/Petitions" >
-                    Exit
-                </Link>
+
+                    <Stack direction="column" spacing={1} sx={{ width: 320 }}>
+                        {errorFlag &&
+                            <Alert severity="error">
+                                <AlertTitle>Error</AlertTitle>
+                                {errorMessage}
+                            </Alert>}
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            fullWidth
+                            sx={{
+                                background: image === null ? "#bbbbbb": "#1c7c31",
+                                "&:hover": {
+                                    background: "#196728"
+                                }}}
+                            onClick={() => uploadImage()}
+                            disabled={image === null}
+                        >
+                            Update
+                        </Button>
+                        {(dbImage || image) &&
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                fullWidth
+                                sx={{
+                                    background: "#C70000",
+                                    "&:hover": {
+                                        background: "#ab0f0f"
+                                    }}}
+                                onClick={(handleDeleteModalOpen)}
+                            >
+                                Delete
+                            </Button>
+                        }
+                        {deleteConfirmationModal()}
+                        <Link to="/Petitions" >
+                            Exit
+                        </Link>
+                    </Stack>
+                </Stack>
             </Paper>
         </div>
     );

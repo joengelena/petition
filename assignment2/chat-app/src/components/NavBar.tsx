@@ -65,7 +65,6 @@ const NavBar = () => {
     };
 
     const handleLogoutUser = () => {
-        console.log("logging out the user...")
         const config = {
             method: "post",
             url: baseUrl + "/users/logout",
@@ -171,7 +170,7 @@ const NavBar = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleLogoutModalClose}>Cancel</Button>
-                    <Button style={{color: '#FF3333'}} onClick={handleLogoutUser} autoFocus>
+                    <Button style={{color: '#C70000'}} onClick={handleLogoutUser} autoFocus>
                         Logout
                     </Button>
                 </DialogActions>

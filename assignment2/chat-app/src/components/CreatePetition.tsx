@@ -1,25 +1,17 @@
 import {
     Alert,
     AlertTitle,
-    Avatar,
     Box, Button, FormControl,
-    Grid, InputAdornment, InputLabel, MenuItem,
-    Paper, Select, SelectChangeEvent, Stack,
-    Table, TableBody, TableCell,
-    TableContainer,
-    TableHead,
-    TableRow, TextField,
+    InputAdornment, InputLabel, MenuItem,
+    Paper, Select, SelectChangeEvent, Stack, TextField,
     Typography
 } from "@mui/material";
-import React, {useState} from "react";
-import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
+import React from "react";
 import axios from "axios";
 import {useUserInfoStorage} from "../store";
 import {Link, useNavigate} from "react-router-dom";
-import {CloudUpload} from "@mui/icons-material";
 
 const baseUrl = "http://localhost:4941/api/v1";
-
 
 const CreatePetition = () => {
     const navigate = useNavigate();
@@ -67,7 +59,6 @@ const CreatePetition = () => {
                         setErrorFlag(false);
                         setErrorMessage("");
                         setCategories(response.data)
-                        console.log(response.data)
                     },
                     (error) => {
                         setErrorFlag(true);
@@ -111,7 +102,6 @@ const CreatePetition = () => {
 
             },
                 (error) => {
-                    console.log(error)
                     setErrorFlag(true)
                     if (error.response.statusText === "Bad Request: data/supportTiers must NOT have fewer than 1 items") {
                         setErrorMessage("Please add at least one support tier")
@@ -202,7 +192,7 @@ const CreatePetition = () => {
                         background: "#C70000",
                         marginBottom: "8px",
                         "&:hover": {
-                            background: "#ab0f0f", // Change hover color to red
+                            background: "#ab0f0f",
                         }}}
                     onClick={() => (handleDeleteSupportTier(tier.tempId))}
                 >Delete</Button>
@@ -296,15 +286,6 @@ const CreatePetition = () => {
                     >
                         Create Petition
                     </Button>
-                    {/*<Button*/}
-                    {/*    variant="contained"*/}
-                    {/*    color="primary"*/}
-                    {/*    style={{ width: 400 }}*/}
-                    {/*    onClick={()=> {navigate(`/petitions/${petition?.petitionId}/uploadImage`)}}*/}
-                    {/*    startIcon={<CloudUpload />}*/}
-                    {/*>*/}
-                    {/*    Update Photo*/}
-                    {/*</Button>*/}
                     <Link to="/petitions" >
                         Back to Petitions
                     </Link>

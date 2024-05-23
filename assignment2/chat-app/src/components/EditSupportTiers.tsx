@@ -71,7 +71,6 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
 
                     setErrorFlag(false)
                     setErrorMessage("")
-                    console.log(petitionData)
                 },
                 (error) => {
                     setErrorFlag(true)
@@ -127,7 +126,6 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
             }
         })
             .then((response) => {
-                console.log(response)
                 window.location.reload()
                 setAddTierErrorFlag(false)
                 setAddTierErrorMessage("")
@@ -135,7 +133,6 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
             .catch((error) => {
                 setAddTierErrorFlag(true)
                 setAddTierErrorMessage(error.response.statusText)
-                console.log(error.response)
             })
     }
 
@@ -177,7 +174,6 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
         })
             .then((response) => {
                 handleEditModalClose()
-                console.log(response)
                 setEditTierErrorFlag(false)
                 setEditTierErrorMessage("")
                 handleEditModalClose()
@@ -185,8 +181,15 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
             })
             .catch((error) => {
                 setEditTierErrorFlag(true)
-                setEditTierErrorMessage(error.response.statusText)
-                console.log(error.response)
+                if (error.response.statusText.includes("title must NOT have more than 128 characters")) {
+                    setEditTierErrorMessage("Title too long! Keep it under 128 characters.")
+                } else if (error.response.statusText.includes("data/description must NOT have more than 1024 characters")) {
+                    setEditTierErrorMessage("Description too long! Keep it under 1024 characters.")
+                } else if (error.response.statusText === "Bad Request: data/supportTiers/0/cost must be integer") {
+                    setEditTierErrorMessage("Cost must be a number")
+                } else {
+                    setEditTierErrorMessage(error.response.statusText)
+                }
             })
 
     }
@@ -232,7 +235,7 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                 <DialogActions>
                     <Button onClick={handleDeleteSupportTierModalClose}>Cancel</Button>
                     <Button
-                        style={{color: '#FF3333'}}
+                        style={{color: '#C70000'}}
                         onClick={() => (deleteSupportTier())}
                         autoFocus
                     >
@@ -421,7 +424,7 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                 <DialogActions>
                     <Button
                         onClick={handleEditModalClose}
-                        style={{color: "#FF3333"}}
+                        style={{color: "#C70000"}}
                     >
                         Cancel
                     </Button>
@@ -506,7 +509,7 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                                 sx={{
                                     backgroundColor: hasSupporters(tier.supportTierId) ? "#bbbbbb" : "#1c7c31",
                                     "&:hover": {
-                                        background: "#196728", // Change hover color to red
+                                        background: "#196728",
                                     }}}
                                 onClick={() => (handleEditModalOpen(tier))}
                                 disabled={hasSupporters(tier.supportTierId)}

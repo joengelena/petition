@@ -165,9 +165,8 @@ const Petition = ()=> {
                 setErrorFlag(false);
             })
             .catch((error) => {
-                console.log("Error adding supporter:", error);
                 setErrorFlag(true);
-                setErrorMessage(error.toString());
+                setErrorMessage(error.response.statusText);
             });
     }
 
@@ -229,7 +228,7 @@ const Petition = ()=> {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button style={{color: '#FF3333'}} onClick={handleSupportTierDialogClose}>Cancel</Button>
+                    <Button style={{color: '#C70000'}} onClick={handleSupportTierDialogClose}>Cancel</Button>
                     <Button onClick={handleSupportNow}>
                         Support Now
                     </Button>
@@ -338,13 +337,14 @@ const Petition = ()=> {
                         secondary={
                             <React.Fragment>
                                 <Typography
-                                    sx={{ display: 'inline' }}
+                                    sx={{display: 'inline'}}
                                     component="span"
                                     variant="h6"
                                     color="text.primary"
                                 >
                                     {supporter.supporterFirstName} {supporter.supporterLastName}
                                 </Typography>
+                                <br/>
                                 {supporter.message && (
                                     <Typography
                                         component="span"

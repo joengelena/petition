@@ -85,7 +85,6 @@ const EditPetition = () => {
                     setErrorFlag(false);
                     setErrorMessage("");
                     setCategories(response.data)
-                    console.log(response.data)
                 },
                 (error) => {
                     setErrorFlag(true);
@@ -110,7 +109,6 @@ const EditPetition = () => {
 
                 setErrorFlag(false)
                 setErrorMessage("")
-                console.log(petitionData)
             },
             (error) => {
                 setErrorFlag(true)
@@ -160,10 +158,10 @@ const EditPetition = () => {
                     setErrorMessage("Please add at least one support tier")
                 } else if (error.response.statusText.includes("fewer than 1")) {
                     setErrorMessage("Please fill out the required fields")
-                } else if (error.response.statusText === "Bad Request: data/title must NOT have more than 128 characters") {
+                } else if (error.response.statusText.includes("title must NOT have more than 128 characters")) {
                     setErrorMessage("Title too long! Keep it under 128 characters.")
-                } else if (error.response.statusText === "Bad Request: data/description must NOT have more than 128 characters") {
-                    setErrorMessage("Description too long! Keep it under 128 characters.")
+                } else if (error.response.statusText.includes("data/description must NOT have more than 1024 characters")) {
+                    setErrorMessage("Description too long! Keep it under 1024 characters.")
                 } else if (error.response.statusText === "Bad Request: data/supportTiers/0/cost must be integer") {
                     setErrorMessage("Cost must be a number")
                 } else {
@@ -182,25 +180,12 @@ const EditPetition = () => {
 
                 <Stack direction="column" spacing={2} marginTop={2} marginBottom={2} justifyContent="center"
                        alignItems="center">
-                    {errorFlag &&
-                        <Alert severity="error" style={{width: '400px'}}>
-                            <AlertTitle>Error</AlertTitle>
-                            {errorMessage}
-                        </Alert>}
                     <Avatar
                         src={`${baseUrl}/petitions/${petitionId}/image`}
                         style={{width: 400, height: 250, borderRadius: 3}}
                     >
                         <ImageNotSupportedIcon/>
                     </Avatar>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={()=> {navigate(`/petitions/${petitionId}/uploadImage`)}}
-                        startIcon={<CloudUpload />}
-                    >
-                        Update Photo
-                    </Button>
                     <TextField
                         label="Title"
                         multiline
@@ -253,23 +238,38 @@ const EditPetition = () => {
                             </Select>
                         </FormControl>
                     </Box>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{width: "400px", marginBottom: 2, marginTop: 2}}
-                        onClick={updatePetition}
-                        disabled={disableSave}
-                    >
-                        Save
-                    </Button>
+                    {errorFlag &&
+                        <Alert severity="error" style={{width: '400px'}}>
+                            <AlertTitle>Error</AlertTitle>
+                            {errorMessage}
+                        </Alert>}
+                    <Stack direction="column" spacing={1} sx={{ width: 400 }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={updatePetition}
+                            disabled={disableSave}
+                            sx={{ flexGrow: 1 }}
+                        >
+                            Save
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={()=> {navigate(`/petitions/${petitionId}/uploadImage`)}}
+                            startIcon={<CloudUpload />}
+                            sx={{ flexGrow: 1 }}
+                        >
+                            Update Photo
+                        </Button>
+                    </Stack>
                     <hr style={{width: '100%'}}/>
-
                     <EditSupportTiers petitionId={petitionId} />
-
                     <Link to="/MyPetitions">
                         Back
                     </Link>
                 </Stack>
+
                 <Snackbar
                     autoHideDuration={6000}
                     open={snackOpen}

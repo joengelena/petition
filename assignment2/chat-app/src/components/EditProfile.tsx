@@ -102,8 +102,7 @@ const EditProfile = () => {
             }
         })
             .then((response) => {
-                navigate(`/profile`);
-                console.log(response)
+                navigate(`/profile`)
                 setErrorFlag(false)
                 setErrorMessage("")
             })
@@ -127,7 +126,7 @@ const EditProfile = () => {
                 <Typography variant="h3" style={{fontWeight: 'bold'}}>
                     Edit Profile
                 </Typography>
-                <Stack direction="column" spacing={2} marginTop={2} marginBottom={2} justifyContent="center" alignItems="center">
+                <Stack direction="column" spacing={1} marginTop={2} marginBottom={2} justifyContent="center" alignItems="center">
                     <Avatar
                         src={`${baseUrl}/users/${userLocal.userId}/image`}
                         alt={`${user?.lastName}`}
@@ -212,7 +211,6 @@ const EditProfile = () => {
                         Back
                     </Link>
                 </Stack>
-
             </Paper>
         </div>
 
