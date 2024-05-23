@@ -1,7 +1,7 @@
 import {
     Alert, AlertTitle, Avatar,
-    Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
-    FormControl, InputAdornment,
+    Box, Button,
+    FormControl,
     InputLabel,
     MenuItem,
     Paper,
@@ -17,18 +17,16 @@ import {useUserInfoStorage} from "../store";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 import {CloudUpload} from "@mui/icons-material";
-import LogInDialog from "./LogInDialog";
 import EditSupportTiers from "./EditSupportTiers";
 const baseUrl = "http://localhost:4941/api/v1";
 
 const EditPetition = () => {
     const navigate = useNavigate();
     const {petitionId} = useParams();
-    const userLocal = useUserInfoStorage(state => state.user);
+    const userLocal = useUserInfoStorage(state => state.user)
     const [errorFlag, setErrorFlag] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
-    const [editPetition, setEditPetition] = React.useState<EditPetition>();
-    const [petition, setPetition] = React.useState<Petition>();
+    const [editPetition, setEditPetition] = React.useState<EditPetition>()
 
     const [originalPetition, setOriginalPetition] = React.useState<EditPetition>();
 
@@ -45,14 +43,6 @@ const EditPetition = () => {
     const [snackOpen, setSnackOpen] = React.useState(false)
 
     React.useEffect(() => {
-        getPetition()
-    }, [])
-
-    React.useEffect(()=>{
-        unDisableSave()
-    }, [title, description, categoryId, editPetition])
-
-    React.useEffect(() => {
         axios.get(`${baseUrl}/users/${userLocal.userId}`, {
             headers: {
                 "X-Authorization": userLocal.token }
@@ -67,6 +57,15 @@ const EditPetition = () => {
                     navigate('/')
                 })
     }, [userLocal, navigate])
+
+    React.useEffect(() => {
+        getPetition()
+    }, [])
+
+    React.useEffect(()=>{
+        unDisableSave()
+    }, [title, description, categoryId, editPetition])
+
 
     const unDisableSave = () => {
         if (editPetition) {
