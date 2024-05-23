@@ -1,10 +1,10 @@
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {useUserInfoStorage} from "../store";
-import React, {ChangeEvent} from "react";
+import React from "react";
 import {
     Alert, AlertTitle,
-    Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Pagination,
+    Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
     Paper, Snackbar, Stack,
     Table,
     TableBody,
@@ -26,9 +26,6 @@ const MyPetitions = () => {
     const [myPetitions, setMyPetitions] = React.useState<Array<Petition>>([]);
     const [categories, setCategories] = React.useState<Array<Category>>([]);
 
-    const [concatReady, setConcatReady] = React.useState(false)
-    const [myPetitionOwner, setMyPetitionOwner] = React.useState<Array<Petition>>([]);
-    const [myPetitionSupporter, setMyPetitionSupporter] = React.useState<Array<Petition>>([]);
     const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
     const [selectedPetition, setSelectedPetition] = React.useState<Petition>();
 
@@ -163,7 +160,7 @@ const MyPetitions = () => {
         if (myPetitions.length === 0) {
             return (
                 <TableRow>
-                    <TableCell colSpan={7} align="center">
+                    <TableCell colSpan={8} align="center">
                         <Typography variant="body1">No petitions found.</Typography>
                     </TableCell>
                 </TableRow>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import {useUserInfoStorage} from "../store";
-import {Avatar, Box, Button, Paper, Stack, Typography} from "@mui/material";
+import {Alert, AlertTitle, Avatar, Button, Paper, Stack, Typography} from "@mui/material";
 import {Link, useNavigate} from "react-router-dom";
 import {CloudUpload} from "@mui/icons-material";
 const baseUrl = "http://localhost:4941/api/v1";
@@ -9,7 +9,6 @@ const baseUrl = "http://localhost:4941/api/v1";
 
 const Profile = () => {
     const navigate = useNavigate();
-
     const userLocal = useUserInfoStorage(state => state.user);
     const [errorFlag, setErrorFlag] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
@@ -29,7 +28,7 @@ const Profile = () => {
                     setErrorMessage(error.toString());
                     navigate('/')
                 })
-    }, [userLocal])
+    }, [userLocal, navigate])
 
     React.useEffect(() => {
         const getUser = () => {
@@ -70,6 +69,11 @@ const Profile = () => {
                         {user?.email}
                     </Typography>
                     <Stack direction="column" spacing={1} sx={{ width: 300 }}>
+                        {errorFlag &&
+                            <Alert severity="error" sx={{ width: 400 }}>
+                                <AlertTitle>Error</AlertTitle>
+                                {errorMessage}
+                            </Alert>}
                         <Button
                             variant="contained"
                             color="primary"

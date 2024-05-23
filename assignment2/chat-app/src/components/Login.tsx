@@ -1,5 +1,5 @@
 import axios from "axios";
-import {Alert, AlertTitle, Box, Button, Container, Paper, TextField, Typography} from "@mui/material";
+import {Alert, AlertTitle, Button, Paper, TextField, Typography} from "@mui/material";
 import React from "react";
 import {useUserInfoStorage} from "../store";
 import {Link, useNavigate} from "react-router-dom";
@@ -7,19 +7,14 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 const baseUrl = "http://localhost:4941/api/v1";
 
 const Login = () => {
-
     const navigate = useNavigate();
     const setUserInStorage = useUserInfoStorage(state => state.setUser);
 
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("")
     const [passwordVisible, setPasswordVisible] = React.useState(false);
-    const removeUserInStorage = useUserInfoStorage(state => state.removeUser);
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
-
-    let token = '';
-    let userId = -1;
 
     const login = () => {
         const config = {

@@ -1,14 +1,12 @@
 import axios from 'axios';
 import React, {ChangeEvent} from "react";
-import {Link as RouterLink, Link, useNavigate, useParams, useSearchParams} from 'react-router-dom';
-import CSS from 'csstype';
+import {useNavigate} from 'react-router-dom';
 import {
-    Alert, AlertTitle, Button, Dialog, DialogActions, DialogContent,
-    DialogContentText, Paper, Snackbar, Stack, Table, TableBody,
-    TableCell, TableContainer, TableHead, TableRow, TextField, DialogTitle,
+    Alert, AlertTitle, Button,
+    Paper, Stack, Table, TableBody,
+    TableCell, TableContainer, TableHead, TableRow, TextField,
     Box, FormControl, InputLabel, Select, SelectChangeEvent, MenuItem,
-    Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider,
-    useTheme, IconButton, ToggleButton, Pagination, Typography, Avatar, InputAdornment, Modal,
+    Pagination, Typography, Avatar, InputAdornment
 } from "@mui/material";
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import {useUserInfoStorage} from "../store";
@@ -17,26 +15,20 @@ import LogInDialog from "./LogInDialog";
 const baseUrl = "http://localhost:4941/api/v1";
 
 const Petitions = ()=> {
-    const {petitionId} = useParams();
     const navigate = useNavigate();
-    const [petitions, setPetitions] = React.useState<Array<Petition>>([]);
-    const [categories, setCategories] = React.useState<Array<Category>>([]);
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
-    // const setTokenToStorage = useUserInfoStorage(state => state.setToken);
-    // const setUserIdToStorage = useUserInfoStorage(state => state.setUserId);
-    // const token = useUserInfoStorage(state => state.token);
-    // const userId = useUserInfoStorage(state => state.userId);
     const userLocal = useUserInfoStorage(state => state.user);
-    const [maxPage, setMaxPage] = React.useState(1)
-    const [currentPage, setCurrentPage] = React.useState(1)
 
+    const [petitions, setPetitions] = React.useState<Array<Petition>>([]);
+    const [categories, setCategories] = React.useState<Array<Category>>([]);
     const [searchQuery, setSearchQuery] = React.useState("")
     const [supportingCostFilter, setSupportingCostFilter] = React.useState("")
-    const [sortByQuery, setSortByQuery] = React.useState("CREATED_ASC");
-    const [query, setQuery] = React.useState("")
+    const [sortByQuery, setSortByQuery] = React.useState("CREATED_ASC")
 
     const [categoryIds, setCategoryIds] = React.useState<Array<Number>>([])
+    const [maxPage, setMaxPage] = React.useState(1)
+    const [currentPage, setCurrentPage] = React.useState(1)
     const [logInModalOpen, setLogInModalOpen] = React.useState(false);
 
     React.useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import {
     AppBar,
@@ -40,7 +40,6 @@ const NavBar = () => {
     const [settings, setSettings] = React.useState(["Login", "Register"]);
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
-    const [drawerOpen, setDrawerOpen] = useState(false);
     const [logoutModalOpen, setLogoutModalOpen] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -63,7 +62,7 @@ const NavBar = () => {
             headers: { "X-Authorization": userLocal.token }
         };
         axios (config)
-            .then(function (response) {
+            .then(function () {
                 removeUserInStorage();
                 setLogoutModalOpen(false);
                 setErrorFlag(false);

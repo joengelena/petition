@@ -1,29 +1,25 @@
 import {Link, useNavigate} from "react-router-dom";
 import {useUserInfoStorage} from "../store";
-import React, {FormEvent} from "react";
+import React from "react";
 import axios from 'axios';
-import {Container, Button, TextField, Typography, Alert, AlertTitle, Paper, Box, styled, Avatar} from '@mui/material';
-import {Visibility, VisibilityOff, CloudUpload} from "@mui/icons-material";
+import {Button, TextField, Typography, Alert, AlertTitle, Paper} from '@mui/material';
+import {Visibility, VisibilityOff} from "@mui/icons-material";
 const baseUrl = "http://localhost:4941/api/v1";
 
 const Register = () => {
     const navigate = useNavigate();
     const setUserInStorage = useUserInfoStorage(state => state.setUser);
-    const userLocal = useUserInfoStorage(state => state.user);
+    const [token, setToken] = React.useState('')
+    const [userId, setUserId] = React.useState(-1)
 
     const [firstName, setFirstName] = React.useState("");
     const [lastName, setLastName] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [passwordVisible, setPasswordVisible] = React.useState(false);
-    const [image, setImage] = React.useState<File | null>(null);
-    const allowedImageTypes = ["image/jpeg", "image/jpg", "image/gif", "image/png"];
 
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
-
-    const [token, setToken] = React.useState('')
-    const [userId, setUserId] = React.useState(-1)
 
     const register = () => {
         const config = {

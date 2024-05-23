@@ -87,7 +87,7 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                 setErrorFlag(true);
                 setErrorMessage(error.toString());
             });
-    }, [petitionId]);
+    }, [petitionId, userLocal]);
 
     const handleAddNewSupportTier = () => {
         if (petition && petition.supportTiers && petition.supportTiers.length < 3) {
@@ -362,9 +362,9 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
 
     const editSupportTierModal = () => {
         const isNotChanged = () => {
-            return (originalSupportTier?.title == selectedSupportTier?.title &&
-                originalSupportTier?.description == selectedSupportTier?.description &&
-                originalSupportTier?.cost == selectedSupportTier?.cost);
+            return (originalSupportTier?.title === selectedSupportTier?.title &&
+                originalSupportTier?.description === selectedSupportTier?.description &&
+                originalSupportTier?.cost === selectedSupportTier?.cost);
         }
         return (
             <Dialog

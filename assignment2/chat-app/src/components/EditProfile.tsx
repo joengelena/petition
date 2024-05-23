@@ -3,7 +3,6 @@ import axios from "axios";
 import {useUserInfoStorage} from "../store";
 import {Alert, AlertTitle, Avatar, Button, Paper, Stack, TextField, Typography} from "@mui/material";
 import {Link, useNavigate} from "react-router-dom";
-import { CloudUpload } from "@mui/icons-material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 const baseUrl = "http://localhost:4941/api/v1";
 
@@ -40,7 +39,7 @@ const EditProfile = () => {
                     setErrorMessage(error.toString());
                     navigate('/')
                 })
-    }, [userLocal])
+    }, [userLocal, navigate])
 
     React.useEffect(() => {
         getUser()

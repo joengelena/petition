@@ -1,17 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import axios from "axios";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {
     Alert,
     AlertTitle,
     Avatar,
-    Box,
     Button,
-    Dialog, DialogActions,
-    DialogContent, DialogContentText,
-    DialogTitle,
     Paper, Stack,
-    TextField,
     Typography
 } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
@@ -31,7 +26,6 @@ const UploadImagePetition = () => {
     const [petition, setPetition] = React.useState<Petition>();
 
     const userLocal = useUserInfoStorage(state => state.user)
-    const [initialImageUrl, setInitialImageUrl] = useState('');
     const [dbImage, setDbImage] = React.useState<boolean>(false);
 
     React.useEffect(() => {
@@ -39,7 +33,7 @@ const UploadImagePetition = () => {
             headers: {
                 "X-Authorization": userLocal.token }
         })
-            .then((response) => {
+            .then(() => {
                     setErrorFlag(false)
                     setErrorMessage("")
                 },
@@ -48,7 +42,7 @@ const UploadImagePetition = () => {
                     setErrorMessage(error.toString());
                     navigate('/')
                 })
-    }, [userLocal])
+    }, [userLocal, navigate])
 
     React.useEffect(() => {
         const getPetition = () => {
@@ -64,11 +58,11 @@ const UploadImagePetition = () => {
                     })
         }
         getPetition()
-    }, [])
+    }, [petitionId])
 
     React.useEffect(() => {
         axios.get(`${baseUrl}/petitions/${Number(petitionId)}/image`)
-            .then((response) => {
+            .then(() => {
                 setDbImage(true)
                 setErrorFlag(false)
                 setErrorMessage("")
@@ -76,7 +70,7 @@ const UploadImagePetition = () => {
             .catch((error) => {
                 console.log(error);
             })
-    }, []);
+    }, [petitionId]);
 
     const uploadImage = () => {
         axios.put(`${baseUrl}/petitions/${petition?.petitionId}/image`, image, {

@@ -1,22 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import {
     Alert,
     AlertTitle,
     Avatar,
-    Box,
     Button,
     Dialog, DialogActions,
     DialogContent, DialogContentText,
     DialogTitle,
     Paper, Stack,
-    TextField,
     Typography
 } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
 import { useUserInfoStorage } from "../store";
-import {nlNL} from "@mui/material/locale";
 const baseUrl = "http://localhost:4941/api/v1";
 
 const UploadImageUser = () => {
@@ -25,10 +22,7 @@ const UploadImageUser = () => {
     const allowedImageTypes = ["image/jpeg", "image/jpg", "image/gif", "image/png"];
     const [errorFlag, setErrorFlag] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
-    const [token, setToken] = useState('')
-    const [userId, setUserId] = useState(-1)
     const userLocal = useUserInfoStorage(state => state.user)
-    const [initialImageUrl, setInitialImageUrl] = useState('');
     const [dbImage, setDbImage] = React.useState<boolean>(false);
     const [newImgSelected, setNewImgSelected] = React.useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -38,7 +32,7 @@ const UploadImageUser = () => {
             headers: {
                     "X-Authorization": userLocal.token }
             })
-            .then((response) => {
+            .then(() => {
                     setErrorFlag(false)
                     setErrorMessage("")
                 },
@@ -47,11 +41,11 @@ const UploadImageUser = () => {
                     setErrorMessage(error.toString());
                     navigate('/')
                 })
-    }, [userLocal])
+    }, [userLocal, navigate])
 
     React.useEffect(() => {
         axios.get(`${baseUrl}/users/${userLocal.userId}/image`)
-            .then((response) => {
+            .then(() => {
                 setDbImage(true)
                 setErrorFlag(false)
                 setErrorMessage("")
@@ -59,7 +53,7 @@ const UploadImageUser = () => {
             .catch((error) => {
                 console.log(error);
         })
-    }, []);
+    }, [userLocal]);
 
     const uploadImage = () => {
         axios.put(`${baseUrl}/users/${userLocal.userId}/image`, image, {
@@ -114,7 +108,7 @@ const UploadImageUser = () => {
                     "X-Authorization": userLocal.token
                 }
             })
-                .then((response) => {
+                .then(() => {
                         setDbImage(false)
                         setErrorMessage("")
                         setErrorFlag(false)

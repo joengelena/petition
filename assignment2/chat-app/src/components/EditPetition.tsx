@@ -26,19 +26,14 @@ const EditPetition = () => {
     const userLocal = useUserInfoStorage(state => state.user)
     const [errorFlag, setErrorFlag] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
+
     const [editPetition, setEditPetition] = React.useState<EditPetition>()
-
-    const [originalPetition, setOriginalPetition] = React.useState<EditPetition>();
-
     const [categories, setCategories] = React.useState<Array<Category>>([]);
     const [categoryId, setCategoryId] = useState<number | string>("");
-
-
     const [title, setTitle] = React.useState('');
     const [description, setDescription] = React.useState('');
 
     const [disableSave, setDisableSave] = React.useState(true)
-
     const [snackMessage, setSnackMessage] = React.useState("");
     const [snackOpen, setSnackOpen] = React.useState(false)
 
