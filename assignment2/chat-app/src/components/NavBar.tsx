@@ -36,7 +36,7 @@ const NavBar = () => {
     const navigate = useNavigate();
     const userLocal = useUserInfoStorage(state => state.user);
     const removeUserInStorage = useUserInfoStorage(state => state.removeUser);
-    const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+
     const [settings, setSettings] = React.useState(["Login", "Register"]);
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
@@ -55,14 +55,6 @@ const NavBar = () => {
             setSettings(["Login", "Register", "Petitions"]);
         }
     }, [userLocal])
-
-    const handleUserMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorElUser(event.currentTarget);
-    };
-
-    const handleUserMenuClose = () => {
-        setAnchorElUser(null);
-    };
 
     const handleLogoutUser = () => {
         const config = {
