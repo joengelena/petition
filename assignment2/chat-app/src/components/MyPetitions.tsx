@@ -15,6 +15,8 @@ import {
     Typography
 } from "@mui/material";
 import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 const baseUrl = "http://localhost:4941/api/v1";
 
 const MyPetitions = () => {
@@ -224,12 +226,14 @@ const MyPetitions = () => {
                 <TableCell>
                     <Stack direction="column" spacing={1}>
                         <Button
-                            variant="contained"
+                            variant="outlined"
                             sx={{
-                                background:
+                                color: '#1c7c31',
+                                borderColor:
                                     petition.ownerId !== userLocal.userId ? "#bbbbbb": "#1c7c31",
                                 "&:hover": {
-                                    background: "#196728"
+                                    background: "#6fbe77",
+                                    borderColor: '#1c7c31'
                                 }}}
                             onClick={(event) => {
                                 event.stopPropagation();
@@ -237,14 +241,17 @@ const MyPetitions = () => {
                             }}
                             disabled={petition.ownerId !== userLocal.userId}
                         >
-                            Edit
+                            <EditIcon />
                         </Button>
                         <Button
-                            variant="contained"
+                            variant="outlined"
                             sx={{
-                                background: petition.ownerId !== userLocal.userId || petition.numberOfSupporters >= 1 ? '#bbbbbb' : '#C70000',
+                                color: '#C70000',
+                                borderColor:
+                                    petition.ownerId !== userLocal.userId || petition.numberOfSupporters >= 1 ? '#bbbbbb' : '#C70000',
                                 "&:hover": {
-                                    background: "#ab0f0f",
+                                    background: "#ec7a7a",
+                                    borderColor: '#C70000'
                                 }}}
                             onClick={(event) => {
                                 event.stopPropagation();
@@ -252,7 +259,7 @@ const MyPetitions = () => {
                             }}
                             disabled={petition.ownerId !== userLocal.userId || petition.numberOfSupporters >= 1}
                         >
-                            Delete
+                            <DeleteIcon />
                         </Button>
                     </Stack>
                 </TableCell>
