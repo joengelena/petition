@@ -35,7 +35,7 @@ const LogInDialog: React.FC<LogInDialogProps> = (props) => {
                 >
                     Cancel
                 </Button>
-                <Button onClick={()=>(navigate('/login'))} autoFocus>
+                <Button style={{color: "#0f574a"}} onClick={()=>(navigate('/login'))} autoFocus>
                     Log In
                 </Button>
             </DialogActions>

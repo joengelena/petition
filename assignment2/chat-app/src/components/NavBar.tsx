@@ -160,7 +160,7 @@ const NavBar = () => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleLogoutModalClose}>Cancel</Button>
+                    <Button style={{color: '#0f574a'}} onClick={handleLogoutModalClose}>Cancel</Button>
                     <Button style={{color: '#C70000'}} onClick={handleLogoutUser} autoFocus>
                         Logout
                     </Button>
@@ -170,7 +170,7 @@ const NavBar = () => {
     };
 
     return (
-        <AppBar position="static" sx={{bgcolor: '#0068cf'}}>
+        <AppBar position="static" sx={{backgroundColor: "#0f574a"}}>
             <Toolbar>
                 <IconButton
                     size="medium"
@@ -190,42 +190,91 @@ const NavBar = () => {
                 </Typography>
                 {settings.map((setting, index) => (
                     setting === "MyPetitions" && (
-                        <Button key={index} color="inherit" component={RouterLink} to="/myPetitions">
+                        <Button
+                            key={index}
+                            sx={{
+                                color: '#ffffff',
+                                '&:hover': {
+                                    color: '#20af95'
+                                },
+                            }}
+                            component={RouterLink} to="/myPetitions">
                             My Petitions
                         </Button>
                     )
                 ))}
                 {settings.map((setting, index) => (
                     setting === "Petitions" && (
-                        <Button key={index} color="inherit" component={RouterLink} to="/petitions">
+                        <Button
+                            key={index}
+                            sx={{
+                                color: '#ffffff',
+                                '&:hover': {
+                                    color: '#1a937d'
+                                },
+                            }}
+                            component={RouterLink} to="/petitions"
+                        >
                             Petitions
                         </Button>
                     )
                 ))}
                 {settings.map((setting, index) => (
                     setting === "Register" && (
-                        <Button key={index} color="inherit" component={RouterLink} to="/register">
+                        <Button
+                            key={index}
+                            sx={{
+                                color: '#ffffff',
+                                '&:hover': {
+                                    color: '#1a937d'
+                                },
+                            }}
+                            component={RouterLink} to="/register">
                             Register
                         </Button>
                     )
                 ))}
                 {settings.map((setting, index) => (
                     setting === "Login" && (
-                        <Button key={index} color="inherit" component={RouterLink} to="/login">
+                        <Button
+                            key={index}
+                            sx={{
+                                color: '#ffffff',
+                                '&:hover': {
+                                    color: '#1a937d'
+                                },
+                            }}
+                            component={RouterLink} to="/login">
                             Login
                         </Button>
                     )
                 ))}
                 {settings.map((setting, index) => (
                     setting === "Profile" && (
-                        <Button key={index} color="inherit" component={RouterLink} to="/profile">
+                        <Button
+                            key={index}
+                            sx={{
+                                color: '#ffffff',
+                                '&:hover': {
+                                    color: '#20af95'
+                                },
+                            }}
+                            component={RouterLink} to="/profile">
                             Profile
                         </Button>
                     )
                 ))}
                 {settings.map((setting, index) => (
                     setting === "Logout" && (
-                        <Button key={index} color="inherit" onClick={handleLogoutModalOpen}>
+                        <Button
+                            key={index}
+                            sx={{
+                                color: '#ffffff',
+                                '&:hover': {
+                                    color: '#20af95'
+                                },
+                            }}
+                            onClick={handleLogoutModalOpen}>
                             Logout
                         </Button>
                     )

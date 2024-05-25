@@ -147,16 +147,18 @@ const Register = () => {
                         {errorMessage}
                     </Alert>}
                 <Button
-                    type="submit"
                     variant="contained"
-                    color="primary"
                     fullWidth
-                    style={{ marginTop: 8, marginBottom: 8 }}
+                    sx={{ background: "#0f574a",  marginBottom: 1, marginTop: 1,
+                        "&:hover": {
+                            background: "#1a937d",
+                        }
+                    }}
                     onClick={register}
                 >
                     Register
                 </Button>
-                <Link to="/login" >
+                <Link style={{color: "#000000"}} to="/login" >
                     Already Registered?
                 </Link>
             </Paper>

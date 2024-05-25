@@ -98,8 +98,8 @@ const MyPetitions = () => {
     const getMyPetitions = async () => {
         try {
             const [ownerResponse, supporterResponse] = await Promise.all([
-                axios.get(`${baseUrl}/petitions?count=10&ownerId=${userLocal.userId}`),
-                axios.get(`${baseUrl}/petitions?count=10&supporterId=${userLocal.userId}`)
+                axios.get(`${baseUrl}/petitions?ownerId=${userLocal.userId}`),
+                axios.get(`${baseUrl}/petitions?supporterId=${userLocal.userId}`)
             ]);
 
             const combinedPetitions = [...ownerResponse.data.petitions, ...supporterResponse.data.petitions];
@@ -217,11 +217,11 @@ const MyPetitions = () => {
                     <Avatar
                         src={`${baseUrl}/users/${petition.ownerId}/image`}
                         alt={`${petition.ownerLastName}`}
-                        style={{ width: 80, height: 80 }}
+                        style={{ width: 100, height: 100 }}
                     />
                 </TableCell>
                 <TableCell>
-                    {petition.supportingCost}
+                    $ {petition.supportingCost}
                 </TableCell>
                 <TableCell>
                     <Stack direction="column" spacing={1}>
@@ -232,8 +232,8 @@ const MyPetitions = () => {
                                 borderColor:
                                     petition.ownerId !== userLocal.userId ? "#bbbbbb": "#1c7c31",
                                 "&:hover": {
-                                    background: "#6fbe77",
-                                    borderColor: '#1c7c31'
+                                    background: "#d2e1d2",
+                                    borderColor: '#d2e1d2'
                                 }}}
                             onClick={(event) => {
                                 event.stopPropagation();
@@ -250,8 +250,8 @@ const MyPetitions = () => {
                                 borderColor:
                                     petition.ownerId !== userLocal.userId || petition.numberOfSupporters >= 1 ? '#bbbbbb' : '#C70000',
                                 "&:hover": {
-                                    background: "#ec7a7a",
-                                    borderColor: '#C70000'
+                                    background: "#e0b8b8",
+                                    borderColor: '#e0b8b8'
                                 }}}
                             onClick={(event) => {
                                 event.stopPropagation();
@@ -275,9 +275,9 @@ const MyPetitions = () => {
                 </Typography>
                 <Button
                     variant="contained"
-                    sx={{background: "#1c7c31", marginBottom: 6, width: 200,
+                    sx={{ background: "#0f574a", marginBottom: 3,
                         "&:hover": {
-                            background: "#196728",
+                            background: "#1a937d",
                         }}}
                     onClick={() => (navigate('/createPetition'))}
                 >

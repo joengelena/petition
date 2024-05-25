@@ -9,6 +9,7 @@ import {
     Pagination, Typography, Avatar, InputAdornment
 } from "@mui/material";
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
+import SearchIcon from '@mui/icons-material/Search';
 import {useUserInfoStorage} from "../store";
 import LogInDialog from "./LogInDialog";
 
@@ -195,7 +196,7 @@ const Petitions = ()=> {
                     <Avatar
                         src={`${baseUrl}/users/${petition.ownerId}/image`}
                         alt={`${petition.ownerLastName}`}
-                        style={{ width: 80, height: 80 }}
+                        style={{ width: 100, height: 100 }}
                     />
                 </TableCell>
                 <TableCell>
@@ -213,9 +214,9 @@ const Petitions = ()=> {
                 </Typography>
                 <Button
                     variant="contained"
-                    sx={{background: "#1c7c31", marginBottom: 6, width: 200,
+                    sx={{ background: "#0f574a", marginBottom: 3,
                         "&:hover": {
-                            background: "#196728"
+                            background: "#1a937d",
                         }}}
                     onClick={(handleCreatePetitionClick)}
                 >
@@ -292,7 +293,7 @@ const Petitions = ()=> {
                             startAdornment: <InputAdornment position="start">{"<="}</InputAdornment>,
                         }}
                     />
-                    <Button variant="contained" onClick={() => getPetitions(1)}>Search</Button>
+                    <Button variant="contained" style={{ backgroundColor: '#0f574a' }} onClick={() => getPetitions(1)}> <SearchIcon /> </Button>
                 </Stack>
 
                 <TableContainer component={Paper} style={{marginTop: 20}}>

@@ -171,10 +171,17 @@ const UploadImageUser = () => {
                     Image Upload
                 </Typography>
                 <Stack direction="column" spacing={2} marginTop={2} marginBottom={2} justifyContent="center" alignItems="center">
-                    <Avatar sx={{ width: 150, height: 150 }} src={imgSrc()} />
+                    <Avatar sx={{ width: 200, height: 200 }} src={imgSrc()} />
                     <Button
                         component="label"
-                        variant="contained"
+                        variant="outlined"
+                        sx={{
+                            color: '#1c7c31',
+                            borderColor: "#1c7c31",
+                            "&:hover": {
+                                background: "#d2e1d2",
+                                borderColor: '#d2e1d2'
+                            }}}
                         startIcon={<CloudUpload />}
                     >
                         Upload file
@@ -191,11 +198,11 @@ const UploadImageUser = () => {
                             type="submit"
                             variant="contained"
                             fullWidth
-                            sx={{
-                                background: image === null ? "#bbbbbb": "#1c7c31",
+                            sx={{ background: image === null ? "#bbbbbb":"#0f574a",
                                 "&:hover": {
-                                    background: "#196728"
-                                }}}
+                                    background: "#1a937d",
+                                }
+                            }}
                             onClick={() => uploadImage()}
                             disabled={image === null}
                         >
@@ -209,7 +216,7 @@ const UploadImageUser = () => {
                                 sx={{
                                     background: "#C70000",
                                     "&:hover": {
-                                        background: "#ab0f0f"
+                                        background: "#e84242"
                                     }}}
                                 onClick={(handleDeleteModalOpen)}
                             >
@@ -217,7 +224,7 @@ const UploadImageUser = () => {
                             </Button>
                         }
                         {deleteConfirmationModal()}
-                        <Link to="/Petitions" >
+                        <Link style={{color: "#000000"}} to="/Petitions" >
                             Exit
                         </Link>
                     </Stack>

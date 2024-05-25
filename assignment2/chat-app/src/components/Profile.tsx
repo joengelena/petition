@@ -60,7 +60,7 @@ const Profile = () => {
                     <Avatar
                         src={`${baseUrl}/users/${userLocal.userId}/image`}
                         alt={`${user?.lastName}`}
-                        sx={{ width: 150, height: 150 }}
+                        sx={{ width: 200, height: 200 }}
                     />
                     <Typography sx={{fontWeight: "bold"}} variant="h5">
                         {user?.firstName + " " + user?.lastName}
@@ -76,7 +76,11 @@ const Profile = () => {
                             </Alert>}
                         <Button
                             variant="contained"
-                            color="primary"
+                            sx={{ background: "#0f574a",
+                                "&:hover": {
+                                    background: "#1a937d",
+                                }
+                            }}
                             fullWidth
                             onClick={()=> {navigate('/editProfile')}}
                         >
@@ -84,14 +88,18 @@ const Profile = () => {
                         </Button>
                         <Button
                             variant="contained"
-                            color="primary"
+                            sx={{ background: "#0f574a",
+                                "&:hover": {
+                                    background: "#1a937d",
+                                }
+                            }}
                             fullWidth
                             onClick={()=> {navigate(`/users/${userLocal.userId}/uploadImage`)}}
                             startIcon={<CloudUpload />}
                         >
                             Update Photo
                         </Button>
-                        <Link to="/Petitions" >
+                        <Link style={{color: "#000000"}} to="/Petitions" >
                             Back
                         </Link>
                     </Stack>

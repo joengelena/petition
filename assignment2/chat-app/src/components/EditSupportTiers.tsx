@@ -13,6 +13,9 @@ import {
     DialogTitle, Grid, InputAdornment, Stack,
     TextField, Typography
 } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+
 const baseUrl = "http://localhost:4941/api/v1";
 
 interface EditPetitionChildComponent {
@@ -233,7 +236,7 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDeleteSupportTierModalClose}>Cancel</Button>
+                    <Button style={{ color : '#0f574a' }} onClick={handleDeleteSupportTierModalClose}>Cancel</Button>
                     <Button
                         style={{color: '#C70000'}}
                         onClick={() => (deleteSupportTier())}
@@ -273,7 +276,7 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                     width: 350,
                     padding: 15,
                     minHeight: 320,
-                    border: "3px solid #0067cd",
+                    border: "3px solid #0f574a",
                     borderRadius: "3%"
                 }}>
                 <h4 style={{marginTop: 10}}>Support Tier</h4>
@@ -429,7 +432,7 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                         Cancel
                     </Button>
                     <Button
-                    sx={{ color: isNotChanged() ? "#bbbbbb" : '#1c7c31' }}
+                    sx={{ color: isNotChanged() ? "#bbbbbb" : '#0f574a' }}
                         onClick={(editSupportTier)}
                         disabled={isNotChanged()}
                         autoFocus
@@ -453,7 +456,7 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
             >
                 <div
                     style={{
-                        border: '4px solid #0067cd',
+                        border: '4px solid #0f574a',
                         borderRadius: 9,
                         backgroundColor: '#f5f5f5',
                         height: 300,
@@ -486,35 +489,39 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                         </Typography>
                     </div>
                     <div>
-                        <p style={{color: '#0067cd', fontWeight: 'bold'}}>
+                        <p style={{color: '#0f574a', fontWeight: 'bold'}}>
                             {tier.cost === 0 ? "FREE" : `$${tier.cost}`}
                         </p>
                         <Stack direction="row" spacing={1} style={{justifyContent: "center"}}>
                             <Button
-                                variant="contained"
+                                variant="outlined"
                                 sx={{
-                                    backgroundColor:
-                                        hasSupporters(tier.supportTierId) ||  petition?.supportTiers.length === 1
-                                            ? "#bbbbbb" : "#C70000",
+                                    color: '#C70000',
+                                    borderColor:
+                                        hasSupporters(tier.supportTierId) ||  petition?.supportTiers.length === 1 ? '#bbbbbb' : '#C70000',
                                     "&:hover": {
-                                        background: "#ab0f0f",
+                                        background: "#e0b8b8",
+                                        borderColor: '#e0b8b8'
                                     }}}
                                 onClick={() => (handleDeleteSupportTierModalOpen(tier))}
                                 disabled={hasSupporters(tier.supportTierId) || petition?.supportTiers.length === 1}
                             >
-                                Delete
+                                <DeleteIcon />
                             </Button>
                             <Button
-                                variant="contained"
+                                variant="outlined"
                                 sx={{
-                                    backgroundColor: hasSupporters(tier.supportTierId) ? "#bbbbbb" : "#1c7c31",
+                                    color: '#1c7c31',
+                                    borderColor:
+                                        hasSupporters(tier.supportTierId) ? "#bbbbbb": "#1c7c31",
                                     "&:hover": {
-                                        background: "#196728",
+                                        background: "#d2e1d2",
+                                        borderColor: '#d2e1d2'
                                     }}}
                                 onClick={() => (handleEditModalOpen(tier))}
                                 disabled={hasSupporters(tier.supportTierId)}
                             >
-                                Edit
+                                <EditIcon />
                             </Button>
                         </Stack>
                     </div>
@@ -541,8 +548,15 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
             {createSupportTier ? addSupportTier() :
                 <Button
                     variant="outlined"
-                    color="primary"
-                    sx={{width: "400px", marginTop: 3}}
+                    sx={{
+                        borderColor: '#0f574a',
+                        color: '#0f574a',
+                        width: "400px", marginTop: 3,
+                        "&:hover": {
+                            background: "#f2faf2",
+                            borderColor: '#f2faf2'
+                        }
+                }}
                     onClick={handleAddNewSupportTier}
                     disabled={petition?.supportTiers.length === 3}
                 >

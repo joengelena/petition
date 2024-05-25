@@ -139,8 +139,15 @@ const EditPetitionImage = () => {
                     </Avatar>
                     <Button
                         component="label"
-                        variant="contained"
-                        fullWidth
+                        variant="outlined"
+                        sx={{
+                            color: '#1c7c31',
+                            borderColor: "#1c7c31",
+                            "&:hover": {
+                                background: "#d2e1d2",
+                                borderColor: '#d2e1d2'
+                            }
+                        }}
                         startIcon={<CloudUpload />}
                     >
                         Upload file
@@ -155,18 +162,18 @@ const EditPetitionImage = () => {
                         type="submit"
                         variant="contained"
                         fullWidth
-                        sx={{
-                            background: image === null ? "#bbbbbb": "#1c7c31",
+                        sx={{ background: image === null ? "#bbbbbb":"#0f574a",
                             "&:hover": {
-                                background: "#196728"
-                            }}}
+                                background: "#1a937d",
+                            }
+                        }}
                         onClick={() => uploadImage()}
                         disabled={image === null}
                     >
                         Update
                     </Button>
                 </Stack>
-                <Link to="/myPetitions" >
+                <Link style={{color: "#000000"}} to="/myPetitions" >
                     Exit
                 </Link>
             </Paper>

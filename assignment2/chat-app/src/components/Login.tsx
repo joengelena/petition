@@ -87,14 +87,17 @@ const Login = () => {
                     </Alert>}
                 <Button
                     variant="contained"
-                    color="primary"
                     onClick={login}
                     fullWidth
-                    style={{ marginBottom: 8, marginTop: 8 }}
+                    sx={{ background: "#0f574a",  marginBottom: 1, marginTop: 1,
+                        "&:hover": {
+                            background: "#1a937d",
+                        }
+                    }}
                 >
                     Log In
                 </Button>
-                <Link to="/register" >
+                <Link style={{color: "#000000"}} to="/register" >
                     Not Registered?
                 </Link>
             </Paper>

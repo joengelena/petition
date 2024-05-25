@@ -250,6 +250,10 @@ const Petition = ()=> {
         )
     }
 
+    const disableSupport = (tier: SupportTier) => {
+        return supporters?.some(supporter => supporter.supportTierId === tier.supportTierId && supporter.supporterId === userLocal.userId)
+    }
+
     const getSupportTiers = () => {
         return petition.supportTiers.map((tier, index) => (
             <Grid
@@ -261,7 +265,7 @@ const Petition = ()=> {
             >
                 <div
                     style={{
-                        border: '4px solid #0067cd',
+                        border: '4px solid #0f574a',
                         borderRadius: 9,
                         backgroundColor: '#f5f5f5',
                         height: 300,
@@ -294,16 +298,17 @@ const Petition = ()=> {
                     </Typography>
                 </div>
                 <div>
-                    <p style={{color: '#0067cd', fontWeight: 'bold'}}>
+                    <p style={{color: '#0f574a', fontWeight: 'bold'}}>
                         {tier.cost === 0 ? "FREE" : `$${tier.cost}`}
                     </p>
                     {petition.ownerId !== userLocal.userId &&
                         <Button
                             variant="contained"
-                        onClick={()=>(handleSupportTierClick(tier.supportTierId))}
-                        disabled={supporters?.some(supporter => supporter.supportTierId === tier.supportTierId && supporter.supporterId === userLocal.userId)}
+                            style={{ backgroundColor: disableSupport(tier) ? '#bbbbbb' : '#0f574a' }}
+                            onClick={()=>(handleSupportTierClick(tier.supportTierId))}
+                            disabled={disableSupport(tier)}
                     >
-                        {supporters?.some(supporter => supporter.supportTierId === tier.supportTierId && supporter.supporterId === userLocal.userId) ? "Supported" : "Support"}
+                        {disableSupport(tier) ? "Supported" : "Support"}
                     </Button>}
                     {supportATierDialog()}
                     <LogInDialog open={logInDialogOpen} onClose={handleLogInDialogClose}/>
@@ -449,7 +454,7 @@ const Petition = ()=> {
                         />
                     </TableCell>
                     <TableCell>
-                        {similarPetition.supportingCost}
+                        $ {similarPetition.supportingCost}
                     </TableCell>
                 </TableRow>
             )
@@ -472,58 +477,59 @@ const Petition = ()=> {
                     </Box>
                     <hr/>
                     <Grid container spacing={4}>
-                        <Grid item xs={12} sm={7}>
+                        <Grid item xs={12} sm={9}>
                             <Avatar
                                 src={`${baseUrl}/petitions/${petition.petitionId}/image`}
-                                style={{width: "100%", height: 400, borderRadius: 7}}
+                                style={{width: "100%", height: 450, borderRadius: 7}}
                             >
                                 <ImageNotSupportedIcon/>
                             </Avatar>
                         </Grid>
-                        <Grid item xs={12} sm={5}>
+                        <Grid item xs={12} sm={3}>
                             <div style={{
                                 display: 'flex',
                                 flexDirection: 'column',
                                 height: '100%',
-                                minHeight: '400px'
+                                minHeight: '400px',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                             }}>
                                 <div style={{flex: 1}}>
-                                    <Typography variant="h4" style={{padding: 10}}>
-                                        Description
-                                    </Typography>
-                                    <Typography variant="body1" style={{wordWrap: 'break-word'}}>{petition.description}</Typography>
-
-                                    <Typography variant="h4" style={{padding: 10}}>
-                                        Total Money Raised
+                                    <Typography variant="h6">
+                                        Creation Date
                                     </Typography>
                                     <Typography variant="body1">
+                                        {changeTimeStamp(petition.creationDate)}
+                                    </Typography>
+                                    <Typography variant="h6" style={{padding: 2}}>
+                                        Total Money Raised
+                                    </Typography>
+                                    <Typography variant="h2" style={{fontWeight: "bold"}}>
                                         {petition.moneyRaised !== null
                                             ? `$${petition.moneyRaised}`
-                                            : 'No money raised yet'}
+                                            : '$0'}
                                     </Typography>
-                                </div>
-                                <Grid
-                                    container
-                                    spacing={2}
-                                    justifyContent="center"
-                                    alignItems="center"
-                                    style={{padding: '10px 0'}}
-                                >
                                     <Avatar
                                         src={`${baseUrl}/users/${petition.ownerId}/image`}
                                         alt={`${petition.ownerLastName}`}
-                                        style={{width: 60, height: 60}}
+                                        style={{width: 250, height:250}}
                                     />
                                     <Typography variant="h5" style={{padding: 10, fontWeight: 'bold'}}>
                                         {petition.ownerFirstName + " " + petition.ownerLastName}
                                     </Typography>
-                                    <Typography variant="body1" style={{padding: 10}}>
-                                        {changeTimeStamp(petition.creationDate)}
-                                    </Typography>
-                                </Grid>
+                                </div>
                             </div>
                         </Grid>
                     </Grid>
+                    <div style={{ textAlign: 'left' }}>
+                        <Typography variant="h3" style={{ padding: 10 }}>
+                            Description
+                        </Typography>
+                        <Typography variant="body1" style={{ padding: 10, wordWrap: 'break-word', fontSize: '1.2rem'}}>
+                            {petition.description}
+                        </Typography>
+                    </div>
+
                     <hr/>
                     <h2 style={{padding: '10px', marginBottom: "10px"}}>Available Support Tiers</h2>
                     <Grid

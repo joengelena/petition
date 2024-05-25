@@ -184,8 +184,11 @@ const EditPetition = () => {
                     </Avatar>
                     <Button
                         variant="contained"
-                        color="primary"
-                        style={{ width: 400, marginBottom: 8 }}
+                        sx={{ background: "#0f574a", width: 400, marginBottom: 8,
+                            "&:hover": {
+                                background: "#1a937d",
+                            }
+                        }}
                         onClick={()=> {navigate(`/petitions/${petitionId}/updateImage`)}}
                         startIcon={<CloudUpload />}
                     >
@@ -251,17 +254,20 @@ const EditPetition = () => {
                     <Stack direction="column" spacing={1} sx={{ width: 400 }}>
                         <Button
                             variant="contained"
-                            color="primary"
+                            sx={{ background: disableSave ? '#bbbbbb' : "#0f574a",
+                                "&:hover": {
+                                    background: "#1a937d",
+                                }
+                            }}
                             onClick={updatePetition}
                             disabled={disableSave}
-                            sx={{ flexGrow: 1 }}
                         >
                             Save
                         </Button>
                     </Stack>
                     <hr style={{width: '100%'}}/>
                     <EditSupportTiers petitionId={petitionId} />
-                    <Link to="/MyPetitions">
+                    <Link style={{color: '#000000'}} to="/MyPetitions">
                         Back
                     </Link>
                 </Stack>

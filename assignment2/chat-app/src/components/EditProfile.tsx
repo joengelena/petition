@@ -133,7 +133,7 @@ const EditProfile = () => {
                     <Avatar
                         src={`${baseUrl}/users/${userLocal.userId}/image`}
                         alt={`${user?.lastName}`}
-                        style={{ width: 150, height: 150, marginBottom: 8 }}
+                        style={{ width: 200, height: 200, marginBottom: 8 }}
                     />
                     <TextField
                         label="First Name"
@@ -206,14 +206,18 @@ const EditProfile = () => {
                         </Alert>}
                     <Button
                         variant="contained"
-                        color="primary"
+                        sx={{ background: "#0f574a",
+                            "&:hover": {
+                                background: "#1a937d",
+                            }
+                        }}
                         fullWidth
                         onClick={updateUser}
                         disabled={disableSave}
                     >
                         Save
                     </Button>
-                    <Link to="/Profile" >
+                    <Link style={{color: "#000000"}} to="/Profile" >
                         Back
                     </Link>
                 </Stack>
