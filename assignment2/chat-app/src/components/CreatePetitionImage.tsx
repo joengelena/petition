@@ -67,7 +67,15 @@ const CreatePetitionImage: React.FC<UploadImageProps> = ({ onImageUpload, image,
                 </Avatar>
                 <Button
                     component="label"
-                    variant="contained"
+                    variant="outlined"
+                    sx={{
+                        color: '#1c7c31',
+                        borderColor: "#1c7c31",
+                        "&:hover": {
+                            background: "#d2e1d2",
+                            borderColor: '#d2e1d2'
+                        }
+                    }}
                     style={{width: 400}}
                     startIcon={<CloudUpload />}
                 >
