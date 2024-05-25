@@ -98,7 +98,11 @@ const Petitions = ()=> {
                 (error) => {
                     setErrorFlag(true)
                     if (error.response.statusText.includes("integer")) {
-                        setErrorMessage("Supporting Cost value must be an integer");
+                        setErrorMessage("Supporting cost value must be an integer");
+                    } else if (error.response.statusText.includes("more than 64")) {
+                        setErrorMessage("Search field cannot have more than 64 characters");
+                    } else if (error.response.statusText.includes("supportingCost")) {
+                        setErrorMessage("Please enter a valid supporting cost to search");
                     } else {
                         setErrorMessage(error.response.statusText);
                     }
