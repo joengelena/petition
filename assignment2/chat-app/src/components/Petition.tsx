@@ -173,13 +173,19 @@ const Petition = ()=> {
         })
             .then((response) => {
                 window.location.reload()
+                setSupportDialogOpen(false);
+
                 setMessage(null)
                 setErrorMessage('');
                 setErrorFlag(false);
             })
             .catch((error) => {
                 setErrorFlag(true);
-                setErrorMessage(error.response.statusText);
+                if (error.response.statusText.includes("more than 512")) {
+                    setErrorMessage("Support message must not be longer than 512 characters")
+                } else {
+                    setErrorMessage(error.response.statusText);
+                }
             });
     }
 
@@ -200,7 +206,6 @@ const Petition = ()=> {
 
     const handleSupportNow = () => {
         supportATier();
-        setSupportDialogOpen(false);
     };
 
     const handleLogInDialogClose = () => {
@@ -220,6 +225,13 @@ const Petition = ()=> {
                 aria-describedby="support-modal-description"
             >
                 <DialogTitle id="support-dialog-title">Leave a message!</DialogTitle>
+                <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    {errorFlag &&
+                        <Alert severity="error" sx={{width: 350}}>
+                            <AlertTitle>Error</AlertTitle>
+                            {errorMessage}
+                        </Alert>}
+                </Box>
                 <DialogContent>
                     <DialogContentText id="support-dialog-description">
                         <TextField
@@ -231,7 +243,8 @@ const Petition = ()=> {
                             InputProps={{
                                 style: {
                                     width: 350,
-                                    height:200,
+                                    minHeight: 200,
+                                    height: 'auto',
                                     resize: 'vertical',
                                     overflow: 'auto',
                                 },
@@ -242,7 +255,7 @@ const Petition = ()=> {
                 </DialogContent>
                 <DialogActions>
                     <Button style={{color: '#C70000'}} onClick={handleSupportTierDialogClose}>Cancel</Button>
-                    <Button onClick={handleSupportNow}>
+                    <Button style={{color: '#0f574a'}} onClick={handleSupportNow}>
                         Support Now
                     </Button>
                 </DialogActions>
@@ -460,137 +473,119 @@ const Petition = ()=> {
             )
     }
 
-    if (errorFlag) {
-        return (
-            <div style={{padding: 50}}>
-                <Paper elevation={3} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
-                    <Typography variant="h3" style={{ color: 'error', fontWeight: 'bold'}} >
-                        {errorMessage}
-                    </Typography>
-                </Paper>
-            </div>
-        )
-    } else {
-        return (
-            <div style={{padding: 50}}>
-                <Paper elevation={3} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
-                    <React.Fragment>
-                        <Typography variant="h3" style={{
-                            fontWeight: 'bold',
-                            padding: 10,
-                            marginBottom: "10px",
-                            wordWrap: 'break-word'
-                        }}>
-                            {petition.title}
-                        </Typography>
-                        <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                            {errorFlag &&
-                                <Alert severity="error" sx={{width: 400}}>
-                                    <AlertTitle>Error</AlertTitle>
-                                    {errorMessage}
-                                </Alert>}
-                        </Box>
-                        <hr/>
-                        <Grid container spacing={4}>
-                            <Grid item xs={12} sm={9}>
-                                <Avatar
-                                    src={`${baseUrl}/petitions/${petition.petitionId}/image`}
-                                    style={{width: "100%", height: 450, borderRadius: 7}}
-                                >
-                                    <ImageNotSupportedIcon/>
-                                </Avatar>
-                            </Grid>
-                            <Grid item xs={12} sm={3}>
-                                <div style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    height: '100%',
-                                    minHeight: '400px',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}>
-                                    <div style={{flex: 1}}>
-                                        <Typography variant="h6">
-                                            Creation Date
-                                        </Typography>
-                                        <Typography variant="body1">
-                                            {changeTimeStamp(petition.creationDate)}
-                                        </Typography>
-                                        <Typography variant="h6" style={{padding: 2}}>
-                                            Total Money Raised
-                                        </Typography>
-                                        <Typography variant="h2" style={{fontWeight: "bold", color: "#0f574a"}}>
-                                            {petition.moneyRaised !== null
-                                                ? `$${petition.moneyRaised}`
-                                                : '$0'}
-                                        </Typography>
-                                        <Avatar
-                                            src={`${baseUrl}/users/${petition.ownerId}/image`}
-                                            alt={`${petition.ownerLastName}`}
-                                            style={{width: 250, height: 250}}
-                                        />
-                                        <Typography variant="h5" style={{padding: 10, fontWeight: 'bold'}}>
-                                            {petition.ownerFirstName + " " + petition.ownerLastName}
-                                        </Typography>
-                                    </div>
-                                </div>
-                            </Grid>
-                        </Grid>
-                        <div style={{textAlign: 'left'}}>
-                            <Typography variant="h3" style={{padding: 10}}>
-                                Description
-                            </Typography>
-                            <Typography variant="body1"
-                                        style={{padding: 10, wordWrap: 'break-word', fontSize: '1.2rem'}}>
-                                {petition.description}
-                            </Typography>
-                        </div>
 
-                        <hr/>
-                        <h2 style={{padding: '10px', marginBottom: "10px"}}>Available Support Tiers</h2>
-                        <Grid
-                            container
-                            spacing={2}
-                            justifyContent="center"
-                        >
-                            {getSupportTiers()}
+    return (
+        <div style={{padding: 50}}>
+            <Paper elevation={3} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
+                <React.Fragment>
+                    <Typography variant="h3" style={{
+                        fontWeight: 'bold',
+                        padding: 10,
+                        marginBottom: "10px",
+                        wordWrap: 'break-word'
+                    }}>
+                        {petition.title}
+                    </Typography>
+                    <hr/>
+                    <Grid container spacing={4}>
+                        <Grid item xs={12} sm={9}>
+                            <Avatar
+                                src={`${baseUrl}/petitions/${petition.petitionId}/image`}
+                                style={{width: "100%", height: 450, borderRadius: 7}}
+                            >
+                                <ImageNotSupportedIcon/>
+                            </Avatar>
                         </Grid>
-                        <hr/>
-                        <h2 style={{padding: '10px', marginBottom: "10px"}}>Supporters</h2>
-                        <div style={{maxHeight: '500px', overflow: 'auto'}}>
-                            <List sx={{width: '100%'}}>
-                                {displaySupporters()}
-                            </List>
-                        </div>
-                        <Typography variant="body1" style={{
-                            padding: 10,
-                            textAlign: 'right'
-                        }}>Total {supporters?.length} existing supporters</Typography>
-                        <hr/>
-                        <h2 style={{padding: '10px', marginBottom: "10px"}}>Similar Petitions</h2>
-                        <TableContainer component={Paper} style={{marginTop: 20}}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Image</TableCell>
-                                        <TableCell>Title</TableCell>
-                                        <TableCell>Creation Date</TableCell>
-                                        <TableCell>Category</TableCell>
-                                        <TableCell>Owner Name</TableCell>
-                                        <TableCell>Owner Image</TableCell>
-                                        <TableCell>Supporting Cost</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {similarPetition_rows()}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </React.Fragment>
-                </Paper>
-            </div>
-        )
-    }
+                        <Grid item xs={12} sm={3}>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                height: '100%',
+                                minHeight: '400px',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                <div style={{flex: 1}}>
+                                    <Typography variant="h6">
+                                        Creation Date
+                                    </Typography>
+                                    <Typography variant="body1">
+                                        {changeTimeStamp(petition.creationDate)}
+                                    </Typography>
+                                    <Typography variant="h6" style={{padding: 2}}>
+                                        Total Money Raised
+                                    </Typography>
+                                    <Typography variant="h2" style={{fontWeight: "bold", color: "#0f574a"}}>
+                                        {petition.moneyRaised !== null
+                                            ? `$${petition.moneyRaised}`
+                                            : '$0'}
+                                    </Typography>
+                                    <Avatar
+                                        src={`${baseUrl}/users/${petition.ownerId}/image`}
+                                        alt={`${petition.ownerLastName}`}
+                                        style={{width: 250, height: 250}}
+                                    />
+                                    <Typography variant="h5" style={{padding: 10, fontWeight: 'bold'}}>
+                                        {petition.ownerFirstName + " " + petition.ownerLastName}
+                                    </Typography>
+                                </div>
+                            </div>
+                        </Grid>
+                    </Grid>
+                    <div style={{textAlign: 'left'}}>
+                        <Typography variant="h3" style={{padding: 10}}>
+                            Description
+                        </Typography>
+                        <Typography variant="body1"
+                                    style={{padding: 10, wordWrap: 'break-word', fontSize: '1.2rem'}}>
+                            {petition.description}
+                        </Typography>
+                    </div>
+
+                    <hr/>
+                    <h2 style={{padding: '10px', marginBottom: "10px"}}>Available Support Tiers</h2>
+                    <Grid
+                        container
+                        spacing={2}
+                        justifyContent="center"
+                    >
+                        {getSupportTiers()}
+                    </Grid>
+                    <hr/>
+                    <h2 style={{padding: '10px', marginBottom: "10px"}}>Supporters</h2>
+                    <div style={{maxHeight: '500px', overflow: 'auto'}}>
+                        <List sx={{width: '100%'}}>
+                            {displaySupporters()}
+                        </List>
+                    </div>
+                    <Typography variant="body1" style={{
+                        padding: 10,
+                        textAlign: 'right'
+                    }}>Total {supporters?.length} existing supporters</Typography>
+                    <hr/>
+                    <h2 style={{padding: '10px', marginBottom: "10px"}}>Similar Petitions</h2>
+                    <TableContainer component={Paper} style={{marginTop: 20}}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Image</TableCell>
+                                    <TableCell>Title</TableCell>
+                                    <TableCell>Creation Date</TableCell>
+                                    <TableCell>Category</TableCell>
+                                    <TableCell>Owner Name</TableCell>
+                                    <TableCell>Owner Image</TableCell>
+                                    <TableCell>Supporting Cost</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {similarPetition_rows()}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </React.Fragment>
+            </Paper>
+        </div>
+    )
 }
 
 export default Petition;
