@@ -69,6 +69,54 @@ const MyPetitions = () => {
         getCategories()
     }, [])
 
+    const deletePetition = () => {
+        handleDeleteModalClose()
+        const config = {
+            method: "delete",
+            url: `${baseUrl}/petitions/${selectedPetition?.petitionId}`,
+            headers: {
+                "X-Authorization": userLocal.token,
+            },
+        }
+        axios(config)
+            .then((response) => {
+                navigate(`/myPetitions`)
+                setSnackMessage("Petition is deleted successfully")
+                getMyPetitions()
+                setSnackOpen(true)
+                setErrorFlag(false)
+                setErrorMessage("")
+                setSelectedPetition(undefined)
+            }, (error) => {
+                setErrorFlag(true)
+                setErrorMessage(error.toString())
+            })
+    }
+
+    const getMyPetitions = async () => {
+        try {
+            const [ownerResponse, supporterResponse] = await Promise.all([
+                axios.get(`${baseUrl}/petitions?count=10&ownerId=${userLocal.userId}`),
+                axios.get(`${baseUrl}/petitions?count=10&supporterId=${userLocal.userId}`)
+            ]);
+
+            const combinedPetitions = [...ownerResponse.data.petitions, ...supporterResponse.data.petitions];
+
+            const uniquePetitions = Array.from(new Set(combinedPetitions.map(petition => petition.petitionId)))
+                .map(id => combinedPetitions.find(petition => petition.petitionId === id));
+
+            setMyPetitions(uniquePetitions);
+            setErrorFlag(false)
+        } catch (error) {
+            setErrorFlag(true);
+            if (error instanceof Error) {
+                setErrorMessage(error.message);
+            } else {
+                setErrorMessage('An unknown error occurred');
+            }
+        }
+    };
+
     const handleDeleteModalOpen = (petition: Petition) => {
         setSelectedPetition(petition);
         setDeleteModalOpen(true);
@@ -108,53 +156,11 @@ const MyPetitions = () => {
         setSnackOpen(false);
     };
 
-    const deletePetition = () => {
-        handleDeleteModalClose()
-        const config = {
-            method: "delete",
-            url: `${baseUrl}/petitions/${selectedPetition?.petitionId}`,
-            headers: {
-                "X-Authorization": userLocal.token,
-            },
-        }
-        axios(config)
-            .then((response) => {
-                navigate(`/myPetitions`)
-                setSnackMessage("Petition is deleted successfully")
-                getMyPetitions()
-                setSnackOpen(true)
-                setErrorFlag(false)
-                setErrorMessage("")
-                setSelectedPetition(undefined)
-            }, (error) => {
-            setErrorFlag(true)
-            setErrorMessage(error.toString())
-        })
+    const changeTimeStamp = (timeStamp: string) =>  {
+        const date = new Date(timeStamp).toLocaleDateString();
+        const time = new Date(timeStamp).toLocaleTimeString();
+        return date + '\n' + time;
     }
-
-    const getMyPetitions = async () => {
-        try {
-            const [ownerResponse, supporterResponse] = await Promise.all([
-                axios.get(`${baseUrl}/petitions?count=10&ownerId=${userLocal.userId}`),
-                axios.get(`${baseUrl}/petitions?count=10&supporterId=${userLocal.userId}`)
-            ]);
-
-            const combinedPetitions = [...ownerResponse.data.petitions, ...supporterResponse.data.petitions];
-
-            const uniquePetitions = Array.from(new Set(combinedPetitions.map(petition => petition.petitionId)))
-                .map(id => combinedPetitions.find(petition => petition.petitionId === id));
-
-            setMyPetitions(uniquePetitions);
-            setErrorFlag(false)
-        } catch (error) {
-            setErrorFlag(true);
-            if (error instanceof Error) {
-                setErrorMessage(error.message);
-            } else {
-                setErrorMessage('An unknown error occurred');
-            }
-        }
-    };
 
     const myPetition_rows = () => {
         if (myPetitions.length === 0) {
@@ -192,7 +198,7 @@ const MyPetitions = () => {
                 </TableCell>
                 <TableCell>
                     <Typography variant="body1">
-                        {petition.creationDate}
+                        {changeTimeStamp(petition.creationDate)}
                     </Typography>
                 </TableCell>
                 <TableCell>

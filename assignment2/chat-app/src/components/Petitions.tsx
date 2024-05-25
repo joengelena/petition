@@ -56,6 +56,11 @@ const Petitions = ()=> {
         getCategories()
     }, [])
 
+    const changeTimeStamp = (timeStamp: string) =>  {
+        const date = new Date(timeStamp).toLocaleDateString();
+        const time = new Date(timeStamp).toLocaleTimeString();
+        return date + '\n' + time;
+    }
     const handlePageUpdate = (event: ChangeEvent<unknown>, page: number) => {
         setCurrentPage(page);
     };
@@ -173,7 +178,7 @@ const Petitions = ()=> {
                 </TableCell>
                 <TableCell>
                     <Typography variant="body1">
-                        {petition.creationDate}
+                        {changeTimeStamp(petition.creationDate)}
                     </Typography>
                 </TableCell>
                 <TableCell>
@@ -194,7 +199,7 @@ const Petitions = ()=> {
                     />
                 </TableCell>
                 <TableCell>
-                    {petition.supportingCost}
+                    $ {petition.supportingCost}
                 </TableCell>
             </TableRow>
         )
