@@ -15,6 +15,8 @@ import {
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const baseUrl = "http://localhost:4941/api/v1";
 
@@ -34,17 +36,16 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
     const [errorMessage, setErrorMessage] = useState("")
 
     const [petition, setPetition] = React.useState<Petition>()
-
     const [createSupportTier, setCreateSupportTier] = React.useState<CreateSupportTier>();
-
     const [randomIndex, setRandomIndex] = React.useState(0);
     const [selectedSupportTier, setSelectedSupportTier] = React.useState<SupportTier | null>();
-
     const [supporters, setSupporters] = React.useState<Supporter[]>();
 
     const [editSupportTierModalOpen, setEditSupportTierModalOpen] = React.useState(false);
     const [deleteSupportTierModalOpen, setDeleteSupportTierModalOpen] = React.useState(false);
     const [originalSupportTier, setOriginalSupportTier] = React.useState<SupportTier | null>();
+
+    const MAX_INTEGER = 2147483647;
 
     React.useEffect(() => {
         axios.get(`${baseUrl}/users/${userLocal.userId}`, {
@@ -98,7 +99,6 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
             setRandomIndex(randomIndex + 1)
         }
     }
-
     const editNewSupportTier = (key: string, newValue: string | number) => {
         setCreateSupportTier(prevTier => {
             if (prevTier) {
@@ -109,7 +109,6 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
             }
         });
     }
-
     const createNewSupportTier = () => {
         const data = {
             title: createSupportTier?.title,
@@ -122,6 +121,11 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
             return;
         } else {
             data.cost = Number(data.cost)
+            if (data.cost > MAX_INTEGER) {
+                setErrorFlag(true);
+                setErrorMessage("Cost must be smaller than 2147483647");
+                return;
+            }
         }
         axios.put(`${baseUrl}/petitions/${petitionId}/supportTiers`, data, {
             headers: {
@@ -135,7 +139,21 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
             })
             .catch((error) => {
                 setAddTierErrorFlag(true)
-                setAddTierErrorMessage(error.response.statusText)
+                if (error.response.statusText === "Bad Request: data/supportTiers must NOT have fewer than 1 items") {
+                    setAddTierErrorMessage("Please add at least one support tier")
+                } else if (error.response.statusText.includes("fewer than 1")) {
+                    setAddTierErrorMessage("Please fill out the required fields")
+                } else if (error.response.statusText.includes("title must NOT have more than 128 characters")) {
+                    setAddTierErrorMessage("Title too long! Keep it under 128 characters.")
+                } else if (error.response.statusText.includes("data/description must NOT have more than 1024 characters")) {
+                    setAddTierErrorMessage("Description too long! Keep it under 1024 characters.")
+                } else if (error.response.statusText === "Bad Request: data/supportTiers/0/cost must be integer") {
+                    setAddTierErrorMessage("Cost must be a number")
+                } else if (error.response.statusText.includes("must be >= 0")) {
+                    setAddTierErrorMessage("Cost must be a positive number")
+                } else {
+                    setAddTierErrorMessage(error.response.statusText)
+                }
             })
     }
 
@@ -168,6 +186,11 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
         }
         if (selectedSupportTier?.cost !== '') {
             data.cost = Number(selectedSupportTier?.cost)
+            if (data.cost > MAX_INTEGER) {
+                setEditTierErrorFlag(true);
+                setEditTierErrorMessage("Cost must be smaller than 2147483647");
+                return;
+            }
         }
 
         axios.patch(`${baseUrl}/petitions/${petitionId}/supportTiers/${selectedSupportTier?.supportTierId}`, data, {
@@ -190,8 +213,10 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                     setEditTierErrorMessage("Description too long! Keep it under 1024 characters.")
                 } else if (error.response.statusText === "Bad Request: data/supportTiers/0/cost must be integer") {
                     setEditTierErrorMessage("Cost must be a number")
+                } else if (error.response.statusText.includes("must be >= 0")) {
+                    setErrorMessage("Cost must be a positive number")
                 } else {
-                    setEditTierErrorMessage(error.response.statusText)
+                    setErrorMessage(error.response.statusText)
                 }
             })
 
@@ -334,29 +359,33 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
                     style={{ marginBottom: 8 }}
                 />
                 <Button
-                    variant="contained"
+                    variant="outlined"
                     sx={{
-                        background: "#C70000",
+                        color: '#C70000',
+                        borderColor: '#C70000',
                         marginRight: 1,
                         marginBottom: "8px",
                         "&:hover": {
-                            background: "#ab0f0f",
+                            background: "#e0b8b8",
+                            borderColor: '#e0b8b8'
                         }}}
                     onClick={handleDeleteAddNewSupportTier}
                 >
-                    Delete
+                    <ClearIcon />
                 </Button>
                 <Button
-                    variant="contained"
+                    variant="outlined"
                     sx={{
-                        background: "#1c7c31",
+                        color: '#1c7c31',
+                        borderColor: "#1c7c31",
                         marginBottom: "8px",
                         "&:hover": {
-                            background: "#196728", // Change hover color to red
+                            background: "#d2e1d2",
+                            borderColor: '#d2e1d2'
                         }}}
                     onClick={createNewSupportTier}
                 >
-                    Save
+                    <SaveIcon />
                 </Button>
             </Box>
 

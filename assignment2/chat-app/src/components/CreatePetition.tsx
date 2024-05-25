@@ -25,6 +25,7 @@ const CreatePetition = () => {
     const [description, setDescription] = React.useState('');
     const [categoryId, setCategoryId] = React.useState<Number>();
     const [categoryIds, setCategoryIds] = React.useState<Array<Number>>([])
+    const MAX_INTEGER = 2147483647;
 
     const [supportTiers, setSupportTiers] = React.useState<Array<CreateSupportTier>>([]);
     const [randomIndex, setRandomIndex] = React.useState(0);
@@ -63,7 +64,7 @@ const CreatePetition = () => {
                     },
                     (error) => {
                         setErrorFlag(true);
-                        setErrorMessage(error.toString());
+                        setErrorMessage(error.response.statusText)
                     }
                 );
         };
@@ -83,6 +84,11 @@ const CreatePetition = () => {
                return;
            } else {
                tier.cost = Number(tier.cost)
+               if (tier.cost > MAX_INTEGER) {
+                   setErrorFlag(true);
+                   setErrorMessage("Cost must be smaller than 2147483647");
+                   return;
+               }
            }
        }
            axios.post(`${baseUrl}/petitions`, {
@@ -113,6 +119,8 @@ const CreatePetition = () => {
                        setErrorMessage("Description too long! Keep it under 1024 characters.")
                    } else if (error.response.statusText === "Bad Request: data/supportTiers/0/cost must be integer") {
                        setErrorMessage("Cost must be a number")
+                   } else if (error.response.statusText.includes("must be >= 0")) {
+                       setErrorMessage("Cost must be a positive number")
                    } else {
                        setErrorMessage(error.response.statusText)
                    }

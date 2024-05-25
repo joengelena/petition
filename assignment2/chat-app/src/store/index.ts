@@ -14,7 +14,6 @@ const removeLocalStorage = (key: string) => window.localStorage.removeItem(key);
 const userInfoStorage = create<UserInfo>((set) => ({
     user: getLocalStorage('user') || {userId: -1, token: ""},
     setUser: (newUser: LoginUser) => set(() => {
-        console.log("user storage: " + newUser)
         setLocalStorage('user', newUser)
         return {user: newUser}
     }),

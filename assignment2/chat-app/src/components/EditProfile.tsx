@@ -175,7 +175,7 @@ const EditProfile = () => {
                         fullWidth
                         InputProps={{
                             endAdornment: (
-                                <Button onClick={() => setCurrentPasswordVisible(!currentPasswordVisible)}>
+                                <Button sx={{color: "#000000"}} onClick={() => setCurrentPasswordVisible(!currentPasswordVisible)}>
                                     {currentPasswordVisible ? <VisibilityOff/> : <Visibility/>}
                                 </Button>
                             )
@@ -192,7 +192,7 @@ const EditProfile = () => {
                         fullWidth
                         InputProps={{
                             endAdornment: (
-                                <Button onClick={() => setNewPasswordVisible(!newPasswordVisible)}>
+                                <Button sx={{color: "#000000"}} onClick={() => setNewPasswordVisible(!newPasswordVisible)}>
                                     {newPasswordVisible ? <VisibilityOff/> : <Visibility/>}
                                 </Button>
                             )

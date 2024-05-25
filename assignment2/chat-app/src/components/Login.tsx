@@ -74,7 +74,7 @@ const Login = () => {
                     style={{ marginBottom: 8 }}
                     InputProps={{
                         endAdornment: (
-                            <Button onClick={() => setPasswordVisible(!passwordVisible)}>
+                            <Button sx={{color: "#000000"}} onClick={() => setPasswordVisible(!passwordVisible)}>
                                 {passwordVisible ? <VisibilityOff /> : <Visibility />}
                             </Button>
                         )

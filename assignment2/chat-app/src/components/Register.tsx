@@ -49,9 +49,13 @@ const Register = () => {
                     setErrorMessage("First name too long! Keep it under 64 characters.")
                 } else if (error.response.statusText === "Bad Request: data/lastName must NOT have more than 64 characters") {
                     setErrorMessage("Last name too long! Keep it under 64 characters.")
+                } else if (error.response.statusText === "Bad Request: data/password must NOT have more than 64 characters") {
+                    setErrorMessage("Password too long! Keep it under 64 characters.")
+                } else if (error.response.statusText === "Bad Request: data/email must NOT have more than 256 characters") {
+                    setErrorMessage("Email too long! Keep it under 256 characters.")
                 } else if (error.response.statusText.includes("email")) {
                     setErrorMessage("Please enter a valid email address")
-                } else if (error.response.statusText.includes("6")) {
+                } else if (error.response.statusText.includes("fewer than 6")) {
                     setErrorMessage("Password must be at least 6 characters")
                 } else if (error.response.statusText === "Forbidden: Email already in use") {
                     setErrorMessage("Email is already in use. Please enter a different email")
@@ -135,7 +139,7 @@ const Register = () => {
                     style={{ marginBottom: 8 }}
                     InputProps={{
                         endAdornment: (
-                            <Button onClick={() => setPasswordVisible(!passwordVisible)}>
+                            <Button sx={{color: "#000000"}} onClick={() => setPasswordVisible(!passwordVisible)}>
                                 {passwordVisible ? <VisibilityOff/> : <Visibility/>}
                             </Button>
                         )

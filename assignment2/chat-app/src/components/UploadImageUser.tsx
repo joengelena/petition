@@ -51,7 +51,8 @@ const UploadImageUser = () => {
                 setErrorMessage("")
             })
             .catch((error) => {
-                console.log(error);
+                setErrorFlag(true)
+                setErrorMessage(error.response.statusText)
         })
     }, [userLocal]);
 
@@ -155,7 +156,7 @@ const UploadImageUser = () => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDeleteModalClose}>Cancel</Button>
+                    <Button style={{color: "#0f574a"}} onClick={handleDeleteModalClose}>Cancel</Button>
                     <Button style={{color: '#C70000'}} onClick={deleteImage} autoFocus>
                         Delete
                     </Button>
