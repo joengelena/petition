@@ -92,12 +92,16 @@ const NavBar = () => {
                         <ListItemText primary="Petitions" />
                     </ListItemButton>
                 </ListItem>
-                <ListItem disablePadding>
-                <ListItemButton component={RouterLink} to="/myPetitions">
-                    <ListItemIcon><MyDocumentIcon /></ListItemIcon>
-                    <ListItemText primary="My Petitions" />
-                </ListItemButton>
-            </ListItem>
+                {settings.map((setting, index) => (
+                    setting === "MyPetitions" && (
+                        <ListItem key={index} disablePadding>
+                            <ListItemButton component={RouterLink} to="/myPetitions">
+                                <ListItemIcon><MyDocumentIcon /></ListItemIcon>
+                                <ListItemText primary="My Petition" />
+                            </ListItemButton>
+                        </ListItem>
+                    )
+                ))}
             </List>
             <Divider />
             <List>
