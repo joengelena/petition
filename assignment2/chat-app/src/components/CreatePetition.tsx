@@ -131,13 +131,11 @@ const CreatePetition = () => {
         setSupportTiers(newSupportTiers)
     }
 
-
     const updateAddSupportTier = (tempId: number, key: string, newValue: string | number) => {
         const newSupportTiers = supportTiers.map(tier =>
         tier.tempId === tempId ? {...tier, [key] : newValue} : tier)
         setSupportTiers(newSupportTiers)
     }
-
 
     const addSupportTier = (tier: CreateSupportTier) => {
         return (
@@ -146,16 +144,14 @@ const CreatePetition = () => {
                     width: '100%',
                     maxWidth: 400,
                     marginBottom: 16,
-                    border: "3px solid #0067cd",
+                    border: "3px solid #0f574a",
                     borderRadius: "3%",
                     padding: 16,
                     boxSizing: 'border-box'
                 }}
             >
                 <h4 style={{marginTop: 10}}>Support Tier</h4>
-                <Stack
-                    sx={{width: 350}}
-                >
+                <Stack>
                     <TextField
                         required
                         label="Title"
@@ -199,11 +195,11 @@ const CreatePetition = () => {
                     />
                     <Button
                         variant="contained"
+                        fullWidth
                         sx={{
                             background: "#C70000",
-                            marginBottom: "8px",
                             "&:hover": {
-                                background: "#ab0f0f",
+                                background: "#e84242"
                             }}}
                         onClick={() => (handleDeleteSupportTier(tier.tempId))}
                     >
@@ -211,8 +207,7 @@ const CreatePetition = () => {
                     </Button>
                 </Stack>
             </Box>
-
-            )
+        )
     }
 
     const handleImageUpload = (uploadedImage: File | null) => {
@@ -323,7 +318,14 @@ const CreatePetition = () => {
                         </Alert>}
                     <Button
                         variant="outlined"
-                        color="primary"
+                        sx={{
+                            color: '#1c7c31',
+                            borderColor: "#1c7c31",
+                            "&:hover": {
+                                background: "#d2e1d2",
+                                borderColor: '#d2e1d2'
+                            }
+                        }}
                         style={{ width: 400 }}
                         onClick={handleAddSupportTier}
                         disabled={supportTiers.length === 3}
@@ -333,14 +335,19 @@ const CreatePetition = () => {
                     <Button
                         type="submit"
                         variant="contained"
-                        color="primary"
+                        fullWidth
+                        sx={{ background: !image ? "#bbbbbb":"#0f574a",
+                            "&:hover": {
+                                background: "#1a937d",
+                            }
+                        }}
                         style={{ width: 400 }}
                         onClick={()=>(createPetition())}
                         disabled={!image}
                     >
                         Create Petition
                     </Button>
-                    <Link to="/petitions" >
+                    <Link style={{color: '#000000'}} to="/petitions" >
                         Back to Petitions
                     </Link>
                 </Stack>
