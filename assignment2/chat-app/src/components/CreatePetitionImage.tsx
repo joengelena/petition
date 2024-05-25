@@ -51,48 +51,36 @@ const CreatePetitionImage: React.FC<UploadImageProps> = ({ onImageUpload, image,
         return ''
     }
 
-    if (errorFlag) {
-        return (
-            <div style={{padding: 50}}>
-                <Paper elevation={3} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
-                    <Typography variant="h3" style={{ color: '#d90f0f', fontWeight: 'bold'}} >
-                        404 {errorMessage}
-                    </Typography>
-                </Paper>
-            </div>
-        )
-    } else {
-        return (
-            <div>
-                <Stack direction="column" spacing={2} marginTop={2} marginBottom={2} justifyContent="center"
-                       alignItems="center">
-                    <Avatar
-                        src={imgSrc()}
-                        style={{width: 400, height: 250, borderRadius: 3}}
-                    >
-                        <ImageNotSupportedIcon/>
-                    </Avatar>
-                    <Button
-                        component="label"
-                        variant="outlined"
-                        sx={{
-                            color: '#1c7c31',
-                            borderColor: "#1c7c31",
-                            "&:hover": {
-                                background: "#d2e1d2",
-                                borderColor: '#d2e1d2'
-                            }
-                        }}
-                        style={{width: 400}}
-                        startIcon={<CloudUpload/>}
-                    >
-                        Upload file
-                        <input type="file" onChange={handleFileChange} style={{display: 'none'}}/>
-                    </Button>
-                </Stack>
-            </div>
-        );
-    }
+    return (
+        <div>
+            <Stack direction="column" spacing={2} marginTop={2} marginBottom={2} justifyContent="center"
+                   alignItems="center">
+                <Avatar
+                    src={imgSrc()}
+                    style={{width: 400, height: 250, borderRadius: 3}}
+                >
+                    <ImageNotSupportedIcon/>
+                </Avatar>
+                <Button
+                    component="label"
+                    variant="outlined"
+                    sx={{
+                        color: '#1c7c31',
+                        borderColor: "#1c7c31",
+                        "&:hover": {
+                            background: "#d2e1d2",
+                            borderColor: '#d2e1d2'
+                        }
+                    }}
+                    style={{width: 400}}
+                    startIcon={<CloudUpload/>}
+                >
+                    Upload file
+                    <input type="file" onChange={handleFileChange} style={{display: 'none'}}/>
+                </Button>
+            </Stack>
+        </div>
+    )
 }
 
 export default CreatePetitionImage;

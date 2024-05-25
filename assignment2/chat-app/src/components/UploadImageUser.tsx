@@ -38,7 +38,7 @@ const UploadImageUser = () => {
                 },
                 (error) => {
                     setErrorFlag(true);
-                    setErrorMessage(error.toString());
+                    setErrorMessage(error.response.statusText)
                     navigate('/')
                 })
     }, [userLocal, navigate])
@@ -51,6 +51,7 @@ const UploadImageUser = () => {
                 setErrorMessage("")
             })
             .catch((error) => {
+                console.log(error)
                 setErrorFlag(true)
                 setErrorMessage(error.response.statusText)
         })

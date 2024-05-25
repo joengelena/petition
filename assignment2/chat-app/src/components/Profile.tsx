@@ -20,35 +20,18 @@ const Profile = () => {
                 "X-Authorization": userLocal.token }
         })
             .then((response) => {
+                    setUser(response.data)
                     setErrorFlag(false)
                     setErrorMessage("")
                 },
                 (error) => {
+                    console.log(error)
                     setErrorFlag(true)
                     setErrorMessage(error.toString());
                     navigate('/')
                 })
     }, [userLocal, navigate])
 
-    React.useEffect(() => {
-        const getUser = () => {
-            axios.get(`${baseUrl}/users/${userLocal.userId}`, {
-                headers: {
-                    "X-Authorization": userLocal.token
-                }
-            })
-                .then((response) => {
-                        setUser(response.data)
-                        setErrorFlag(false)
-                        setErrorMessage("")
-                    },
-                    (error) => {
-                        setErrorFlag(true)
-                        setErrorMessage(error.toString());
-                    })
-        }
-        getUser()
-    })
 
     return (
         <div style={{padding: 50}}>

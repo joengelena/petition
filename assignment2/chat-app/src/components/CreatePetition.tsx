@@ -76,7 +76,27 @@ const CreatePetition = () => {
     }
 
    const createPetition = () => {
+       if (title.trim().length === 0) {
+           setErrorFlag(true);
+           setErrorMessage("Title should not just be spaces");
+           return;
+       }
+       if (description.trim().length === 0) {
+           setErrorFlag(true);
+           setErrorMessage("Description should not just be spaces");
+           return;
+       }
        for (let tier of supportTiers) {
+           if (tier.title.trim().length === 0) {
+               setErrorFlag(true);
+               setErrorMessage("Support tier title should not just be spaces");
+               return;
+           }
+           if (tier.description.trim().length === 0) {
+               setErrorFlag(true);
+               setErrorMessage("Support tier description should not just be spaces");
+               return;
+           }
            if (isNaN(Number(tier.cost))) {
                setErrorFlag(true);
                setErrorMessage("Cost must be a number");
@@ -90,11 +110,11 @@ const CreatePetition = () => {
                }
            }
        }
-           axios.post(`${baseUrl}/petitions`, {
-               title: title,
-               description: description,
-               categoryId: categoryId,
-               supportTiers: supportTiers.map(({tempId, ...rest }) => rest)
+       axios.post(`${baseUrl}/petitions`, {
+           title: title,
+           description: description,
+           categoryId: categoryId,
+           supportTiers: supportTiers.map(({tempId, ...rest }) => rest)
            }, {
                headers: {
                    "X-Authorization": userLocal.token,
