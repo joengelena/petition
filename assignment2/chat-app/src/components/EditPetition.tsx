@@ -165,128 +165,143 @@ const EditPetition = () => {
             })
 
     }
-
-    return (
-        <div style={{padding: 50}}>
-            <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 900}}>
-                <Typography variant="h3" style={{fontWeight: 'bold'}}>
-                    Edit Petition
-                </Typography>
-                <Stack direction="column"
-                       spacing={2} marginTop={2} marginBottom={2}
-                       justifyContent="center"
-                       alignItems="center">
-                    <Avatar
-                        src={`${baseUrl}/petitions/${petitionId}/image`}
-                        style={{width: 400, height: 250, borderRadius: 3}}
-                    >
-                        <ImageNotSupportedIcon/>
-                    </Avatar>
-                    <Button
-                        variant="contained"
-                        sx={{ background: "#0f574a", width: 400, marginBottom: 8,
-                            "&:hover": {
-                                background: "#1a937d",
-                            }
-                        }}
-                        onClick={()=> {navigate(`/petitions/${petitionId}/updateImage`)}}
-                        startIcon={<CloudUpload />}
-                    >
-                        Update Photo
-                    </Button>
-                    <TextField
-                        label="Title"
-                        multiline
-                        variant="outlined"
-                        value={title}
-                        onChange={(event) => setTitle(event.target.value)}
-                        InputProps={{
-                            style: {
-                                width: 400,
-                                resize: 'vertical',
-                                overflow: 'auto',
-                            },
-                        }}
-                        style={{ marginBottom: 2 }}
-                    />
-                    <TextField
-                        label="Description"
-                        multiline
-                        variant="outlined"
-                        value={description}
-                        onChange={(event) => setDescription(event.target.value)}
-                        InputProps={{
-                            style: {
-                                width: 400,
-                                resize: 'vertical',
-                                overflow: 'auto',
-                            },
-                        }}
-                        style={{marginBottom: 2}}
-                    />
-                    <Box style={{width: 400, marginBottom: 2}}>
-                        <FormControl fullWidth>
-                            <InputLabel required id="category-single-label">Category</InputLabel>
-                                <Select
-                                labelId="category-multiple-label"
-                                id="category-multiple-name"
-                                label="Category"
-                                value={Number(categoryId)}
-                                onChange={handleCategoryClick}
-                                renderValue={(selected) => {
-                                    const category = categories.find(c => c.categoryId === selected);
-                                    return category ? category.name : '';
-                                }}
-                            >
-                                {categories.map((category) => (
-                                    <MenuItem key={category.categoryId} value={category.categoryId}>
-                                        {category.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Box>
-                    {errorFlag &&
-                        <Alert severity="error" style={{width: '400px'}}>
-                            <AlertTitle>Error</AlertTitle>
-                            {errorMessage}
-                        </Alert>}
-                    <Stack direction="column" spacing={1} sx={{ width: 400 }}>
+    if (errorFlag) {
+        return (
+            <div style={{padding: 50}}>
+                <Paper elevation={3} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
+                    <Typography variant="h3" style={{ color: '#d90f0f', fontWeight: 'bold'}} >
+                        404 {errorMessage}
+                    </Typography>
+                </Paper>
+            </div>
+        )
+    } else {
+        return (
+            <div style={{padding: 50}}>
+                <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 900}}>
+                    <Typography variant="h3" style={{fontWeight: 'bold'}}>
+                        Edit Petition
+                    </Typography>
+                    <Stack direction="column"
+                           spacing={2} marginTop={2} marginBottom={2}
+                           justifyContent="center"
+                           alignItems="center">
+                        <Avatar
+                            src={`${baseUrl}/petitions/${petitionId}/image`}
+                            style={{width: 400, height: 250, borderRadius: 3}}
+                        >
+                            <ImageNotSupportedIcon/>
+                        </Avatar>
                         <Button
                             variant="contained"
-                            sx={{ background: disableSave ? '#bbbbbb' : "#0f574a",
+                            sx={{
+                                background: "#0f574a", width: 400, marginBottom: 8,
                                 "&:hover": {
                                     background: "#1a937d",
                                 }
                             }}
-                            onClick={updatePetition}
-                            disabled={disableSave}
+                            onClick={() => {
+                                navigate(`/petitions/${petitionId}/updateImage`)
+                            }}
+                            startIcon={<CloudUpload/>}
                         >
-                            Save
+                            Update Photo
                         </Button>
+                        <TextField
+                            label="Title"
+                            multiline
+                            variant="outlined"
+                            value={title}
+                            onChange={(event) => setTitle(event.target.value)}
+                            InputProps={{
+                                style: {
+                                    width: 400,
+                                    resize: 'vertical',
+                                    overflow: 'auto',
+                                },
+                            }}
+                            style={{marginBottom: 2}}
+                        />
+                        <TextField
+                            label="Description"
+                            multiline
+                            variant="outlined"
+                            value={description}
+                            onChange={(event) => setDescription(event.target.value)}
+                            InputProps={{
+                                style: {
+                                    width: 400,
+                                    resize: 'vertical',
+                                    overflow: 'auto',
+                                },
+                            }}
+                            style={{marginBottom: 2}}
+                        />
+                        <Box style={{width: 400, marginBottom: 2}}>
+                            <FormControl fullWidth>
+                                <InputLabel required id="category-single-label">Category</InputLabel>
+                                <Select
+                                    labelId="category-multiple-label"
+                                    id="category-multiple-name"
+                                    label="Category"
+                                    value={Number(categoryId)}
+                                    onChange={handleCategoryClick}
+                                    renderValue={(selected) => {
+                                        const category = categories.find(c => c.categoryId === selected);
+                                        return category ? category.name : '';
+                                    }}
+                                >
+                                    {categories.map((category) => (
+                                        <MenuItem key={category.categoryId} value={category.categoryId}>
+                                            {category.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Box>
+                        {errorFlag &&
+                            <Alert severity="error" style={{width: '400px'}}>
+                                <AlertTitle>Error</AlertTitle>
+                                {errorMessage}
+                            </Alert>}
+                        <Stack direction="column" spacing={1} sx={{width: 400}}>
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    background: disableSave ? '#bbbbbb' : "#0f574a",
+                                    "&:hover": {
+                                        background: "#1a937d",
+                                    }
+                                }}
+                                onClick={updatePetition}
+                                disabled={disableSave}
+                            >
+                                Save
+                            </Button>
+                        </Stack>
+                        <hr style={{width: '100%'}}/>
+                        <EditSupportTiers petitionId={petitionId}/>
+                        <Link style={{color: '#000000'}} to="/MyPetitions">
+                            Back
+                        </Link>
                     </Stack>
-                    <hr style={{width: '100%'}}/>
-                    <EditSupportTiers petitionId={petitionId} />
-                    <Link style={{color: '#000000'}} to="/MyPetitions">
-                        Back
-                    </Link>
-                </Stack>
 
-                <Snackbar
-                    autoHideDuration={6000}
-                    open={snackOpen}
-                    onClose={handleSnackClose}
-                    key={snackMessage}
-                >
-                    <Alert onClose={handleSnackClose} severity="success" sx={{
-                        width: '100%'
-                    }}>
-                        {snackMessage}
-                    </Alert>
-                </Snackbar>
-            </Paper>
-        </div>
-    )
+                    <Snackbar
+                        autoHideDuration={6000}
+                        open={snackOpen}
+                        onClose={handleSnackClose}
+                        key={snackMessage}
+                    >
+                        <Alert onClose={handleSnackClose} severity="success" sx={{
+                            width: '100%'
+                        }}>
+                            {snackMessage}
+                        </Alert>
+                    </Snackbar>
+                </Paper>
+            </div>
+        )
+    }
 }
 
 export default EditPetition;

@@ -10,7 +10,7 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, Grid, InputAdornment, Stack,
+    DialogTitle, Grid, InputAdornment, Paper, Stack,
     TextField, Typography
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -559,44 +559,55 @@ const EditSupportTiers: React.FC<EditPetitionChildComponent> = ({petitionId}) =>
             )
         )
     }
-    return (
-        <>
-            <h2 style={{marginBottom: "10px"}}>Support Tiers</h2>
-            {errorFlag &&
-                <Alert severity="error" style={{width: '400px'}}>
-                    <AlertTitle>Error</AlertTitle>
-                    {errorMessage}
-                </Alert>}
-            <Grid
-                container
-                spacing={2}
-                justifyContent="center"
-            >
-                {getSupportTiers()}
-            </Grid>
-            {createSupportTier ? addSupportTier() :
-                <Button
-                    variant="outlined"
-                    sx={{
-                        borderColor: '#0f574a',
-                        color: '#0f574a',
-                        width: "400px", marginTop: 3,
-                        "&:hover": {
-                            background: "#f2faf2",
-                            borderColor: '#f2faf2'
-                        }
-                }}
-                    onClick={handleAddNewSupportTier}
-                    disabled={petition?.supportTiers.length === 3}
+    if (errorFlag) {
+        return (
+            <div style={{padding: 50}}>
+                <Paper elevation={3} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
+                    <Typography variant="h3" style={{ color: '#d90f0f', fontWeight: 'bold'}} >
+                        404 {errorMessage}
+                    </Typography>
+                </Paper>
+            </div>
+        )
+    } else {
+        return (
+            <>
+                <h2 style={{marginBottom: "10px"}}>Support Tiers</h2>
+                {errorFlag &&
+                    <Alert severity="error" style={{width: '400px'}}>
+                        <AlertTitle>Error</AlertTitle>
+                        {errorMessage}
+                    </Alert>}
+                <Grid
+                    container
+                    spacing={2}
+                    justifyContent="center"
                 >
-                    Add Support Tier
-                </Button>
-            }
-            {deleteSupportTierModalOpen && deleteSupportTierConfirmationModal()}
-            {editSupportTierModalOpen && editSupportTierModal()}
-        </>
-    )
-
+                    {getSupportTiers()}
+                </Grid>
+                {createSupportTier ? addSupportTier() :
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            borderColor: '#0f574a',
+                            color: '#0f574a',
+                            width: "400px", marginTop: 3,
+                            "&:hover": {
+                                background: "#f2faf2",
+                                borderColor: '#f2faf2'
+                            }
+                        }}
+                        onClick={handleAddNewSupportTier}
+                        disabled={petition?.supportTiers.length === 3}
+                    >
+                        Add Support Tier
+                    </Button>
+                }
+                {deleteSupportTierModalOpen && deleteSupportTierConfirmationModal()}
+                {editSupportTierModalOpen && editSupportTierModal()}
+            </>
+        )
+    }
 
 }
 

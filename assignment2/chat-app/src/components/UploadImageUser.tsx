@@ -165,74 +165,90 @@ const UploadImageUser = () => {
         );
     };
 
-    return (
-        <div style={{ padding: 50 }}>
-            <Paper elevation={2} style={{ padding: 20, margin: 'auto', maxWidth: 400 }}>
-                <Typography variant="h4" style={{ fontWeight: 'bold' }}>
-                    Image Upload
-                </Typography>
-                <Stack direction="column" spacing={2} marginTop={2} marginBottom={2} justifyContent="center" alignItems="center">
-                    <Avatar sx={{ width: 200, height: 200 }} src={imgSrc()} />
-                    <Button
-                        component="label"
-                        variant="outlined"
-                        sx={{
-                            color: '#1c7c31',
-                            borderColor: "#1c7c31",
-                            "&:hover": {
-                                background: "#d2e1d2",
-                                borderColor: '#d2e1d2'
-                            }}}
-                        startIcon={<CloudUpload />}
-                    >
-                        Upload file
-                        <input type="file" onChange={handleFileChange} style={{ display: 'none' }} />
-                    </Button>
-
-                    <Stack direction="column" spacing={1} sx={{ width: 320 }}>
-                        {errorFlag &&
-                            <Alert severity="error">
-                                <AlertTitle>Error</AlertTitle>
-                                {errorMessage}
-                            </Alert>}
+    if (errorFlag) {
+        return (
+            <div style={{padding: 50}}>
+                <Paper elevation={3} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
+                    <Typography variant="h3" style={{ color: '#d90f0f', fontWeight: 'bold'}} >
+                        404 {errorMessage}
+                    </Typography>
+                </Paper>
+            </div>
+        )
+    } else {
+        return (
+            <div style={{padding: 50}}>
+                <Paper elevation={2} style={{padding: 20, margin: 'auto', maxWidth: 400}}>
+                    <Typography variant="h4" style={{fontWeight: 'bold'}}>
+                        Image Upload
+                    </Typography>
+                    <Stack direction="column" spacing={2} marginTop={2} marginBottom={2} justifyContent="center"
+                           alignItems="center">
+                        <Avatar sx={{width: 200, height: 200}} src={imgSrc()}/>
                         <Button
-                            type="submit"
-                            variant="contained"
-                            fullWidth
-                            sx={{ background: image === null ? "#bbbbbb":"#0f574a",
+                            component="label"
+                            variant="outlined"
+                            sx={{
+                                color: '#1c7c31',
+                                borderColor: "#1c7c31",
                                 "&:hover": {
-                                    background: "#1a937d",
+                                    background: "#d2e1d2",
+                                    borderColor: '#d2e1d2'
                                 }
                             }}
-                            onClick={() => uploadImage()}
-                            disabled={image === null}
+                            startIcon={<CloudUpload/>}
                         >
-                            Update
+                            Upload file
+                            <input type="file" onChange={handleFileChange} style={{display: 'none'}}/>
                         </Button>
-                        {(dbImage || image) &&
+
+                        <Stack direction="column" spacing={1} sx={{width: 320}}>
+                            {errorFlag &&
+                                <Alert severity="error">
+                                    <AlertTitle>Error</AlertTitle>
+                                    {errorMessage}
+                                </Alert>}
                             <Button
                                 type="submit"
                                 variant="contained"
                                 fullWidth
                                 sx={{
-                                    background: "#C70000",
+                                    background: image === null ? "#bbbbbb" : "#0f574a",
                                     "&:hover": {
-                                        background: "#e84242"
-                                    }}}
-                                onClick={(handleDeleteModalOpen)}
+                                        background: "#1a937d",
+                                    }
+                                }}
+                                onClick={() => uploadImage()}
+                                disabled={image === null}
                             >
-                                Delete
+                                Update
                             </Button>
-                        }
-                        {deleteConfirmationModal()}
-                        <Link style={{color: "#000000"}} to="/Petitions" >
-                            Exit
-                        </Link>
+                            {(dbImage || image) &&
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    fullWidth
+                                    sx={{
+                                        background: "#C70000",
+                                        "&:hover": {
+                                            background: "#e84242"
+                                        }
+                                    }}
+                                    onClick={(handleDeleteModalOpen)}
+                                >
+                                    Delete
+                                </Button>
+                            }
+                            {deleteConfirmationModal()}
+                            <Link style={{color: "#000000"}} to="/Petitions">
+                                Exit
+                            </Link>
+                        </Stack>
                     </Stack>
-                </Stack>
-            </Paper>
-        </div>
-    );
+                </Paper>
+            </div>
+        );
+    }
 }
 
 export default UploadImageUser;
