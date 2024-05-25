@@ -25,7 +25,23 @@ const Petition = ()=> {
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
 
-    const [petition, setPetition] = React.useState<Petition>();
+    const [petition, setPetition] = React.useState<Petition>({
+        petitionId: 0,
+        title: "",
+        description: "",
+        creationDate: "",
+        imageFileName: "",
+        ownerId: 0,
+        ownerFirstName: "",
+        ownerLastName: "",
+        supportingCost: 0,
+        categoryId: 0,
+        ownerImage: "",
+        numberOfSupporters: 0,
+        moneyRaised: 0,
+        supportTiers: []
+    });
+
     const [supporters, setSupporters] = React.useState<Supporter[]>();
     const [similarPetitions, setSimilarPetitions] = React.useState<Array<Petition>>([]);
     const [similarOwnerId, setSimilarOwnerId] = React.useState<Array<Petition>>([]);
@@ -72,7 +88,7 @@ const Petition = ()=> {
     }, [petitionId]);
 
     const getSupporters = (petition: Petition) => {
-        axios.get(baseUrl + `/petitions/${petition?.petitionId}/supporters`)
+        axios.get(baseUrl + `/petitions/${petition.petitionId}/supporters`)
             .then((response) => {
                 setErrorFlag(false)
                 setErrorMessage("")
@@ -86,7 +102,7 @@ const Petition = ()=> {
 
     const getSimilarPetitions = (petition: Petition) => {
         const getPetitionsCategoryId = () => {
-            const query = `categoryIds=${petition?.categoryId}`
+            const query = `categoryIds=${petition.categoryId}`
             axios.get(`${baseUrl}/petitions?count=10&${query}`)
                 .then((response) => {
                     setErrorMessage('')
@@ -101,7 +117,7 @@ const Petition = ()=> {
         }
 
         const getPetitionsOwnerId = () => {
-            const query = `ownerId=${petition?.ownerId}`
+            const query = `ownerId=${petition.ownerId}`
             axios.get(`${baseUrl}/petitions?count=10&${query}`)
                 .then((response) => {
                     setErrorMessage('')
@@ -115,7 +131,7 @@ const Petition = ()=> {
                 })
         }
 
-        if (petition !== null && petition?.categoryId !== 0 && petition?.ownerId !== 0) {
+        if (petition !== null && petition.categoryId !== 0 && petition.ownerId !== 0) {
             getSupporters(petition)
             getPetitionsCategoryId()
             getPetitionsOwnerId()
@@ -127,7 +143,7 @@ const Petition = ()=> {
             const array = require("lodash/array")
             if (similarCategory.length > 0 && similarOwnerId.length > 0) {
                 const similarPetitions = array.uniqBy([...similarCategory, ...similarOwnerId], "petitionId")
-                const similarPetitionsCurrent = similarPetitions.filter((p: Petition) => p.petitionId !== petition?.petitionId)
+                const similarPetitionsCurrent = similarPetitions.filter((p: Petition) => p.petitionId !== petition.petitionId)
                 setSimilarPetitions(similarPetitionsCurrent)
             } else {
                 setConcatReady(false)
@@ -139,6 +155,11 @@ const Petition = ()=> {
         }
     }, [similarCategory, similarOwnerId, concatReady, petition]);
 
+    const changeTimeStamp = (timeStamp: string) =>  {
+        const date = new Date(timeStamp).toLocaleDateString();
+        const time = new Date(timeStamp).toLocaleTimeString();
+        return date + '\n' + time;
+    }
 
     const supportATier = () => {
         const data = message !== null
@@ -230,7 +251,7 @@ const Petition = ()=> {
     }
 
     const getSupportTiers = () => {
-        return petition?.supportTiers.map((tier, index) => (
+        return petition.supportTiers.map((tier, index) => (
             <Grid
                 item
                 key={index}
@@ -276,7 +297,7 @@ const Petition = ()=> {
                     <p style={{color: '#0067cd', fontWeight: 'bold'}}>
                         {tier.cost === 0 ? "FREE" : `$${tier.cost}`}
                     </p>
-                    {petition?.ownerId !== userLocal.userId &&
+                    {petition.ownerId !== userLocal.userId &&
                         <Button
                             variant="contained"
                         onClick={()=>(handleSupportTierClick(tier.supportTierId))}
@@ -313,8 +334,8 @@ const Petition = ()=> {
                 >
                     <ListItemAvatar style={{ marginRight: 16, justifyContent: 'center'}}>
                         <Avatar
-                            src={`${baseUrl}/users/${supporter?.supporterId}/image`}
-                            alt={`${supporter?.supporterLastName}`}
+                            src={`${baseUrl}/users/${supporter.supporterId}/image`}
+                            alt={`${supporter.supporterLastName}`}
                             style={{width: 70, height: 70}} />
                     </ListItemAvatar>
                     <ListItemText
@@ -358,14 +379,14 @@ const Petition = ()=> {
                             color: '#414141',
                             wordWrap: 'break-word'
                         }}>
-                        {supporter.timestamp}
+                        {changeTimeStamp(supporter.timestamp)}
                     </Typography>
                 </ListItem>
             ));
     }
 
     const supportTierTitle = (supportTierId: number) => {
-        const supportTier = petition?.supportTiers.find(tier => tier.supportTierId === supportTierId);
+        const supportTier = petition.supportTiers.find(tier => tier.supportTierId === supportTierId);
         return supportTier?.title;
     }
 
@@ -407,7 +428,7 @@ const Petition = ()=> {
                     </TableCell>
                     <TableCell>
                         <Typography variant="body1">
-                            {similarPetition.creationDate}
+                            {changeTimeStamp(similarPetition.creationDate)}
                         </Typography>
                     </TableCell>
                     <TableCell>
@@ -440,7 +461,7 @@ const Petition = ()=> {
             <Paper elevation={3} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
                 <React.Fragment>
                     <Typography variant="h3" style={{fontWeight: 'bold', padding: 10, marginBottom: "10px", wordWrap: 'break-word'}} >
-                        {petition?.title}
+                        {petition.title}
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                         {errorFlag &&
@@ -453,7 +474,7 @@ const Petition = ()=> {
                     <Grid container spacing={4}>
                         <Grid item xs={12} sm={7}>
                             <Avatar
-                                src={`${baseUrl}/petitions/${petition?.petitionId}/image`}
+                                src={`${baseUrl}/petitions/${petition.petitionId}/image`}
                                 style={{width: "100%", height: 400, borderRadius: 7}}
                             >
                                 <ImageNotSupportedIcon/>
@@ -470,14 +491,14 @@ const Petition = ()=> {
                                     <Typography variant="h4" style={{padding: 10}}>
                                         Description
                                     </Typography>
-                                    <Typography variant="body1" style={{wordWrap: 'break-word'}}>{petition?.description}</Typography>
+                                    <Typography variant="body1" style={{wordWrap: 'break-word'}}>{petition.description}</Typography>
 
                                     <Typography variant="h4" style={{padding: 10}}>
                                         Total Money Raised
                                     </Typography>
                                     <Typography variant="body1">
-                                        {petition?.moneyRaised !== null
-                                            ? `$${petition?.moneyRaised}`
+                                        {petition.moneyRaised !== null
+                                            ? `$${petition.moneyRaised}`
                                             : 'No money raised yet'}
                                     </Typography>
                                 </div>
@@ -489,15 +510,15 @@ const Petition = ()=> {
                                     style={{padding: '10px 0'}}
                                 >
                                     <Avatar
-                                        src={`${baseUrl}/users/${petition?.ownerId}/image`}
-                                        alt={`${petition?.ownerLastName}`}
+                                        src={`${baseUrl}/users/${petition.ownerId}/image`}
+                                        alt={`${petition.ownerLastName}`}
                                         style={{width: 60, height: 60}}
                                     />
                                     <Typography variant="h5" style={{padding: 10, fontWeight: 'bold'}}>
-                                        {petition?.ownerFirstName + " " + petition?.ownerLastName}
+                                        {petition.ownerFirstName + " " + petition.ownerLastName}
                                     </Typography>
                                     <Typography variant="body1" style={{padding: 10}}>
-                                        {petition?.creationDate}
+                                        {changeTimeStamp(petition.creationDate)}
                                     </Typography>
                                 </Grid>
                             </div>
