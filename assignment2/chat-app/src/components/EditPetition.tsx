@@ -40,7 +40,8 @@ const EditPetition = () => {
     React.useEffect(() => {
         axios.get(`${baseUrl}/users/${userLocal.userId}`, {
             headers: {
-                "X-Authorization": userLocal.token }
+                "X-Authorization": userLocal.token
+            }
         })
             .then((response) => {
                     setErrorFlag(false)
@@ -171,7 +172,6 @@ const EditPetition = () => {
                 <Typography variant="h3" style={{fontWeight: 'bold'}}>
                     Edit Petition
                 </Typography>
-
                 <Stack direction="column" spacing={2} marginTop={2} marginBottom={2} justifyContent="center"
                        alignItems="center">
                     <Avatar
@@ -180,6 +180,15 @@ const EditPetition = () => {
                     >
                         <ImageNotSupportedIcon/>
                     </Avatar>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        style={{ width: 400, marginBottom: 8 }}
+                        onClick={()=> {navigate(`/petitions/${petitionId}/updateImage`)}}
+                        startIcon={<CloudUpload />}
+                    >
+                        Update Photo
+                    </Button>
                     <TextField
                         label="Title"
                         multiline
@@ -193,7 +202,7 @@ const EditPetition = () => {
                                 overflow: 'auto',
                             },
                         }}
-                        style={{marginBottom: 2}}
+                        style={{ marginBottom: 2 }}
                     />
                     <TextField
                         label="Description"
@@ -246,15 +255,6 @@ const EditPetition = () => {
                             sx={{ flexGrow: 1 }}
                         >
                             Save
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={()=> {navigate(`/petitions/${petitionId}/uploadImage`)}}
-                            startIcon={<CloudUpload />}
-                            sx={{ flexGrow: 1 }}
-                        >
-                            Update Photo
                         </Button>
                     </Stack>
                     <hr style={{width: '100%'}}/>
