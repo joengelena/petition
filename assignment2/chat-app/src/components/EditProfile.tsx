@@ -125,11 +125,15 @@ const EditProfile = () => {
                 <Typography variant="h3" style={{fontWeight: 'bold'}}>
                     Edit Profile
                 </Typography>
-                <Stack direction="column" spacing={1} marginTop={2} marginBottom={2} justifyContent="center" alignItems="center">
+                <Stack
+                    direction="column"
+                    spacing={1} marginTop={2} marginBottom={2}
+                    justifyContent="center"
+                    alignItems="center">
                     <Avatar
                         src={`${baseUrl}/users/${userLocal.userId}/image`}
                         alt={`${user?.lastName}`}
-                        style={{ width: 150, height: 150 }}
+                        style={{ width: 150, height: 150, marginBottom: 8 }}
                     />
                     <TextField
                         label="First Name"
@@ -138,6 +142,7 @@ const EditProfile = () => {
                         onChange={e => setFirstName(e.target.value)}
                         fullWidth
                         margin="normal"
+                        style={{ marginBottom: 2 }}
                     />
                     <TextField
                         label="Last Name"
@@ -146,6 +151,7 @@ const EditProfile = () => {
                         onChange={e => setLastName(e.target.value)}
                         fullWidth
                         margin="normal"
+                        style={{ marginBottom: 2 }}
                     />
                     <TextField
                         label="Email"
@@ -156,6 +162,7 @@ const EditProfile = () => {
                         onChange={e => setEmail(e.target.value)}
                         fullWidth
                         margin="normal"
+                        style={{ marginBottom: 2 }}
                     />
                     <Typography variant="h6" >Update Password</Typography>
                     <TextField
@@ -173,7 +180,7 @@ const EditProfile = () => {
                                 </Button>
                             )
                         }}
-                        margin="normal"
+                        style={{ marginBottom: 2 }}
                     />
                     <TextField
                         label="Update Password"
@@ -190,7 +197,7 @@ const EditProfile = () => {
                                 </Button>
                             )
                         }}
-                        margin="normal"
+                        style={{ marginBottom: 2 }}
                     />
                     {errorFlag &&
                         <Alert severity="error" style={{width: '100%'}}>

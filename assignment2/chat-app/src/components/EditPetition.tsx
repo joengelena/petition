@@ -172,7 +172,9 @@ const EditPetition = () => {
                 <Typography variant="h3" style={{fontWeight: 'bold'}}>
                     Edit Petition
                 </Typography>
-                <Stack direction="column" spacing={2} marginTop={2} marginBottom={2} justifyContent="center"
+                <Stack direction="column"
+                       spacing={2} marginTop={2} marginBottom={2}
+                       justifyContent="center"
                        alignItems="center">
                     <Avatar
                         src={`${baseUrl}/petitions/${petitionId}/image`}
