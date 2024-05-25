@@ -1,9 +1,5 @@
-import React, {useState} from 'react';
-import axios from "axios";
-import {Link, useNavigate, useParams} from "react-router-dom";
+import React from 'react';
 import {
-    Alert,
-    AlertTitle,
     Avatar,
     Button,
     Paper, Stack,
@@ -12,7 +8,6 @@ import {
 import { CloudUpload } from "@mui/icons-material";
 import { useUserInfoStorage } from "../store";
 import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
-const baseUrl = "http://localhost:4941/api/v1";
 
 interface UploadImageProps {
     image: File | null;

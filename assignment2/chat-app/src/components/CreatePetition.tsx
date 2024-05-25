@@ -24,7 +24,6 @@ const CreatePetition = () => {
     const [title, setTitle] = React.useState('');
     const [description, setDescription] = React.useState('');
     const [categoryId, setCategoryId] = React.useState<Number>();
-    const [categoryIds, setCategoryIds] = React.useState<Array<Number>>([])
     const MAX_INTEGER = 2147483647;
 
     const [supportTiers, setSupportTiers] = React.useState<Array<CreateSupportTier>>([]);
