@@ -25,6 +25,20 @@ const Petition = ()=> {
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
 
+    const [supporters, setSupporters] = React.useState<Supporter[]>();
+    const [similarPetitions, setSimilarPetitions] = React.useState<Array<Petition>>([]);
+    const [similarOwnerId, setSimilarOwnerId] = React.useState<Array<Petition>>([]);
+    const [similarCategory, setSimilarCategory] = React.useState<Array<Petition>>([]);
+
+    const [concatReady, setConcatReady] = React.useState(false)
+    const [categories, setCategories] = React.useState<Array<Category>>([]);
+
+    const [logInDialogOpen, setLogInDialogOpen] = React.useState(false);
+    const [supportDialogOpen, setSupportDialogOpen] = React.useState(false);
+
+    const [supportTierId, setSupportTierId] = React.useState(-1);
+    const [message, setMessage] = React.useState<String>("");
+
     const [petition, setPetition] = React.useState<Petition>({
         petitionId: -1,
         title: "",
@@ -41,20 +55,6 @@ const Petition = ()=> {
         moneyRaised: 0,
         supportTiers: []
     });
-
-    const [supporters, setSupporters] = React.useState<Supporter[]>();
-    const [similarPetitions, setSimilarPetitions] = React.useState<Array<Petition>>([]);
-    const [similarOwnerId, setSimilarOwnerId] = React.useState<Array<Petition>>([]);
-    const [similarCategory, setSimilarCategory] = React.useState<Array<Petition>>([]);
-
-    const [concatReady, setConcatReady] = React.useState(false)
-    const [categories, setCategories] = React.useState<Array<Category>>([]);
-
-    const [logInDialogOpen, setLogInDialogOpen] = React.useState(false);
-    const [supportDialogOpen, setSupportDialogOpen] = React.useState(false);
-
-    const [supportTierId, setSupportTierId] = React.useState(-1);
-    const [message, setMessage] = React.useState<String | null>(null);
 
     React.useEffect(() => {
         const getPetition = () => {
@@ -162,7 +162,7 @@ const Petition = ()=> {
     }
 
     const supportATier = () => {
-        const data = message !== null
+        const data = message.trim().length !== 0
             ? { supportTierId, message }
             : { supportTierId };
 
@@ -175,7 +175,7 @@ const Petition = ()=> {
                 window.location.reload()
                 setSupportDialogOpen(false);
 
-                setMessage(null)
+                setMessage("")
                 setErrorMessage('');
                 setErrorFlag(false);
             })
@@ -214,7 +214,7 @@ const Petition = ()=> {
 
     const handleSupportTierDialogClose = () => {
         setSupportDialogOpen(false);
-        setMessage(null)
+        setMessage("")
     }
     const supportATierDialog = () => {
         return (

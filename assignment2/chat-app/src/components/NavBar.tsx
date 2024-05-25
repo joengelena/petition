@@ -17,7 +17,7 @@ import {
     Dialog,
     DialogContent,
     DialogContentText,
-    DialogTitle, DialogActions
+    DialogTitle, DialogActions, Paper
 } from '@mui/material';
 import {Link as RouterLink, useNavigate} from 'react-router-dom';
 import {useUserInfoStorage} from "../store";
@@ -173,120 +173,132 @@ const NavBar = () => {
         );
     };
 
-    return (
-        <AppBar position="static" sx={{backgroundColor: "#0f574a"}}>
-            <Toolbar>
-                <IconButton
-                    size="medium"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    sx={{ mr: 2 }}
-                    onClick={toggleDrawer(true)}
-                >
-                <MenuIcon />
-                </IconButton>
-                <Drawer open={open} onClose={toggleDrawer(false)}>
-                    {DrawerList}
-                </Drawer>
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    Petition Website
-                </Typography>
-                {settings.map((setting, index) => (
-                    setting === "MyPetitions" && (
-                        <Button
-                            key={index}
-                            sx={{
-                                color: '#ffffff',
-                                '&:hover': {
-                                    color: '#20af95'
-                                },
-                            }}
-                            component={RouterLink} to="/myPetitions">
-                            My Petitions
-                        </Button>
-                    )
-                ))}
-                {settings.map((setting, index) => (
-                    setting === "Petitions" && (
-                        <Button
-                            key={index}
-                            sx={{
-                                color: '#ffffff',
-                                '&:hover': {
-                                    color: '#1a937d'
-                                },
-                            }}
-                            component={RouterLink} to="/petitions"
-                        >
-                            Petitions
-                        </Button>
-                    )
-                ))}
-                {settings.map((setting, index) => (
-                    setting === "Register" && (
-                        <Button
-                            key={index}
-                            sx={{
-                                color: '#ffffff',
-                                '&:hover': {
-                                    color: '#1a937d'
-                                },
-                            }}
-                            component={RouterLink} to="/register">
-                            Register
-                        </Button>
-                    )
-                ))}
-                {settings.map((setting, index) => (
-                    setting === "Login" && (
-                        <Button
-                            key={index}
-                            sx={{
-                                color: '#ffffff',
-                                '&:hover': {
-                                    color: '#1a937d'
-                                },
-                            }}
-                            component={RouterLink} to="/login">
-                            Login
-                        </Button>
-                    )
-                ))}
-                {settings.map((setting, index) => (
-                    setting === "Profile" && (
-                        <Button
-                            key={index}
-                            sx={{
-                                color: '#ffffff',
-                                '&:hover': {
-                                    color: '#20af95'
-                                },
-                            }}
-                            component={RouterLink} to="/profile">
-                            Profile
-                        </Button>
-                    )
-                ))}
-                {settings.map((setting, index) => (
-                    setting === "Logout" && (
-                        <Button
-                            key={index}
-                            sx={{
-                                color: '#ffffff',
-                                '&:hover': {
-                                    color: '#20af95'
-                                },
-                            }}
-                            onClick={handleLogoutModalOpen}>
-                            Logout
-                        </Button>
-                    )
-                ))}
-                {logoutConfirmationModal()}
-            </Toolbar>
-        </AppBar>
-    );
+    if (errorFlag) {
+        return (
+            <div style={{padding: 50}}>
+                <Paper elevation={3} style={{padding: 20, margin: 'auto', maxWidth: 1200}}>
+                    <Typography variant="h3" style={{ color: '#d90f0f', fontWeight: 'bold'}} >
+                        404 {errorMessage}
+                    </Typography>
+                </Paper>
+            </div>
+        )
+    } else {
+        return (
+            <AppBar position="static" sx={{backgroundColor: "#0f574a"}}>
+                <Toolbar>
+                    <IconButton
+                        size="medium"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{mr: 2}}
+                        onClick={toggleDrawer(true)}
+                    >
+                        <MenuIcon/>
+                    </IconButton>
+                    <Drawer open={open} onClose={toggleDrawer(false)}>
+                        {DrawerList}
+                    </Drawer>
+                    <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+                        Petition Website
+                    </Typography>
+                    {settings.map((setting, index) => (
+                        setting === "MyPetitions" && (
+                            <Button
+                                key={index}
+                                sx={{
+                                    color: '#ffffff',
+                                    '&:hover': {
+                                        color: '#20af95'
+                                    },
+                                }}
+                                component={RouterLink} to="/myPetitions">
+                                My Petitions
+                            </Button>
+                        )
+                    ))}
+                    {settings.map((setting, index) => (
+                        setting === "Petitions" && (
+                            <Button
+                                key={index}
+                                sx={{
+                                    color: '#ffffff',
+                                    '&:hover': {
+                                        color: '#1a937d'
+                                    },
+                                }}
+                                component={RouterLink} to="/petitions"
+                            >
+                                Petitions
+                            </Button>
+                        )
+                    ))}
+                    {settings.map((setting, index) => (
+                        setting === "Register" && (
+                            <Button
+                                key={index}
+                                sx={{
+                                    color: '#ffffff',
+                                    '&:hover': {
+                                        color: '#1a937d'
+                                    },
+                                }}
+                                component={RouterLink} to="/register">
+                                Register
+                            </Button>
+                        )
+                    ))}
+                    {settings.map((setting, index) => (
+                        setting === "Login" && (
+                            <Button
+                                key={index}
+                                sx={{
+                                    color: '#ffffff',
+                                    '&:hover': {
+                                        color: '#1a937d'
+                                    },
+                                }}
+                                component={RouterLink} to="/login">
+                                Login
+                            </Button>
+                        )
+                    ))}
+                    {settings.map((setting, index) => (
+                        setting === "Profile" && (
+                            <Button
+                                key={index}
+                                sx={{
+                                    color: '#ffffff',
+                                    '&:hover': {
+                                        color: '#20af95'
+                                    },
+                                }}
+                                component={RouterLink} to="/profile">
+                                Profile
+                            </Button>
+                        )
+                    ))}
+                    {settings.map((setting, index) => (
+                        setting === "Logout" && (
+                            <Button
+                                key={index}
+                                sx={{
+                                    color: '#ffffff',
+                                    '&:hover': {
+                                        color: '#20af95'
+                                    },
+                                }}
+                                onClick={handleLogoutModalOpen}>
+                                Logout
+                            </Button>
+                        )
+                    ))}
+                    {logoutConfirmationModal()}
+                </Toolbar>
+            </AppBar>
+        );
+    }
 };
 
 export default NavBar;

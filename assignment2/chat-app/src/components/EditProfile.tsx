@@ -80,16 +80,16 @@ const EditProfile = () => {
     const updateUser = () => {
         const data: EditUser = {};
 
-        if (firstName !== '') {
+        if (firstName.trim().length !== 0) {
             data.firstName = firstName
         }
-        if (lastName !== '') {
+        if (lastName.trim().length !== 0) {
             data.lastName = lastName
         }
-        if (email !== '') {
+        if (email.trim().length !== 0) {
             data.email = email
         }
-        if (newPassword !== '') {
+        if (newPassword.trim().length !== 0) {
             data.currentPassword = currentPassword;
             data.password = newPassword;
         }

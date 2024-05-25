@@ -22,6 +22,31 @@ const Register = () => {
     const [errorMessage, setErrorMessage] = React.useState("")
 
     const register = () => {
+        if (firstName.trim().length === 0) {
+            setErrorFlag(true)
+            setErrorMessage("First name cannot only include spaces")
+            return;
+        }
+        if (lastName.trim().length === 0) {
+            setErrorFlag(true)
+            setErrorMessage("Last name cannot only include spaces")
+            return;
+        }
+        if (email.trim().length === 0) {
+            setErrorFlag(true)
+            setErrorMessage("Email cannot only include spaces")
+            return;
+        }
+        if (password.trim().length === 0) {
+            setErrorFlag(true)
+            setErrorMessage("Password cannot only include spaces")
+            return;
+        }
+        if (firstName.trim().length === 0) {
+            setErrorFlag(true)
+            setErrorMessage("First name cannot only include spaces")
+            return;
+        }
         const config = {
             method: "post",
             url: baseUrl + "/users/register",

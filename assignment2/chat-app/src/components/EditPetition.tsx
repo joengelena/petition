@@ -126,10 +126,10 @@ const EditPetition = () => {
 
     const updatePetition = () => {
         const data: EditPetition = {};
-        if (title !== '') {
+        if (title.trim().length !== 0) {
             data.title = title
         }
-        if (description !== '') {
+        if (description.trim().length !== 0) {
             data.description = description
         }
         if (categoryId !== "") {
