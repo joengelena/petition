@@ -14,7 +14,7 @@ import { useUserInfoStorage } from "../store";
 import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 const baseUrl = "http://localhost:4941/api/v1";
 
-const UploadImagePetition = () => {
+const EditPetitionImage = () => {
     const {petitionId} = useParams();
     const navigate = useNavigate();
 
@@ -68,7 +68,8 @@ const UploadImagePetition = () => {
                 setErrorMessage("")
             })
             .catch((error) => {
-                console.log(error);
+                setErrorFlag(true)
+                setErrorMessage(error.response.statusText)
             })
     }, [petitionId]);
 
@@ -87,7 +88,7 @@ const UploadImagePetition = () => {
                 },
                 (error) => {
                     setErrorFlag(true)
-                    setErrorMessage(error.toString());
+                    setErrorMessage(error.response.statusText)
                 }
             )
     }
@@ -133,45 +134,44 @@ const UploadImagePetition = () => {
                     Image Upload
                 </Typography>
                 <Stack direction="column" spacing={2} marginTop={2} marginBottom={2} justifyContent="center" alignItems="center">
-                    <Avatar src={imgSrc()} style={{width: 400, height: 250, borderRadius: 3}}>
+                    <Avatar src={imgSrc()} style={ {width: 400, height: 250, borderRadius: 3 }}>
                         <ImageNotSupportedIcon/>
                     </Avatar>
                     <Button
                         component="label"
                         variant="contained"
+                        fullWidth
                         startIcon={<CloudUpload />}
                     >
                         Upload file
                         <input type="file" onChange={handleFileChange} style={{ display: 'none' }} />
                     </Button>
-                    <Stack direction="column" spacing={1} sx={{ width: 320 }}>
-                        {errorFlag &&
-                            <Alert severity="error">
-                                <AlertTitle>Error</AlertTitle>
-                                {errorMessage}
-                            </Alert>}
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            fullWidth
-                            sx={{
-                                background: image === null ? "#bbbbbb": "#1c7c31",
-                                "&:hover": {
-                                    background: "#196728"
-                                }}}
-                            onClick={() => uploadImage()}
-                            disabled={image === null}
-                        >
-                            Update
-                        </Button>
-                        <Link to="/myPetitions" >
-                            Exit
-                        </Link>
-                    </Stack>
+                    {errorFlag &&
+                        <Alert severity="error">
+                            <AlertTitle>Error</AlertTitle>
+                            {errorMessage}
+                        </Alert>}
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        fullWidth
+                        sx={{
+                            background: image === null ? "#bbbbbb": "#1c7c31",
+                            "&:hover": {
+                                background: "#196728"
+                            }}}
+                        onClick={() => uploadImage()}
+                        disabled={image === null}
+                    >
+                        Update
+                    </Button>
                 </Stack>
+                <Link to="/myPetitions" >
+                    Exit
+                </Link>
             </Paper>
         </div>
     );
 }
 
-export default UploadImagePetition;
+export default EditPetitionImage;
