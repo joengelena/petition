@@ -70,7 +70,7 @@ const Profile = () => {
                     </Typography>
                     <Stack direction="column" spacing={1} sx={{ width: 300 }}>
                         {errorFlag &&
-                            <Alert severity="error" sx={{ width: 400 }}>
+                            <Alert severity="error">
                                 <AlertTitle>Error</AlertTitle>
                                 {errorMessage}
                             </Alert>}
