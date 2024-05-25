@@ -6,10 +6,11 @@ import {
     Paper, Select, SelectChangeEvent, Stack, TextField,
     Typography
 } from "@mui/material";
-import React from "react";
+import React, {useState} from "react";
 import axios from "axios";
 import {useUserInfoStorage} from "../store";
 import {Link, useNavigate} from "react-router-dom";
+import CreatePetitionImage from "./CreatePetitionImage";
 
 const baseUrl = "http://localhost:4941/api/v1";
 
@@ -27,6 +28,8 @@ const CreatePetition = () => {
 
     const [supportTiers, setSupportTiers] = React.useState<Array<CreateSupportTier>>([]);
     const [randomIndex, setRandomIndex] = React.useState(0);
+
+    const [image, setImage] = useState<File | null>(null);
 
     React.useEffect(() => {
         axios.get(`${baseUrl}/users/${userLocal.userId}`, {
@@ -67,7 +70,6 @@ const CreatePetition = () => {
         getCategories()
     }, [])
 
-
     const handleCategoryClick = (event: SelectChangeEvent<Number>) => {
         const categoryIdToHandle = event.target.value as Number;
         setCategoryId(categoryIdToHandle);
@@ -83,39 +85,39 @@ const CreatePetition = () => {
                tier.cost = Number(tier.cost)
            }
        }
-       axios.post(`${baseUrl}/petitions`, {
-           title: title,
-           description: description,
-           categoryId: categoryId,
-           supportTiers: supportTiers.map(({tempId, ...rest }) => rest)
-       }, {
-           headers: {
-               "X-Authorization": userLocal.token,
-           },
-        })
-            .then((response) => {
-                navigate(`/petitions/${response.data.petitionId}/uploadImage`);
-                setErrorMessage('')
-                setErrorFlag(false)
-
-            },
-                (error) => {
-                    setErrorFlag(true)
-                    if (error.response.statusText === "Bad Request: data/supportTiers must NOT have fewer than 1 items") {
-                        setErrorMessage("Please add at least one support tier")
-                    } else if (error.response.statusText.includes("fewer than 1")) {
-                        setErrorMessage("Please fill out the required fields")
-                    } else if (error.response.statusText.includes("title must NOT have more than 128 characters")) {
-                        setErrorMessage("Title too long! Keep it under 128 characters.")
-                    } else if (error.response.statusText.includes("data/description must NOT have more than 1024 characters")) {
-                        setErrorMessage("Description too long! Keep it under 1024 characters.")
-                    } else if (error.response.statusText === "Bad Request: data/supportTiers/0/cost must be integer") {
-                        setErrorMessage("Cost must be a number")
-                    } else {
-                        setErrorMessage(error.response.statusText)
-                    }
-            })
-    }
+           axios.post(`${baseUrl}/petitions`, {
+               title: title,
+               description: description,
+               categoryId: categoryId,
+               supportTiers: supportTiers.map(({tempId, ...rest }) => rest)
+           }, {
+               headers: {
+                   "X-Authorization": userLocal.token,
+               },
+           })
+           .then((response) => {
+                   const petitionId = response.data.petitionId
+                   uploadImage(petitionId)
+                   setErrorMessage('')
+                   setErrorFlag(false)
+               },
+               (error) => {
+                   setErrorFlag(true)
+                   if (error.response.statusText === "Bad Request: data/supportTiers must NOT have fewer than 1 items") {
+                       setErrorMessage("Please add at least one support tier")
+                   } else if (error.response.statusText.includes("fewer than 1")) {
+                       setErrorMessage("Please fill out the required fields")
+                   } else if (error.response.statusText.includes("title must NOT have more than 128 characters")) {
+                       setErrorMessage("Title too long! Keep it under 128 characters.")
+                   } else if (error.response.statusText.includes("data/description must NOT have more than 1024 characters")) {
+                       setErrorMessage("Description too long! Keep it under 1024 characters.")
+                   } else if (error.response.statusText === "Bad Request: data/supportTiers/0/cost must be integer") {
+                       setErrorMessage("Cost must be a number")
+                   } else {
+                       setErrorMessage(error.response.statusText)
+                   }
+               })
+       }
 
     const handleAddSupportTier = () => {
         if (supportTiers.length < 3) {
@@ -139,65 +141,113 @@ const CreatePetition = () => {
 
     const addSupportTier = (tier: CreateSupportTier) => {
         return (
-            <Box style={{width: 400, marginBottom: 2, border: "3px solid #0067cd", borderRadius: "3%"}}>
+            <Box
+                style={{
+                    width: '100%',
+                    maxWidth: 400,
+                    marginBottom: 16,
+                    border: "3px solid #0067cd",
+                    borderRadius: "3%",
+                    padding: 16,
+                    boxSizing: 'border-box'
+                }}
+            >
                 <h4 style={{marginTop: 10}}>Support Tier</h4>
-                <TextField
-                    required
-                    label="Title"
-                    multiline
-                    variant="outlined"
-                    value={tier.title}
-                    onChange={(event) => (updateAddSupportTier(tier.tempId, "title", event.target.value))}
-                    InputProps={{
-                        style: {
-                            width: 350,
-                            resize: 'vertical',
-                            overflow: 'auto',
-                        },
-                    }}
-                    style={{ marginBottom: 8 }}
-                />
-                <TextField
-                    required
-                    label="Description"
-                    multiline
-                    variant="outlined"
-                    value={tier.description}
-                    onChange={(event) => (updateAddSupportTier(tier.tempId, "description", event.target.value))}
-                    InputProps={{
-                        style: {
-                            width: 350,
-                            resize: 'vertical',
-                            overflow: 'auto',
-                        },
-                    }}
-                    style={{width: 350, marginBottom: 8 }}
-                />
-                <TextField
-                    required
-                    label="Cost"
-                    variant="outlined"
-                    value={tier.cost}
-                    onChange={(event) => (updateAddSupportTier(tier.tempId, "cost", event.target.value))}
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                    }}
-                    style={{ width: 350, marginBottom: 8 }}
-                />
-                <Button
-                    variant="contained"
-                    sx={{
-                        background: "#C70000",
-                        marginBottom: "8px",
-                        "&:hover": {
-                            background: "#ab0f0f",
-                        }}}
-                    onClick={() => (handleDeleteSupportTier(tier.tempId))}
-                >Delete</Button>
+                <Stack
+                    sx={{width: 350}}
+                >
+                    <TextField
+                        required
+                        label="Title"
+                        multiline
+                        variant="outlined"
+                        value={tier.title}
+                        onChange={(event) => (updateAddSupportTier(tier.tempId, "title", event.target.value))}
+                        InputProps={{
+                            style: {
+                                resize: 'vertical',
+                                overflow: 'auto',
+                            },
+                        }}
+                        style={{ marginBottom: 8 }}
+                    />
+                    <TextField
+                        required
+                        label="Description"
+                        multiline
+                        variant="outlined"
+                        value={tier.description}
+                        onChange={(event) => (updateAddSupportTier(tier.tempId, "description", event.target.value))}
+                        InputProps={{
+                            style: {
+                                resize: 'vertical',
+                                overflow: 'auto',
+                            },
+                        }}
+                        style={{ marginBottom: 8 }}
+                    />
+                    <TextField
+                        required
+                        label="Cost"
+                        variant="outlined"
+                        value={tier.cost}
+                        onChange={(event) => (updateAddSupportTier(tier.tempId, "cost", event.target.value))}
+                        InputProps={{
+                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                        }}
+                        style={{ marginBottom: 8 }}
+                    />
+                    <Button
+                        variant="contained"
+                        sx={{
+                            background: "#C70000",
+                            marginBottom: "8px",
+                            "&:hover": {
+                                background: "#ab0f0f",
+                            }}}
+                        onClick={() => (handleDeleteSupportTier(tier.tempId))}
+                    >
+                        Delete
+                    </Button>
+                </Stack>
             </Box>
 
             )
     }
+
+    const handleImageUpload = (uploadedImage: File | null) => {
+        setImage(uploadedImage);
+    };
+
+    const handleErrorMessage = (errorMessage: string) => {
+        setErrorMessage(errorMessage);
+    };
+
+    const handleErrorFlag = (errorFlag: boolean) => {
+        setErrorFlag(errorFlag);
+    };
+
+
+    const uploadImage = (petitionId: string) => {
+        axios.put(`${baseUrl}/petitions/${petitionId}/image`, image, {
+            headers: {
+                "X-Authorization": userLocal.token,
+                "Content-Type": image?.type
+            }
+        })
+            .then((response) => {
+                    navigate(`/petitions/${petitionId}`)
+                    setErrorMessage("")
+                    setErrorFlag(false)
+                    setImage(response.data)
+                },
+                (error) => {
+                    setErrorFlag(true)
+                    setErrorMessage(error.response.statusText)
+                }
+            )
+    }
+
 
     return (
         <div style={{padding: 50}}>
@@ -205,7 +255,14 @@ const CreatePetition = () => {
                 <Typography variant="h3" style={{fontWeight: 'bold', padding: 10, marginBottom: "10px"}}>
                     Create Petition
                 </Typography>
-
+                <CreatePetitionImage
+                    image={image}
+                    onImageUpload={handleImageUpload}
+                    errorMessage={errorMessage}
+                    errorFlag={errorFlag}
+                    onErrorMessageChange={handleErrorMessage}
+                    onErrorFlagChange={handleErrorFlag}
+                />
                 <Stack direction="column" spacing={2} marginTop={2} marginBottom={2} justifyContent="center" alignItems="center">
                     <TextField
                         required
@@ -216,12 +273,11 @@ const CreatePetition = () => {
                         onChange={(event) => setTitle(event.target.value)}
                         InputProps={{
                             style: {
-                                width: 400,
                                 resize: 'vertical',
                                 overflow: 'auto',
                             },
                         }}
-                        style={{ marginBottom: 2 }}
+                        style={{width: 400, marginBottom: 2 }}
                     />
                     <TextField
                         required
@@ -232,12 +288,11 @@ const CreatePetition = () => {
                         onChange={(event) => setDescription(event.target.value)}
                         InputProps={{
                             style: {
-                                width: 400,
                                 resize: 'vertical',
                                 overflow: 'auto',
                             },
                         }}
-                        style={{ marginBottom: 2 }}
+                        style={{ width: 400, marginBottom: 2 }}
                     />
                     <Box style={{width: 400, marginBottom: 2}}>
                         <FormControl fullWidth>
@@ -280,7 +335,8 @@ const CreatePetition = () => {
                         variant="contained"
                         color="primary"
                         style={{ width: 400 }}
-                        onClick={createPetition}
+                        onClick={()=>(createPetition())}
+                        disabled={!image}
                     >
                         Create Petition
                     </Button>
