@@ -421,7 +421,7 @@ const Petition = ()=> {
                     <TableCell>
                         <Avatar
                             src={`${baseUrl}/petitions/${similarPetition.petitionId}/image`}
-                            style={{ width: 100, height: 100, borderRadius: 10 }}
+                            style={{ width: 160, height: 100, borderRadius: 3 }}
                         >
                             <ImageNotSupportedIcon/>
                         </Avatar>
@@ -450,7 +450,7 @@ const Petition = ()=> {
                         <Avatar
                             src={`${baseUrl}/users/${similarPetition.ownerId}/image`}
                             alt={`${similarPetition.ownerLastName}`}
-                            style={{ width: 80, height: 80 }}
+                            style={{ width: 100, height: 100 }}
                         />
                     </TableCell>
                     <TableCell>
@@ -504,7 +504,7 @@ const Petition = ()=> {
                                     <Typography variant="h6" style={{padding: 2}}>
                                         Total Money Raised
                                     </Typography>
-                                    <Typography variant="h2" style={{fontWeight: "bold"}}>
+                                    <Typography variant="h2" style={{fontWeight: "bold", color:"#0f574a"}}>
                                         {petition.moneyRaised !== null
                                             ? `$${petition.moneyRaised}`
                                             : '$0'}
